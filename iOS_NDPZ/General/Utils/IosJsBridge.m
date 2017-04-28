@@ -107,6 +107,7 @@
  */
 + (void) universeShare:(UIViewController *)vc para:(NSDictionary *)data {
     JMShareViewController *shareView = [[JMShareViewController alloc] init];
+    shareView.shareType = shareVCTypeGoods;
     ((WebViewController *)vc).shareView = shareView;
     JMShareModel *model = [[JMShareModel alloc] init];
     model.share_type = [data objectForKey:@"share_type"];
@@ -116,7 +117,7 @@
     model.share_link = [data objectForKey:@"link"];
     shareView.model = model;
     
-    [[JMGlobal global] showpopBoxType:popViewTypeShare Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, 240) ViewController:shareView WithBlock:^(UIView *maskView) {
+    [[JMGlobal global] showpopBoxType:popViewTypeShare Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, kAppShareViewHeight) ViewController:shareView WithBlock:^(UIView *maskView) {
     }];
     shareView.blcok = ^(UIButton *button) {
         [MobClick event:@"WebViewController_shareFail_cancel"];

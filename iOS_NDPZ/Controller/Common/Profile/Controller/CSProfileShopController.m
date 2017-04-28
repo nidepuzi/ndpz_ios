@@ -73,6 +73,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    [JMNotificationCenter addObserver:self selector:@selector(quitLogin) name:@"logout" object:nil];
     self.automaticallyAdjustsScrollViewInsets = NO;
     isShowRefresh = YES;
     [self createTableView];
@@ -80,6 +81,13 @@
     [self loadDataSource];
     [self createNavi];
     
+    
+}
+- (void)dealloc {
+    [JMNotificationCenter removeObserver:self];
+
+}
+- (void)quitLogin {
     
 }
 #pragma mark 刷新界面
@@ -138,6 +146,9 @@
         [self updateUserInfo:responseObject];
         [self endRefresh];
     } failure:^(NSInteger errorCode) {
+        _accountMoney = @0.00;
+        self.proHeaderView.userInfoDic = @{};
+        self.proFooterView.accountMoney = _accountMoney;
         if (errorCode == 403) {
             //            [self quitLogin];
             [self endRefresh];
@@ -218,7 +229,7 @@
     UILabel *naviTitleLabel = [UILabel new];
     naviTitleLabel.textColor = [UIColor whiteColor];
     naviTitleLabel.text = @"店铺";
-    naviTitleLabel.font = CS_UIFontSize(15.);
+    naviTitleLabel.font = CS_UIFontBoldSize(18.);
     [naviView addSubview:naviTitleLabel];
     
     [messageButton mas_makeConstraints:^(MASConstraintMaker *make) {

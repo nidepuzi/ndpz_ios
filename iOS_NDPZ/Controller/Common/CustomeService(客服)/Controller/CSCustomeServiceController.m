@@ -8,6 +8,7 @@
 
 #import "CSCustomeServiceController.h"
 #import "Udesk.h"
+#import "QYSDK.h"
 
 @interface CSCustomeServiceController ()
 
@@ -17,7 +18,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self createNavigationBarWithTitle:@"客服" selecotr:@selector(backClick)];
+    [self createNavigationBarWithTitle:@"客服" selecotr:nil];
     [self setUserInfo];
     
     UIButton *kefuButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -28,7 +29,12 @@
     
     [kefuButton addTarget:self action:@selector(kefuButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     
-
+    
+//    [[QYSDK sharedSDK] sessionViewController];
+    
+    
+    
+    
     
 
 }
@@ -45,25 +51,88 @@
     }];
 }
 - (void)updateUserInfo:(NSDictionary *)dic {
-    NSString *nick_name = @"测试账号";
-    NSString *sdk_token = @"123456";
-    if (dic.count == 0) {
-        NSLog(@"用户信息失败,使用测试数据");
-    }else {
-        nick_name = dic[@"nick"];
-        sdk_token = [NSString stringWithFormat:@"%@",dic[@"id"]];
+    if (dic == nil || dic.count == 0) {
+        return;
     }
-    NSDictionary *parameters = @{
-                                 @"user": @{
-                                         @"sdk_token":sdk_token,
-                                         @"nick_name":nick_name,
-                                         }
-                                 };
-    [UdeskManager createCustomerWithCustomerInfo:parameters];
+    [[QYSDK sharedSDK] customUIConfig].customerHeadImageUrl = dic[@"thumbnail"];
+    QYUserInfo *userInfo = [[QYUserInfo alloc] init];
+    userInfo.userId = dic[@"user_id"];
+    NSArray *userArr = @[@{
+                            @"key":@"real_name",
+                            @"value":dic[@"nick"]
+                             },
+                         @{
+                             @"key":@"mobile_phone",
+//                             @"hidden":@false
+                             },
+                         @{
+                             @"key":@"email",
+                             @"value":dic[@"email"]
+                             },
+                         @{
+                             @"index":@0,
+                             @"key":@"account",
+                             @"label":@"账号",
+                             @"value":dic[@"mobile"]
+                             },
+                         @{
+                             @"index":@1,
+                             @"key":@"sex",
+                             @"label":@"性别",
+                             @"value":@"未知"
+                             },
+                         @{
+                             @"index":@5,
+                             @"key":@"reg_date",
+                             @"label":@"注册日期",
+                             @"value":dic[@"created"]
+                             },
+                         @{
+                             @"index":@6,
+                             @"key":@"last_login",
+                             @"label":@"上次登录时间",
+                             @"value":@"未知"
+                             },];
+    
+    userInfo.data = [self dictionaryToJson:userArr];
+    
+//    userInfo.data = @"[{\"key\":\"real_name\", \"value\":\"你看我存在么?\"},"
+//    "{\"key\":\"mobile_phone\", \"hidden\":true},"
+//    "{\"key\":\"email\", \"value\":\"13800000000@163.com\"},"
+//    "{\"index\":0, \"key\":\"account\", \"label\":\"账号\", \"value\":\"zhangsan\", \"href\":\"http://example.domain/user/zhangsan\"},"
+//    "{\"index\":1, \"key\":\"sex\", \"label\":\"性别\", \"value\":\"先生\"},"
+//    "{\"index\":5, \"key\":\"reg_date\", \"label\":\"注册日期\", \"value\":\"2017-04-27\"},"
+//    "{\"index\":6, \"key\":\"last_login\", \"label\":\"上次登录时间\", \"value\":\"2017-04-27 11:11:11\"}]";
+    
+    [[QYSDK sharedSDK] setUserInfo:userInfo];
+    
+    
+    
+    
+    
+//    NSString *nick_name = @"测试账号";
+//    NSString *sdk_token = @"123456";
+//    if (dic.count == 0) {
+//        NSLog(@"用户信息失败,使用测试数据");
+//    }else {
+//        nick_name = dic[@"nick"];
+//        sdk_token = [NSString stringWithFormat:@"%@",dic[@"id"]];
+//    }
+//    NSDictionary *parameters = @{
+//                                 @"user": @{
+//                                         @"sdk_token":sdk_token,
+//                                         @"nick_name":nick_name,
+//                                         }
+//                                 };
+//    [UdeskManager createCustomerWithCustomerInfo:parameters];
 
 }
-
-
+- (NSString *)dictionaryToJson:(id)dataSource {
+    NSError *parseError = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dataSource options:NSJSONWritingPrettyPrinted error:&parseError];
+    return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+}
 
 
 - (void)waitButtonStatus:(UIButton *)button {
@@ -72,8 +141,18 @@
 - (void)kefuButtonClick:(UIButton *)button {
     button.enabled = NO;
     [self performSelector:@selector(waitButtonStatus:) withObject:button afterDelay:1.];
-    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-    [chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self];
+//    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
+//    [chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self];
+    
+    QYSource *source = [[QYSource alloc] init];
+    source.title =  @"你的铺子";
+    source.urlString = @"http://m.nidepuzi.com";
+    QYSessionViewController *sessionViewController = [[QYSDK sharedSDK] sessionViewController];
+    sessionViewController.sessionTitle = @"你的铺子";
+    sessionViewController.source = source;
+    sessionViewController.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:sessionViewController animated:YES];
+    
     
 }
 - (void)backClick {

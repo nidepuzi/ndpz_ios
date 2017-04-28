@@ -39,6 +39,7 @@
 - (JMShareViewController *)shareView {
     if (!_shareView) {
         _shareView = [[JMShareViewController alloc] init];
+        _shareView.shareType = shareVCTypeInvite;
     }
     return _shareView;
 }
@@ -83,6 +84,9 @@
 }
 - (void)mamaWebViewData:(NSDictionary *)mamaDic {
     NSArray *resultsArr = mamaDic[@"results"];
+    if (resultsArr.count == 0) {
+        return;
+    }
     NSDictionary *resultsDict = [NSDictionary dictionary];
     resultsDict = resultsArr[0];
     NSDictionary *extraDict = resultsDict[@"extra"];

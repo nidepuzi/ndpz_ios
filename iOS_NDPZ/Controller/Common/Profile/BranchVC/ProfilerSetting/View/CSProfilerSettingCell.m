@@ -44,6 +44,9 @@
             [self.switchSetting addTarget:self action:@selector(swChange:) forControlEvents:UIControlEventValueChanged];
         }
         
+        UIView *lineView = [UIView new];
+        lineView.backgroundColor = [UIColor countLabelColor];
+        [self.contentView addSubview:lineView];
         
         kWeakSelf
         [self.iconImageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -73,7 +76,12 @@
             }];
         }
         
-        
+        [lineView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(weakSelf.contentView).offset(15);
+            make.right.equalTo(weakSelf.contentView).offset(-15);
+            make.bottom.equalTo(weakSelf.contentView);
+            make.height.mas_equalTo(@1);
+        }];
         
         
         

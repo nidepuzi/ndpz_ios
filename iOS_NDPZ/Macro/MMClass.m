@@ -10,8 +10,11 @@
 
 
 CGFloat    const kAppTabBarHeight = 49.f;
+CGFloat    const kAppShareViewHeight = 160.f;
+CGFloat    const kAppShareEarningViewHeight = 260.f;
 NSInteger  const kAppVisitoryDay = 14;      // 加载访客记录(天数)
 NSInteger  const kAPPshopCartType = 0;
+
 
 #if 0
 

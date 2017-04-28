@@ -60,7 +60,7 @@
 - (void)loadData {
     NSString *timeStr = [NSString getCurrentTime];
     NSArray *arr = @[@{
-                         @"title":@"云集公告",
+                         @"title":@"铺子公告",
                          @"descTitle":@"亲爱的你的铺子用户:进入人工客服排队提交审核,请耐心等待哦~",
                          @"iconImage":@"Message_box_copy",
                          @"createTime":timeStr

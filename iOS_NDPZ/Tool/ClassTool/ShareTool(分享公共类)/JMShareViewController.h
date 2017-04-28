@@ -8,11 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSUInteger, shareVCType) {
+    shareVCTypeInvite,                  // 邀请分享
+    shareVCTypeGoods,                   // 商品分享
+};
+
 @class JMShareModel;
 typedef void(^shareCancelBlock)(UIButton *button);
 
 @interface JMShareViewController : UIViewController
 
+@property (nonatomic, assign) shareVCType shareType;
 @property (nonatomic,strong) JMShareModel *model;
 @property (nonatomic, copy) shareCancelBlock blcok;
 

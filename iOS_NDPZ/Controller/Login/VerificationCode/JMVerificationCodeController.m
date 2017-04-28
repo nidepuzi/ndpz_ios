@@ -24,7 +24,7 @@
 
 @property (nonatomic, strong) UIScrollView *maskScrollView;
 @property (nonatomic, strong) JMSelecterButton *sureButton;
-@property (nonatomic, strong) JMSelecterButton *verificationCodeButton;
+@property (nonatomic, strong) UIButton *verificationCodeButton;
 @property (nonatomic, strong) JMSelecterButton *skipButton;
 @property (nonatomic, strong) JMSliderLockView *sliderView;
 @property (nonatomic, strong) UITextField *phoneNumberField;
@@ -81,7 +81,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor countLabelColor];
+    self.view.backgroundColor = [UIColor whiteColor];
     [self createNavigationBarWithTitle:self.title selecotr:@selector(backClick)];
     
     self.fd_interactivePopDisabled = YES;
@@ -94,14 +94,14 @@
     
     [self.view addSubview:self.maskScrollView];
     [self createUI];
-    [self craeteNavRightButton];
+//    [self craeteNavRightButton];
 }
 
 #pragma mark ==== 创建视图 ====
 - (void)createUI {
     CGFloat firstSectionViewH = 120.;
     CGFloat spaceing = 15.f;
-    CGFloat topSpace = 0.;
+    CGFloat topSpace = 60.;
     if (self.verificationCodeType == SMSVerificationCodeWithBind) {
         topSpace = 200.;
         UIImageView *iconImageView = [[UIImageView alloc] init];
@@ -140,35 +140,59 @@
     
     UIView *textFieldView = [[UIView alloc] initWithFrame:CGRectMake(0, topSpace, SCREENWIDTH, firstSectionViewH)];
     textFieldView.backgroundColor = [UIColor whiteColor];
+    [self.maskScrollView addSubview:textFieldView];
     
-    UITextField *phoneNumberField = [self createTextFieldWithFrame:CGRectMake(spaceing, 15, SCREENWIDTH - spaceing * 2, 30) PlaceHolder:@"请输入手机号" KeyboardType:UIKeyboardTypeNumberPad];
+    UIView *phoneTFView = [[UIView alloc] initWithFrame:CGRectMake(spaceing, 15, SCREENWIDTH - spaceing * 2, 40)];
+    phoneTFView.layer.cornerRadius = 5;
+    phoneTFView.layer.masksToBounds = YES;
+    phoneTFView.layer.borderWidth = 1.;
+    phoneTFView.layer.borderColor = [UIColor titleDarkGrayColor].CGColor;
+    [textFieldView addSubview:phoneTFView];
+    
+    UIView *verfiTFView = [[UIView alloc] initWithFrame:CGRectMake(spaceing, phoneTFView.cs_max_Y + 20, SCREENWIDTH - spaceing * 2, 40)];
+    verfiTFView.layer.cornerRadius = 5;
+    verfiTFView.layer.masksToBounds = YES;
+    verfiTFView.layer.borderWidth = 1.;
+    verfiTFView.layer.borderColor = [UIColor titleDarkGrayColor].CGColor;
+    [textFieldView addSubview:verfiTFView];
+    
+    UITextField *phoneNumberField = [self createTextFieldWithFrame:CGRectMake(10, 5, verfiTFView.cs_w - 20, 30) PlaceHolder:@"请输入手机号" KeyboardType:UIKeyboardTypeNumberPad];
     self.phoneNumberField = phoneNumberField;
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, phoneNumberField.cs_max_Y + 15, SCREENWIDTH, 1.0f)];
-    lineView.backgroundColor = [UIColor lineGrayColor];
-    UITextField *verificationCodeField = [self createTextFieldWithFrame:CGRectMake(spaceing, lineView.cs_max_Y + 15, SCREENWIDTH - spaceing * 2 - 100, 30 - lineView.cs_h) PlaceHolder:@"请输入验证码" KeyboardType:UIKeyboardTypeNumberPad];
+//    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, phoneNumberField.cs_max_Y + 15, SCREENWIDTH, 1.0f)];
+//    lineView.backgroundColor = [UIColor lineGrayColor];
+    UITextField *verificationCodeField = [self createTextFieldWithFrame:CGRectMake(10, 5, verfiTFView.cs_w - 110, 30) PlaceHolder:@"请输入验证码" KeyboardType:UIKeyboardTypeNumberPad];
     self.verificationCodeField = verificationCodeField;
-    self.verificationCodeButton = [JMSelecterButton buttonWithType:UIButtonTypeCustom];
-    self.verificationCodeButton.frame = CGRectMake(verificationCodeField.cs_max_X + 15, verificationCodeField.cs_y, 90, 30);
-    [self.verificationCodeButton setNomalBorderColor:[UIColor buttonDisabledBorderColor] TitleColor:[UIColor buttonDisabledBackgroundColor] Title:@"获取验证码" TitleFont:13. CornerRadius:15.];
+    [phoneTFView addSubview:phoneNumberField];
+    [verfiTFView addSubview:verificationCodeField];
+    
+    UIView *shuhangV = [[UIView alloc] initWithFrame:CGRectMake(verificationCodeField.cs_max_X + 10, verificationCodeField.cs_y + 5, 1, 20)];
+    shuhangV.backgroundColor = [UIColor titleDarkGrayColor];
+    [verfiTFView addSubview:shuhangV];
+    
+    self.verificationCodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [verfiTFView addSubview:self.verificationCodeButton];
+    self.verificationCodeButton.frame = CGRectMake(verificationCodeField.cs_max_X + 10, verificationCodeField.cs_y, 90, 30);
+//    [self.verificationCodeButton setNomalBorderColor:[UIColor buttonDisabledBorderColor] TitleColor:[UIColor buttonDisabledBackgroundColor] Title:@"获取验证码" TitleFont:13. CornerRadius:15.];
 //    [self verificationButton:-1];
-    self.verificationCodeButton.titleLabel.text = @"获取验证码";
+    [self.verificationCodeButton setTitle:@"获取验证码" forState:UIControlStateNormal];
+    [self.verificationCodeButton setTitleColor:[UIColor dingfanxiangqingColor] forState:UIControlStateNormal];
+    self.verificationCodeButton.titleLabel.font = CS_UIFontSize(12.);
+//    self.verificationCodeButton.titleLabel.text = @"获取验证码";
     self.verificationCodeButton.selected = NO;
     self.verificationCodeButton.enabled = NO;
     [self.verificationCodeButton addTarget:self action:@selector(getAuthcodeClick:) forControlEvents:UIControlEventTouchUpInside];
     
-    [self.maskScrollView addSubview:textFieldView];
-    [textFieldView addSubview:lineView];
-    [textFieldView addSubview:phoneNumberField];
-    [textFieldView addSubview:verificationCodeField];
-    [textFieldView addSubview:self.verificationCodeButton];
+//    [textFieldView addSubview:lineView];
     
-    CGFloat registW = [@"如何注册成为小鹿妈妈" widthWithHeight:20. andFont:13.].width + 20;
+//    [verificationCodeField addSubview:self.verificationCodeButton];
+    
+    CGFloat registW = [@"如何注册?" widthWithHeight:20. andFont:13.].width + 20;
     self.registeredButton  = [[UIButton alloc] initWithFrame:CGRectMake(spaceing, textFieldView.cs_max_Y + 10, registW, 20)];
     [self.maskScrollView addSubview:self.registeredButton];
     //设置按钮文字的下划线
-    NSMutableAttributedString *title = [[NSMutableAttributedString alloc] initWithString:@"如何注册成为小鹿妈妈"];
+    NSMutableAttributedString *title = [[NSMutableAttributedString alloc] initWithString:@"如何注册?"];
     NSRange titleRange = {0,[title length]};
-    [self.registeredButton setTitle:@"如何注册成为小鹿妈妈" forState:UIControlStateNormal];
+    [self.registeredButton setTitle:@"如何注册?" forState:UIControlStateNormal];
     [title addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInteger:NSUnderlineStyleSingle] range:titleRange];
     [self.registeredButton setAttributedTitle:title forState:UIControlStateNormal];
     [self.registeredButton.titleLabel setFont:[UIFont systemFontOfSize:13.]];
@@ -188,7 +212,7 @@
     self.sliderView.thumbBack = YES;
     self.sliderView.text = @"向右滑动验证";
     self.sliderView.delegate = self;
-    [self.sliderView setColorForBackgroud:[UIColor buttonDisabledBorderColor] foreground:[UIColor buttonEnabledBackgroundColor] thumb:[UIColor whiteColor] border:[UIColor lineGrayColor] textColor:[UIColor buttonTitleColor]];
+    [self.sliderView setColorForBackgroud:[UIColor buttonDisabledBorderColor] foreground:[UIColor buttonEnabledBackgroundColor] thumb:[UIColor whiteColor] border:[UIColor lineGrayColor] textColor:[UIColor whiteColor]];
     [self.sliderView setThumbBeginString:@"😊" finishString:@"😀"];
     [self.maskScrollView addSubview:self.sliderView];
     self.sliderView.cs_h = 0.f;
@@ -737,10 +761,10 @@
                                          }
                                  };
     [UdeskManager createCustomerWithCustomerInfo:parameters];
-    UIButton *serViceButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 80)];
+    UIButton *serViceButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 44)];
     [serViceButton addTarget:self action:@selector(serViceButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [serViceButton setTitle:@"小鹿客服" forState:UIControlStateNormal];
-    [serViceButton setTitleColor:[UIColor buttonEnabledBackgroundColor] forState:UIControlStateNormal];
+    [serViceButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     serViceButton.titleLabel.font = [UIFont systemFontOfSize:14.];
     //    UIImageView *serviceImage = [[UIImageView alloc] initWithFrame:CGRectMake(30, 5, 30, 30)];
     //    [serViceButton addSubview:serviceImage];

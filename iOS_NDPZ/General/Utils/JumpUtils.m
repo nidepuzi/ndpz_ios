@@ -83,57 +83,57 @@
     }
 //    target_url =  [target_url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
-    if ([target_url isEqualToString:@"com.jimei.xlmm://app/v1/products/promote_today"]) {
+    if ([target_url isEqualToString:@"com.danlai.ndpz://app/v1/products/promote_today"]) {
         //跳到今日上新
         [vc.navigationController popToRootViewControllerAnimated:YES];
         [JMNotificationCenter postNotificationName:@"fromActivityToToday" object:nil userInfo:@{@"param":@"today"}];
         
-    } else if ([target_url isEqualToString:@"com.jimei.xlmm://app/v1/products/promote_previous"]){
+    } else if ([target_url isEqualToString:@"com.danlai.ndpz://app/v1/products/promote_previous"]){
         //跳到昨日推荐
         [vc.navigationController popToRootViewControllerAnimated:YES];
         [JMNotificationCenter postNotificationName:@"fromActivityToToday" object:nil userInfo:@{@"param":@"previous"}];
         
-    } else if ([target_url isEqualToString:@"com.jimei.xlmm://app/v1/products/childlist"]){
+    } else if ([target_url isEqualToString:@"com.danlai.ndpz://app/v1/products/childlist"]){
         //跳到潮童专区
         JMClassifyListController *categoryVC = [[JMClassifyListController alloc] init];
         NSString *urlString = [NSString stringWithFormat:@"%@/rest/v2/modelproducts?cid=%@&page=1&page_size=10",Root_URL,@"1"];
         categoryVC.titleString = @"童装专区";
         categoryVC.urlString = urlString;
         [vc.navigationController pushViewController:categoryVC animated:YES];
-    } else if ([target_url isEqualToString:@"com.jimei.xlmm://app/v1/products/ladylist"]){
+    } else if ([target_url isEqualToString:@"com.danlai.ndpz://app/v1/products/ladylist"]){
         //跳到时尚女装
         JMClassifyListController *categoryVC = [[JMClassifyListController alloc] init];
         NSString *urlString = [NSString stringWithFormat:@"%@/rest/v2/modelproducts?cid=%@&page=1&page_size=10",Root_URL,@"2"];
         categoryVC.titleString = @"女装专区";
         categoryVC.urlString = urlString;
         [vc.navigationController pushViewController:categoryVC animated:YES];
-    } else if ([target_url isEqualToString:@"com.jimei.xlmm://app/v1/usercoupons/method"]){
+    } else if ([target_url isEqualToString:@"com.danlai.ndpz://app/v1/usercoupons/method"]){
         //跳转到用户未过期优惠券列表
         JMCouponController *youhuiVC = [[JMCouponController alloc] init];
         [vc.navigationController pushViewController:youhuiVC animated:YES];
  
-    }  else if ([target_url isEqualToString:@"com.jimei.xlmm://app/v1/home"]){
+    }  else if ([target_url isEqualToString:@"com.danlai.ndpz://app/v1/home"]){
         [JMNotificationCenter postNotificationName:@"notificationJump" object:self userInfo:@{@"selectedIndex":@"0"}];
-    } else if ([target_url isEqualToString:@"com.jimei.xlmm://app/v1/vip_home"]){
+    } else if ([target_url isEqualToString:@"com.danlai.ndpz://app/v1/vip_home"]){
         //  跳转到小鹿妈妈界面
         [JMNotificationCenter postNotificationName:@"notificationJump" object:self userInfo:@{@"selectedIndex":@"4"}];
-    }else if ([target_url isEqualToString:@"com.jimei.xlmm://app/v1/vip_0day"]){
+    }else if ([target_url isEqualToString:@"com.danlai.ndpz://app/v1/vip_0day"]){
         //跳转到小鹿妈妈每日上新
         JMPushingDaysController *publish = [[JMPushingDaysController alloc] init];
         [vc.navigationController pushViewController:publish animated:YES];
         
-    }else if ([target_url isEqualToString:@"com.jimei.xlmm://app/v1/refunds"]) {
+    }else if ([target_url isEqualToString:@"com.danlai.ndpz://app/v1/refunds"]) {
         //跳转到退款退货列表
         JMRefundBaseController *tuihuoVC = [[JMRefundBaseController alloc] init];
         [vc.navigationController pushViewController:tuihuoVC animated:YES];
         
     }
-    else if ([target_url isEqualToString:@"com.jimei.xlmm://app/v1/vip_choice"]) {
+    else if ([target_url isEqualToString:@"com.danlai.ndpz://app/v1/vip_choice"]) {
         //跳转到选品上架
         ProductSelectionListViewController *mamachoiceVC = [[ProductSelectionListViewController alloc] init];
         [vc.navigationController pushViewController:mamachoiceVC animated:YES];
         
-    }else if ([target_url hasPrefix:@"com.jimei.xlmm://app/v1/shopping_cart"]) {
+    }else if ([target_url hasPrefix:@"com.danlai.ndpz://app/v1/shopping_cart"]) {
         BOOL login = [JMUserDefaults boolForKey:@"login"];
         if (login == NO) {
             [[JMGlobal global] showLoginViewController];
@@ -152,27 +152,27 @@
         }
 
     }
-    else if([target_url hasPrefix:@"com.jimei.xlmm://app/v1/brand"]){
+    else if([target_url hasPrefix:@"com.danlai.ndpz://app/v1/brand"]){
         //经过跟秀清讨论，直接跳转商品列表的需求还需要整理，暂时屏蔽
         //[self jumpToBrand:target_url viewController:vc];
     }
-    else if([target_url hasPrefix:@"com.jimei.xlmm://app/v1/products/modellist?"]){
+    else if([target_url hasPrefix:@"com.danlai.ndpz://app/v1/products/modellist?"]){
         [self jumpToModelProduct:target_url viewController:vc];
     }
-    else if([target_url hasPrefix:@"com.jimei.xlmm://app/v1/products?"]){
+    else if([target_url hasPrefix:@"com.danlai.ndpz://app/v1/products?"]){
         [self jumpToProduct:target_url viewController:vc];
     }
-    else if([target_url hasPrefix:@"com.jimei.xlmm://app/v1/trades/details?"]){
+    else if([target_url hasPrefix:@"com.danlai.ndpz://app/v1/trades/details?"]){
         [self jumpToTrade:target_url viewController:vc];
     }
-    else if([target_url hasPrefix:@"com.jimei.xlmm://app/v1/trades/purchase?"]){
+    else if([target_url hasPrefix:@"com.danlai.ndpz://app/v1/trades/purchase?"]){
         [self jumpToTradePurchase:target_url viewController:vc];
     }
-    else if([target_url hasPrefix:@"com.jimei.xlmm://app/v1/webview?"]){
+    else if([target_url hasPrefix:@"com.danlai.ndpz://app/v1/webview?"]){
         [self jumpToWebview:target_url viewController:vc];
-    }else if ([target_url hasPrefix:@"com.jimei.xlmm://app/v1/products/category?"]){
+    }else if ([target_url hasPrefix:@"com.danlai.ndpz://app/v1/products/category?"]){
         [self jumpToCategoryProduct:target_url viewController:vc];
-    }else if ([target_url isEqualToString:@"com.jimei.xlmm://app/v1/vip_forum"]){
+    }else if ([target_url isEqualToString:@"com.danlai.ndpz://app/v1/vip_forum"]){
         //  跳转到小鹿妈妈forum界面 (论坛)
         WebViewController *webVC = [[WebViewController alloc] init];
         NSMutableDictionary *dict = [NSMutableDictionary dictionary];

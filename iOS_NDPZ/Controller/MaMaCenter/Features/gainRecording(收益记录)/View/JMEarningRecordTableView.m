@@ -32,7 +32,7 @@ static NSString *const JMEarningRecordCellIdentifier = @"JMEarningRecordCellIden
 }
 - (JMReloadEmptyDataView *)reload {
     if (!_reload) {
-        __block JMReloadEmptyDataView *reload = [[JMReloadEmptyDataView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) Title:@"您还没有收益哦..." DescTitle:@"暂时还没有收益记录哦~" ButtonTitle:@"" Image:@"emptyJifenIcon" ReloadBlcok:^{
+        __block JMReloadEmptyDataView *reload = [[JMReloadEmptyDataView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) Title:@"您还没有收益哦..." DescTitle:@"暂时还没有收益记录哦~" ButtonTitle:@"" Image:@"data_empty" ReloadBlcok:^{
             
         }];
         _reload = reload;

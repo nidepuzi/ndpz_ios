@@ -16,6 +16,7 @@
 @property (nonatomic, strong) UIButton *emptyButton;
 @property (nonatomic, strong) UILabel *emptyTitleLabel;
 @property (nonatomic, strong) UILabel *emptyDescTitleLabel;
+@property (nonatomic, assign) CGRect reloadRect;
 
 @property (nonatomic, copy) ReloadClickBlock reloadClickBlock;
 
@@ -32,6 +33,7 @@
 
 - (instancetype)initWithFrame:(CGRect)frame Title:(NSString *)title DescTitle:(NSString *)descTitle ButtonTitle:(NSString *)buttonTitle Image:(NSString *)imageStr ReloadBlcok:(ReloadClickBlock)reloadBlock {
     if (self = [super initWithFrame:frame]) {
+        self.reloadRect = frame;
         self.backgroundColor = [UIColor whiteColor];
         self.reloadClickBlock = reloadBlock;
         _buttonTitle = buttonTitle;
@@ -97,7 +99,7 @@
     CGRect rectWifi = CGRectZero;
     rectWifi.size = CGSizeMake(120, 120);
     rectWifi.origin.x = (self.frame.size.width - 120) / 2.0;
-    rectWifi.origin.y = (self.frame.size.height - 360) / 2.0;
+    rectWifi.origin.y = (self.frame.size.height - 360 + self.reloadRect.origin.y) / 2.0;
     self.emptyImageView.frame = rectWifi;
     
     CGRect rectLabel = CGRectZero ;

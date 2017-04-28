@@ -150,6 +150,7 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
 - (JMShareViewController *)goodsShareView {
     if (!_goodsShareView) {
         _goodsShareView = [[JMShareViewController alloc] init];
+        _goodsShareView.shareType = shareVCTypeGoods;
     }
     return _goodsShareView;
 }
@@ -487,7 +488,7 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
         [self.navigationController popViewControllerAnimated:YES];
     }else {
         [MobClick event:@"GoodsDetail_share"];
-        [[JMGlobal global] showpopBoxType:popViewTypeShare Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, 340) ViewController:self.goodsShareView WithBlock:^(UIView *maskView) {
+        [[JMGlobal global] showpopBoxType:popViewTypeShare Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, kAppShareEarningViewHeight) ViewController:self.goodsShareView WithBlock:^(UIView *maskView) {
         }];
         self.goodsShareView.blcok = ^(UIButton *button) {
             [MobClick event:@"GoodsDetail_share_fail_clickCancelButton"];

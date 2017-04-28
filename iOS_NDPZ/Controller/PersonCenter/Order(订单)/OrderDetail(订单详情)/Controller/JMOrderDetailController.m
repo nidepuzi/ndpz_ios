@@ -143,6 +143,7 @@
 - (JMShareViewController *)shareView {
     if (_shareView == nil) {
         _shareView = [[JMShareViewController alloc] init];
+        _shareView.shareType = shareVCTypeGoods;
     }
     return _shareView;
 }
@@ -587,7 +588,7 @@
     }else if (index == 102) {
         //分享红包
         if (redPageNumber > 0) {
-            [[JMGlobal global] showpopBoxType:popViewTypeShare Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, 240) ViewController:self.shareView WithBlock:^(UIView *maskView) {
+            [[JMGlobal global] showpopBoxType:popViewTypeShare Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, kAppShareViewHeight) ViewController:self.shareView WithBlock:^(UIView *maskView) {
             }];
         }else {
            [self createClassPopView:@"分享提示" Message:redPageShareNotEnough Index:4];

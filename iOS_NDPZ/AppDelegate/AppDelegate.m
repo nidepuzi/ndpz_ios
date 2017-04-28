@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "JMStoreManager.h"
-#import "Udesk.h"
+#import "QYSDK.h"
 #import "JMPayment.h"
 #import "JMMiPushManager.h"
 #import "JMRootTabBarController.h"
@@ -34,7 +34,9 @@
 #pragma mark ======== 友盟统计/分享.uDesk ========
 - (void)udeskInit{
     //uDesk 客服
-    [UdeskManager initWithAppkey:@"e7bfd4447bf206d17fb536240a9f4fbb" domianName:@"xiaolumeimei.udesk.cn"];
+//    [UdeskManager initWithAppkey:@"e7bfd4447bf206d17fb536240a9f4fbb" domianName:@"xiaolumeimei.udesk.cn"];
+    [[QYSDK sharedSDK] registerAppId:@"6df3367932bd8e384f359611ea48e90b" appName:@"你的铺子"];
+    
 }
 - (void)umengTrackInit {
     //[MobClick setLogEnabled:YES];
@@ -96,8 +98,9 @@
 //        [[JMGlobal global] showLoginViewController];
 //        return ;
 //    }
-    [self lodaUserInfo];
-    [XHLaunchAd setWaitDataDuration:2];
+//    [self lodaUserInfo];
+//    [XHLaunchAd setWaitDataDuration:2];
+    [self cancleWaitTimerAndReuestLaunchImage];
     [self getLaunchImage];
     [self newFeature];
 }

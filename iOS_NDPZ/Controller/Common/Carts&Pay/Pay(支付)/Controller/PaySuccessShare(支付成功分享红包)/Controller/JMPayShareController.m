@@ -40,6 +40,7 @@
 - (JMShareViewController *)shareView {
     if (!_shareView) {
         _shareView = [[JMShareViewController alloc] init];
+        _shareView.shareType = shareVCTypeGoods;
     }
     return _shareView;
 }

@@ -150,7 +150,7 @@
 }
 - (JMReloadEmptyDataView *)reload {
     if (!_reload) {
-        __block JMReloadEmptyDataView *reload = [[JMReloadEmptyDataView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) Title:@"您还没有粉丝哦..." DescTitle:@"分享您的精选给好友就会获得粉丝哦~" ButtonTitle:@"快去分享" Image:@"heart" ReloadBlcok:^{
+        __block JMReloadEmptyDataView *reload = [[JMReloadEmptyDataView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) Title:@"您还没有粉丝哦..." DescTitle:@"分享您的精选给好友就会获得粉丝哦~" ButtonTitle:@"快去分享" Image:@"data_empty" ReloadBlcok:^{
             [self.navigationController popViewControllerAnimated:YES];
         }];
         _reload = reload;

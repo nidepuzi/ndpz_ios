@@ -10,4 +10,7 @@
 
 @interface CSAboutNDPZController : UIViewController
 
+@property (nonatomic, copy) NSString *navigationTitleString;
+
+
 @end

@@ -18,7 +18,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    [self createNavigationBarWithTitle:@"关于你的铺子" selecotr:@selector(backClick)];
+    [self createNavigationBarWithTitle:self.navigationTitleString selecotr:@selector(backClick)];
     
     
     UIImageView *maskImageView = [UIImageView new];
@@ -45,7 +45,7 @@
     UILabel *goongsiLabel = [UILabel new];
     goongsiLabel.font = CS_UIFontSize(10.);
     goongsiLabel.textColor = [UIColor buttonTitleColor];
-    goongsiLabel.text = @"上海但来网络科技有限公司";
+    goongsiLabel.text = @"上海但来电子商务有限公司";
     [self.view addSubview:goongsiLabel];
     
     UILabel *gongsiDescLabel = [UILabel new];

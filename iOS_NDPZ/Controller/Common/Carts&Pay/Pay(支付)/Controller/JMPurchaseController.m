@@ -763,10 +763,6 @@ static BOOL isAgreeTerms = YES;
             isAgreeTerms = NO;
         }
     }else if (button.tag == 104) {
-        if (!self.purchaseHeaderView.saveIdcardSuccess) {
-            [MBProgressHUD showWarning:@"请填写身份证号"];
-            return;
-        }
         if (_cartsInfoLevel > 2) {
             if (self.purchaseHeaderView.zhengImage == nil || self.purchaseHeaderView.fanImage == nil) {
                 [MBProgressHUD showWarning:@"请上传身份证照片"];
@@ -776,6 +772,10 @@ static BOOL isAgreeTerms = YES;
         button.enabled = NO;
         [self performSelector:@selector(changeButtonStatus:) withObject:button afterDelay:0.5f];
         if (_cartsInfoLevel > _addressInfoLevel) {
+            if (!self.purchaseHeaderView.saveIdcardSuccess) {
+                [MBProgressHUD showWarning:@"请填写身份证号"];
+                return;
+            }
             [self userNotIdCardNumberMessage];
             return ;
         }
@@ -1014,6 +1014,7 @@ static BOOL isAgreeTerms = YES;
         [MBProgressHUD hideHUD];
         //        [SVProgressHUD showErrorWithStatus:@"支付请求失败,请稍后重试!"];
         [MBProgressHUD showError:@"支付请求失败,请稍后重试!"];
+        self.purchaseFooterView.goPayButton.userInteractionEnabled = YES;
     } Progress:^(float progress) {
         
     }];

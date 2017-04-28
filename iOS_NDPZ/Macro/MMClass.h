@@ -63,6 +63,8 @@
 UIKIT_EXTERN NSString * Root_URL;
 UIKIT_EXTERN NSInteger  const kAppVisitoryDay;
 UIKIT_EXTERN CGFloat    const kAppTabBarHeight;
+UIKIT_EXTERN CGFloat    const kAppShareViewHeight;
+UIKIT_EXTERN CGFloat    const kAppShareEarningViewHeight;
 UIKIT_EXTERN NSInteger  const kAPPshopCartType;
 
 @protocol MenuVCPushSideDelegate <NSObject>

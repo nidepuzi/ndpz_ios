@@ -227,7 +227,7 @@ static NSString *JMAccountCellIdentifier = @"JMAccountCellIdentifier";
 }
 - (JMReloadEmptyDataView *)reload {
     if (!_reload) {
-        __block JMReloadEmptyDataView *reload = [[JMReloadEmptyDataView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) Title:@"你的钱包空空如也" DescTitle:@"" ButtonTitle:@"快去逛逛" Image:@"wallet" ReloadBlcok:^{
+        __block JMReloadEmptyDataView *reload = [[JMReloadEmptyDataView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) Title:@"你的钱包空空如也" DescTitle:@"" ButtonTitle:@"快去逛逛" Image:@"data_empty" ReloadBlcok:^{
             self.isPopToRootView = YES;
             [self.navigationController popToRootViewControllerAnimated:YES];
 //            [JMNotificationCenter postNotificationName:@"kuaiquguangguangButtonClick" object:nil];

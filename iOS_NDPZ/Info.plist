@@ -15,7 +15,7 @@
 	<key>CFBundleIcons~ipad</key>
 	<dict/>
 	<key>CFBundleIdentifier</key>
-	<string>com.ndpz.danlai</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -32,7 +32,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>so.xiaolu.m.xiaolumeimei</string>
+			<string>com.danlai.nidepuzi</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.jimei.xlmm</string>
@@ -44,7 +44,7 @@
 			<key>CFBundleURLIconFile</key>
 			<string>logo</string>
 			<key>CFBundleURLName</key>
-			<string>so.xiaolu.m.xiaolumeimei</string>
+			<string>com.danlai.nidepuzi</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>wxa6e8010fa0b31eb3</string>
@@ -56,10 +56,10 @@
 			<key>CFBundleURLIconFile</key>
 			<string>logo</string>
 			<key>CFBundleURLName</key>
-			<string>so.xiaolu.m.xiaolumeimei</string>
+			<string>com.danlai.nidepuzi</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>QQ41dd19a6</string>
+				<string>wb2475629754</string>
 			</array>
 		</dict>
 		<dict>
@@ -68,10 +68,10 @@
 			<key>CFBundleURLIconFile</key>
 			<string>logo</string>
 			<key>CFBundleURLName</key>
-			<string>so.xiaolu.m.xiaolumeimei</string>
+			<string>com.danlai.nidepuzi</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>wb2475629754</string>
+				<string>QQ41dd19a6</string>
 			</array>
 		</dict>
 	</array>
@@ -298,6 +298,8 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIRequiresFullScreen</key>
+	<false/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

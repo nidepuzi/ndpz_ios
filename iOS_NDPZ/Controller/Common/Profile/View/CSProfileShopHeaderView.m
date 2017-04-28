@@ -47,7 +47,7 @@
     self.iconImage = [UIImageView new];
     self.iconImage.backgroundColor = [UIColor whiteColor];
     self.iconImage.layer.cornerRadius = 30;
-    self.iconImage.layer.borderColor = [UIColor buttonEnabledBackgroundColor].CGColor;
+    self.iconImage.layer.borderColor = [UIColor whiteColor].CGColor;
     self.iconImage.layer.masksToBounds = YES;
     self.iconImage.layer.borderWidth = 1;
     [headerIconButton addSubview:self.iconImage];
@@ -154,7 +154,13 @@
 }
 - (void)setUserInfoDic:(NSDictionary *)userInfoDic {
     _userInfoDic = userInfoDic;
-    [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[userInfoDic objectForKey:@"thumbnail"]] placeholderImage:[UIImage imageNamed:@"zhanwei"]];
+    if (userInfoDic.count == 0) {
+        [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[userInfoDic objectForKey:@"thumbnail"]] placeholderImage:[UIImage imageNamed:@"icon_placeholder"]];
+        self.userNameLabel.text = @"";
+        self.userShopDescLabel.text = @"";
+        return;
+    }
+    [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[userInfoDic objectForKey:@"thumbnail"]] placeholderImage:[UIImage imageNamed:@"icon_placeholder"]];
     NSString *nickName = [userInfoDic objectForKey:@"nick"];
     if (nickName.length > 0 || [nickName class] != [NSNull null]) {
         self.userNameLabel.text = [userInfoDic objectForKey:@"nick"];

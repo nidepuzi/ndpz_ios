@@ -218,7 +218,7 @@ static NSString * JMFineCounpContentControllerIdentifier = @"JMFineCounpContentC
 }
 - (JMReloadEmptyDataView *)reload {
     if (!_reload) {
-        __block JMReloadEmptyDataView *reload = [[JMReloadEmptyDataView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) Title:@"暂时没有商品哦~" DescTitle:@"" ButtonTitle:@"" Image:@"emptyGoods" ReloadBlcok:^{
+        __block JMReloadEmptyDataView *reload = [[JMReloadEmptyDataView alloc] initWithFrame:CGRectMake(0, 100, 0, 0) Title:@"暂时没有商品哦~" DescTitle:@"" ButtonTitle:@"" Image:@"data_empty" ReloadBlcok:^{
 //            [self.navigationController popViewControllerAnimated:YES];
         }];
         _reload = reload;

@@ -28,6 +28,7 @@
 }
 
 + (void)showView:(UIView *)popupView overlayView:(UIView *)overlayView {
+    
     popupView.center = CGPointMake(overlayView.center.x, -popupView.bounds.size.height/2);
     
     popupView.transform = CGAffineTransformMakeRotation(-M_1_PI / 2);
@@ -40,7 +41,7 @@
 
 + (void)dismissView:(UIView *)popupView overlayView:(UIView *)overlayView {
     [UIView animateWithDuration:0.35f delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-        overlayView.alpha = 0.0;
+//        overlayView.alpha = 0.0;
         popupView.center = CGPointMake(overlayView.center.x, overlayView.bounds.size.height+popupView.bounds.size.height);
         popupView.transform = CGAffineTransformMakeRotation(M_1_PI / 1.5);
     } completion:^(BOOL finished) {

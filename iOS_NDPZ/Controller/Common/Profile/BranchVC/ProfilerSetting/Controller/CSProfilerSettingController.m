@@ -10,6 +10,9 @@
 #import "CSProfilerSettingCell.h"
 #import "CSDevice.h"
 #import "CSAboutNDPZController.h"
+#import "CSPersonalInfoController.h"
+#import "CSAccountSecurityController.h"
+#import "CSOnlineTestController.h"
 
 
 @interface CSProfilerSettingController () <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate> {
@@ -88,7 +91,13 @@
     NSInteger sectionIndex = indexPath.section;
     NSInteger rowIndex = indexPath.row;
     if (sectionIndex == 0) {
-        
+        if (rowIndex == 0) {
+            CSPersonalInfoController *vc = [[CSPersonalInfoController alloc] init];
+            [self.navigationController pushViewController:vc animated:YES];
+        }else {
+            CSAccountSecurityController *vc = [[CSAccountSecurityController alloc] init];
+            [self.navigationController pushViewController:vc animated:YES];
+        }
     }else if (sectionIndex == 1) {
         if (rowIndex == 0) {
             UIAlertView *alterView = [[UIAlertView alloc] initWithTitle:nil message:@"确定要清空缓存吗？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
@@ -96,9 +105,16 @@
             [alterView show];
         }
     }else if (sectionIndex == 2) {
-        if (rowIndex == 1) {
-            CSAboutNDPZController *aboutVC = [[CSAboutNDPZController alloc] init];
-            [self.navigationController pushViewController:aboutVC animated:YES];
+        if (rowIndex == 1 || rowIndex == 3) {
+            NSString *titleString = rowIndex == 1 ? @"关于你的铺子" : @"当前版本";
+            CSAboutNDPZController *vc = [[CSAboutNDPZController alloc] init];
+            vc.navigationTitleString = titleString;
+            [self.navigationController pushViewController:vc animated:YES];
+        }else if (rowIndex == 2 || rowIndex == 0) {
+            NSString *titleString = rowIndex == 0 ? @"店主服务" : @"在线测试";
+            CSOnlineTestController *vc = [[CSOnlineTestController alloc] init];
+            vc.navigationTitleString = titleString;
+            [self.navigationController pushViewController:vc animated:YES];
         }
     
     }else { }

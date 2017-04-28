@@ -165,9 +165,9 @@
     self.registeredButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.bottomView addSubview:self.registeredButton];
     //设置按钮文字的下划线
-    NSMutableAttributedString *muTitle = [[NSMutableAttributedString alloc] initWithString:@"如何注册成为小鹿妈妈"];
+    NSMutableAttributedString *muTitle = [[NSMutableAttributedString alloc] initWithString:@"如何注册?"];
     NSRange titleRange2 = {0,[muTitle length]};
-    [self.registeredButton setTitle:@"如何注册成为小鹿妈妈" forState:UIControlStateNormal];
+    [self.registeredButton setTitle:@"如何注册?" forState:UIControlStateNormal];
     [muTitle addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInteger:NSUnderlineStyleSingle] range:titleRange2];
     [self.registeredButton setAttributedTitle:muTitle forState:UIControlStateNormal];
     [self.registeredButton.titleLabel setFont:[UIFont systemFontOfSize:13.]];
@@ -422,7 +422,7 @@
         make.height.mas_equalTo(@43);
     }];
     
-    CGFloat registW = [@"如何注册成为小鹿妈妈" widthWithHeight:20. andFont:13.].width + 20;
+    CGFloat registW = [@"如何注册?" widthWithHeight:20. andFont:13.].width + 20;
     [self.registeredButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(weakSelf.loginBtn.mas_bottom).offset(10);
         make.centerX.equalTo(weakSelf.loginBtn.mas_centerX);

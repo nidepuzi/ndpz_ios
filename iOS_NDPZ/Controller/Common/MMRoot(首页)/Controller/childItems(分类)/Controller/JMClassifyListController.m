@@ -236,7 +236,7 @@ static NSString * cellId = @"JMClassifyListController";
         self.emptyTitle = @"查看其它分类";
     }
     if (!_reload) {
-        __block JMReloadEmptyDataView *reload = [[JMReloadEmptyDataView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) Title:@"暂时没有商品哦~" DescTitle:@"" ButtonTitle:self.emptyTitle Image:@"emptyGoods" ReloadBlcok:^{
+        __block JMReloadEmptyDataView *reload = [[JMReloadEmptyDataView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) Title:@"暂时没有商品哦~" DescTitle:@"" ButtonTitle:self.emptyTitle Image:@"data_empty" ReloadBlcok:^{
             [self.navigationController popViewControllerAnimated:YES];
         }];
         _reload = reload;

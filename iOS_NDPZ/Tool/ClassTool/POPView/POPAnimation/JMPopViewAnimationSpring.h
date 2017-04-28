@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface JMPopViewAnimationSpring : UIView
+@interface JMPopViewAnimationSpring : UIView <CAAnimationDelegate>
 
 + (void)showView:(UIView *)popupView overlayView:(UIView *)overlayView;
 

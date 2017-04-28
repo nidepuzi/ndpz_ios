@@ -161,6 +161,13 @@
     [self loadAddressInfo];                            // 获得地址信息请求
     self.session = [self backgroundSession];           // 后台下载...
     [[JMGlobal global] showWaitLoadingInView:self.view];
+    
+//    UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+//    UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc]initWithEffect:blurEffect];
+//    blurEffectView.frame = self.view.bounds;
+//    [JMKeyWindow addSubview:blurEffectView];
+    
+    
 }
 #pragma mark 数据请求处理
 - (void)loadCatrsNumData {

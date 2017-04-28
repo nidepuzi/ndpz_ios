@@ -33,6 +33,7 @@
 - (JMShareViewController *)goodsShareView {
     if (!_goodsShareView) {
         _goodsShareView = [[JMShareViewController alloc] init];
+        _goodsShareView.shareType = shareVCTypeGoods;
     }
     return _goodsShareView;
 }
@@ -76,7 +77,7 @@
 //        self.goodsShareView.isShowEarningValue = YES;
         self.goodsShareView.model = shareModel;
         [MBProgressHUD hideHUD];
-        [self popShareView:340];
+        [self popShareView:kAppShareEarningViewHeight];
     } WithFail:^(NSError *error) {
         [MBProgressHUD showError:@"分享失败"];
     } Progress:^(float progress) {
@@ -95,7 +96,7 @@
 //        self.goodsShareView.isShowEarningValue = NO;
         self.goodsShareView.model = shareModel;
         [MBProgressHUD hideHUD];
-        [self popShareView:240];
+        [self popShareView:kAppShareViewHeight];
     } WithFail:^(NSError *error) {
         [MBProgressHUD showError:@"分享失败"];
     } Progress:^(float progress) {

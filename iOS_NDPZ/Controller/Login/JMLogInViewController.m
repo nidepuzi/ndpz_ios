@@ -24,15 +24,15 @@
 
 @property (nonatomic,strong) UIView *bottomView;
 
-@property (nonatomic,strong) JMSelecterButton *wechatBtn;
+@property (nonatomic,strong) UIButton *wechatBtn;
 
 @property (nonatomic,strong) UIImageView *wexImage;
 
 @property (nonatomic,strong) UILabel *wexTitleLabel;
 
-@property (nonatomic,strong) JMSelecterButton *phoneNumBtn;
+@property (nonatomic,strong) UIButton *phoneNumBtn;
 
-@property (nonatomic,strong) JMSelecterButton *captchaBtn;
+@property (nonatomic,strong) UIButton *captchaBtn;
 
 @property (nonatomic,strong) UIButton *registerBtn;
 
@@ -74,7 +74,6 @@
     [JMNotificationCenter addObserver:self selector: @selector(WeChatLoginNoti:) name:@"WeChatLogin" object:nil];
     
     [self initUI];
-    [self initAutolayout];
     [self isWechatInstall];
     
 }
@@ -89,19 +88,23 @@
     }
 }
 - (void)initUI {
-    UIImageView *headView = [[UIImageView alloc] init];
+    UIImageView *headView = [[UIImageView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:headView];
-    self.headView = headView;
-    headView.image = [UIImage imageNamed:@"iPhone6"];
-    self.headView.contentMode = UIViewContentModeScaleAspectFill;
+    headView.image = [UIImage imageNamed:@"login_maskImage"];
+    headView.contentMode = UIViewContentModeScaleAspectFill;
     headView.userInteractionEnabled = YES;
-    self.headView.clipsToBounds = YES;
-
+    headView.clipsToBounds = YES;
+    self.headView = headView;
+    
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.headView addSubview:backButton];
-    [backButton setImage:[UIImage imageNamed:@"goodsDetailBackColorImage"] forState:UIControlStateNormal];
-    [backButton setImage:[UIImage imageNamed:@"goodsDetailBackColorImage"] forState:UIControlStateHighlighted];
+    [backButton setTitle:@"X" forState:UIControlStateNormal];
+    [backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     backButton.layer.cornerRadius = 18.;
+    backButton.layer.masksToBounds = YES;
+    backButton.backgroundColor = [UIColor blackColor];
+    backButton.alpha = 0.7;
+    backButton.titleLabel.font = CS_UIFontSize(18.);
     [backButton addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
     self.backButton = backButton;
 //    if (self.navigationController.viewControllers.count == 1) {
@@ -109,37 +112,114 @@
 //    }else {
 //        self.backButton.hidden = NO;
 //    }
-
-    UIView *bottomView = [[UIView alloc] init];
-    [self.view addSubview:bottomView];
-    self.bottomView = bottomView;
-    bottomView.backgroundColor = [UIColor colorWithRed:243/255. green:243/255. blue:244/255. alpha:1.];
     
-    //========微信登录按钮
-    JMSelecterButton *wechatBtn = [JMSelecterButton buttonWithType:UIButtonTypeCustom];
-    [self.bottomView addSubview:wechatBtn];
-    self.wechatBtn = wechatBtn;
-    [wechatBtn setAdjustsImageWhenHighlighted:NO];
-    [wechatBtn addTarget:self action:@selector(wechatBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    [wechatBtn setSureBackgroundColor:[UIColor wechatBackColor] CornerRadius:20.];
-    [wechatBtn setImage:[UIImage imageNamed:@"wexImage_wither"] forState:UIControlStateNormal];
-    [wechatBtn setTitle:@"微信注册登录" forState:UIControlStateNormal];
-    wechatBtn.titleLabel.font = [UIFont systemFontOfSize:16.];
-    [wechatBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    UIButton *phoneLoginButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.headView addSubview:phoneLoginButton];
+    [phoneLoginButton setImage:[UIImage imageNamed:@"login_phoneImage"] forState:UIControlStateNormal];
+    [phoneLoginButton setTitle:@"手机登录" forState:UIControlStateNormal];
+    phoneLoginButton.titleLabel.font = CS_UIFontSize(14.);
+    [phoneLoginButton setTitleColor:[UIColor dingfanxiangqingColor] forState:UIControlStateNormal];
+    phoneLoginButton.layer.cornerRadius = 3.;
+    phoneLoginButton.layer.masksToBounds = YES;
+    phoneLoginButton.layer.borderColor = [UIColor titleDarkGrayColor].CGColor;
+    phoneLoginButton.layer.borderWidth = 1.f;
+    phoneLoginButton.imageEdgeInsets = UIEdgeInsetsMake(0, -8, 0, 0);
+    phoneLoginButton.titleEdgeInsets = UIEdgeInsetsMake(0, 8, 0, 0);
     
-    // ===== 手机号登录按钮
-    JMSelecterButton *phoneNumBtn = [JMSelecterButton buttonWithType:UIButtonTypeCustom];
-    [self.bottomView addSubview:phoneNumBtn];
-    self.phoneNumBtn = phoneNumBtn;
-    [phoneNumBtn addTarget:self action:@selector(jumpToPhoneLoginVC:) forControlEvents:UIControlEventTouchUpInside];
-    [phoneNumBtn setSelecterBorderColor:[UIColor buttonEmptyBorderColor] TitleColor:[UIColor buttonEnabledBackgroundColor] Title:@"手机登录" TitleFont:15. CornerRadius:20.];
+    UIButton *wechatLoginButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.headView addSubview:wechatLoginButton];
+    [wechatLoginButton setImage:[UIImage imageNamed:@"login_wechatImage"] forState:UIControlStateNormal];
+    [wechatLoginButton setTitle:@"微信登录" forState:UIControlStateNormal];
+    wechatLoginButton.titleLabel.font = CS_UIFontSize(14.);
+    [wechatLoginButton setTitleColor:[UIColor dingfanxiangqingColor] forState:UIControlStateNormal];
+    wechatLoginButton.layer.cornerRadius = 3.;
+    wechatLoginButton.layer.masksToBounds = YES;
+    wechatLoginButton.layer.borderColor = [UIColor titleDarkGrayColor].CGColor;
+    wechatLoginButton.layer.borderWidth = 1.f;
+    wechatLoginButton.imageEdgeInsets = UIEdgeInsetsMake(0, -8, 0, 0);
+    wechatLoginButton.titleEdgeInsets = UIEdgeInsetsMake(0, 8, 0, 0);
     
-    // ==== 验证码登录按钮
-    JMSelecterButton *captchaBtn = [JMSelecterButton buttonWithType:UIButtonTypeCustom];
-    [self.bottomView addSubview:captchaBtn];
-    self.captchaBtn = captchaBtn;
-    [captchaBtn addTarget:self action:@selector(jumpToAuthcodeLoginVC:) forControlEvents:UIControlEventTouchUpInside];
-    [captchaBtn setSelecterBorderColor:[UIColor buttonEmptyBorderColor] TitleColor:[UIColor buttonEnabledBackgroundColor] Title:@"短信登录" TitleFont:15. CornerRadius:20.];
+    self.phoneNumBtn = phoneLoginButton;
+    self.wechatBtn = wechatLoginButton;
+    [phoneLoginButton addTarget:self action:@selector(jumpToAuthcodeLoginVC:) forControlEvents:UIControlEventTouchUpInside];
+    [wechatLoginButton addTarget:self action:@selector(wechatBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+//    UIView *bottomView = [[UIView alloc] init];
+//    [self.view addSubview:bottomView];
+//    self.bottomView = bottomView;
+//    bottomView.backgroundColor = [UIColor colorWithRed:243/255. green:243/255. blue:244/255. alpha:1.];
+//    
+//    //========微信登录按钮
+//    JMSelecterButton *wechatBtn = [JMSelecterButton buttonWithType:UIButtonTypeCustom];
+//    [self.bottomView addSubview:wechatBtn];
+//    self.wechatBtn = wechatBtn;
+//    [wechatBtn setAdjustsImageWhenHighlighted:NO];
+//    [wechatBtn addTarget:self action:@selector(wechatBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+//    [wechatBtn setSureBackgroundColor:[UIColor wechatBackColor] CornerRadius:20.];
+//    [wechatBtn setImage:[UIImage imageNamed:@"wexImage_wither"] forState:UIControlStateNormal];
+//    [wechatBtn setTitle:@"微信注册登录" forState:UIControlStateNormal];
+//    wechatBtn.titleLabel.font = [UIFont systemFontOfSize:16.];
+//    [wechatBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//    
+//    // ===== 手机号登录按钮
+//    JMSelecterButton *phoneNumBtn = [JMSelecterButton buttonWithType:UIButtonTypeCustom];
+//    [self.bottomView addSubview:phoneNumBtn];
+//    self.phoneNumBtn = phoneNumBtn;
+//    [phoneNumBtn addTarget:self action:@selector(jumpToPhoneLoginVC:) forControlEvents:UIControlEventTouchUpInside];
+//    [phoneNumBtn setSelecterBorderColor:[UIColor buttonEmptyBorderColor] TitleColor:[UIColor buttonEnabledBackgroundColor] Title:@"手机登录" TitleFont:15. CornerRadius:20.];
+//    
+//    // ==== 验证码登录按钮
+//    JMSelecterButton *captchaBtn = [JMSelecterButton buttonWithType:UIButtonTypeCustom];
+//    [self.bottomView addSubview:captchaBtn];
+//    self.captchaBtn = captchaBtn;
+//    [captchaBtn addTarget:self action:@selector(jumpToAuthcodeLoginVC:) forControlEvents:UIControlEventTouchUpInside];
+//    [captchaBtn setSelecterBorderColor:[UIColor buttonEmptyBorderColor] TitleColor:[UIColor buttonEnabledBackgroundColor] Title:@"短信登录" TitleFont:15. CornerRadius:20.];
+    //    CGFloat imageH = SCREENHEIGHT - 140 - 64;
+    //    CGFloat imageW = self.headView.image.size.width / self.headView.image.size.height * imageH;
+    
+    kWeakSelf
+    //    [self.headView mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(weakSelf.view).offset(64);
+    //        make.centerX.equalTo(weakSelf.view.mas_centerX);
+    //        make.width.mas_equalTo(imageW);
+    //        make.height.mas_equalTo(imageH);
+    //    }];
+    [self.backButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(weakSelf.headView).offset(15);
+        make.top.equalTo(weakSelf.headView).offset(30);
+        make.width.height.mas_equalTo(@(36));
+    }];
+    
+    //    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(weakSelf.headView.mas_bottom);
+    //        make.width.mas_equalTo(SCREENWIDTH);
+    //        make.left.equalTo(weakSelf.view);
+    //        make.height.mas_equalTo(140);
+    //    }];
+    
+    [self.phoneNumBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(weakSelf.wechatBtn.mas_top).offset(-20);
+        make.centerX.equalTo(weakSelf.headView.mas_centerX);
+        make.height.mas_equalTo(@40);
+        make.width.mas_equalTo(SCREENWIDTH - 40);
+    }];
+    
+    [self.wechatBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(weakSelf.headView).offset(-80);
+        make.centerX.equalTo(weakSelf.headView.mas_centerX);
+        make.height.mas_equalTo(@40);
+        make.width.mas_equalTo(SCREENWIDTH - 40);
+    }];
+    
+    
+    
+    
+    //    [self.captchaBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(weakSelf.phoneNumBtn);
+    //        make.right.equalTo(weakSelf.wechatBtn.mas_right);
+    //        make.left.equalTo(weakSelf.wechatBtn.mas_centerX).offset(25/2);
+    //        make.height.mas_equalTo(@40);
+    //    }];
     
 }
 - (void)phoneNumberLogin:(NSNotification *)notification{
@@ -270,9 +350,17 @@
         [JMUserDefaults setObject:kWeiXinLogin forKey:kLoginMethod];
         [JMUserDefaults synchronize];
         
-        [self dismissViewControllerAnimated:YES completion:nil];
-        [JMNotificationCenter postNotificationName:@"WeChatLoginSuccess" object:nil];
-        
+        if (!kIsBindPhone) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+            [JMNotificationCenter postNotificationName:@"WeChatLoginSuccess" object:nil];
+        }else {
+            NSDictionary *weChatInfo = [JMUserDefaults objectForKey:kWxLoginUserInfo];
+            JMVerificationCodeController *vc = [[JMVerificationCodeController alloc] init];
+            vc.verificationCodeType = SMSVerificationCodeWithBind;
+            vc.userInfo = weChatInfo;
+            vc.userLoginMethodWithWechat = YES;
+            [self.navigationController pushViewController:vc animated:YES];
+        }
         [MBProgressHUD hideHUD];
     } WithFail:^(NSError *error) {
         NSHTTPURLResponse *response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey];
@@ -349,54 +437,6 @@
     [alert show];
 }
 
-- (void)initAutolayout {
-    CGFloat imageH = SCREENHEIGHT - 140 - 64;
-    CGFloat imageW = self.headView.image.size.width / self.headView.image.size.height * imageH;
-    
-    kWeakSelf
-    [self.headView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.view).offset(64);
-        make.centerX.equalTo(weakSelf.view.mas_centerX);
-        make.width.mas_equalTo(imageW);
-        make.height.mas_equalTo(imageH);
-    }];
-    [self.backButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(weakSelf.headView).offset(10);
-        make.top.equalTo(weakSelf.headView).offset(30);
-        make.width.height.mas_equalTo(@(36));
-    }];
-    
-    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.headView.mas_bottom);
-        make.width.mas_equalTo(SCREENWIDTH);
-        make.left.equalTo(weakSelf.view);
-        make.height.mas_equalTo(140);
-    }];
-    
-    [self.wechatBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.headView.mas_bottom).offset(20);
-        make.centerX.equalTo(weakSelf.bottomView.mas_centerX);
-        make.height.mas_equalTo(@40);
-        make.width.mas_equalTo(SCREENWIDTH - 30);
-    }];
-    
-    
-    [self.phoneNumBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.wechatBtn.mas_bottom).offset(15);
-        make.left.equalTo(weakSelf.wechatBtn.mas_left);
-        make.right.equalTo(weakSelf.wechatBtn.mas_centerX).offset(-25/2);
-        make.height.mas_equalTo(@40);
-    }];
-    
-    [self.captchaBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.phoneNumBtn);
-        make.right.equalTo(weakSelf.wechatBtn.mas_right);
-        make.left.equalTo(weakSelf.wechatBtn.mas_centerX).offset(25/2);
-        make.height.mas_equalTo(@40);
-    }];
-    
-    
-}
 - (void)backApointInterface {
     [MBProgressHUD hideHUD];
     NSInteger count = 0;

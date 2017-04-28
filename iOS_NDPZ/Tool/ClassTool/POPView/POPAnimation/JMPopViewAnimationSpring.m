@@ -11,9 +11,9 @@
 @implementation JMPopViewAnimationSpring
 
 + (void)showView:(UIView *)popupView overlayView:(UIView *)overlayView {
-    popupView.center = CGPointMake(overlayView.center.x, overlayView.center.y);
     
-    overlayView.alpha = 0.3;
+    popupView.center = CGPointMake(overlayView.center.x, overlayView.center.y);
+//    overlayView.alpha = 0.3;
     CAKeyframeAnimation *popAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
     popAnimation.duration = 0.4;
     popAnimation.values = @[[NSValue valueWithCATransform3D:CATransform3DMakeScale(0.01f, 0.01f, 1.0f)],
@@ -30,7 +30,7 @@
 + (void)dismissView:(UIView *)popupView overlayView:(UIView *)overlayView {
     
     [UIView animateWithDuration:0.4 animations:^{
-        overlayView.alpha = 0;
+//        overlayView.alpha = 0;
     }];
     
     CAKeyframeAnimation *hideAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];

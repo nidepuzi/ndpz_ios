@@ -39,6 +39,7 @@
 - (JMShareViewController*)shareViewContro {
     if (!_shareViewContro) {
         _shareViewContro = [[JMShareViewController alloc] init];
+        _shareViewContro.shareType = shareVCTypeGoods;
     }
     return _shareViewContro;
 }
@@ -125,7 +126,7 @@
 - (void)sharedMethod{
     NSLog(@"分享");
     [MobClick event:@"MaMaShop_share"];
-    [[JMGlobal global] showpopBoxType:popViewTypeShare Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, 240) ViewController:self.shareViewContro WithBlock:^(UIView *maskView) {
+    [[JMGlobal global] showpopBoxType:popViewTypeShare Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, kAppShareViewHeight) ViewController:self.shareViewContro WithBlock:^(UIView *maskView) {
     }];
     self.shareViewContro.blcok = ^(UIButton *button) {
         [MobClick event:@"WebViewController_shareFail_cancel"];
