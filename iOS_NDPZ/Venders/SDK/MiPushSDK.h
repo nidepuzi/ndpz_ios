@@ -20,7 +20,7 @@
  * MiPushSDK的所有请求的为异步操作, 用户需监听此方法.
  *
  * @param
- *     selector: 请求的方法
+ *     selector 请求的方法
  *     data: 返回结果字典
  */
 - (void)miPushRequestSuccWithSelector:(NSString *)selector data:(NSDictionary *)data;
@@ -31,7 +31,7 @@
  * 启用长连接后, 当收到消息是就会回调此方法
  *
  * @param
- *     type: 消息类型
+ *     data 消息类型
  *     data: 返回结果字典, 跟apns的消息格式一样
  */
 - (void)miPushReceiveNotification:(NSDictionary*)data;
@@ -43,7 +43,7 @@
 /**
  * 客户端注册设备
  * @param 
- *      delegate: 回调函数
+ *      delegate 回调函数
  *      type: apns推送类型. (Badge, Alert, Sound)
  *      connect: 是否启动长连接, 它跟APNSs是不同的通道(不管是否启动系统推送, app在前台都可以收到在线或离线消息)
  */
@@ -60,12 +60,14 @@
 /**
  * 绑定 PushDeviceToken
  *
- * NOTE: 有时Apple会重新分配token, 所以为保证消息可达,
+ * NOTE: 有时Apple会重新分配token, 所以为保证消息可达
+ 
+ ,
  * 必须在系统application:didRegisterForRemoteNotificationsWithDeviceToken:回调中,
  * 重复调用此方法. SDK内部会处理是否重新上传服务器.
  *
  * @param 
- *     deviceToken: AppDelegate中,PUSH注册成功后,
+ *     deviceToken AppDelegate中,PUSH注册成功后,
  *                  系统回调didRegisterForRemoteNotificationsWithDeviceToken
  */
 + (void)bindDeviceToken:(NSData *)deviceToken;
@@ -79,7 +81,7 @@
  * 客户端设置别名
  *
  * @param
- *     alias: 别名 (length:128)
+ *     alias 别名 (length:128)
  */
 + (void)setAlias:(NSString *)alias;
 
@@ -87,7 +89,7 @@
  * 客户端取消别名
  *
  * @param
- *     alias: 别名 (length:128)
+ *     alias 别名 (length:128)
  */
 + (void)unsetAlias:(NSString *)alias;
 
@@ -97,7 +99,7 @@
  * 多设备设置同一个帐号, 发送消息时多设备可以同时收到
  *
  * @param
- *     account: 帐号 (length:128)
+ *     account 帐号 (length:128)
  */
 + (void)setAccount:(NSString *)account;
 
@@ -105,7 +107,7 @@
  * 客户端取消帐号
  *
  * @param
- *     account: 帐号 (length:128)
+ *     account 帐号 (length:128)
  */
 + (void)unsetAccount:(NSString *)account;
 
@@ -115,7 +117,7 @@
  * 支持同时设置多个topic, 中间使用","分隔
  *
  * @param
- *     subscribe: 主题类型描述
+ *     topics 主题类型描述
  */
 + (void)subscribe:(NSString *)topics;
 
@@ -124,7 +126,7 @@
  * 支持同时设置多个topic, 中间使用","分隔
  *
  * @param
- *     subscribe: 主题类型描述
+ * topics 主题类型描述
  */
 + (void)unsubscribe:(NSString *)topics;
 
@@ -134,7 +136,7 @@
  * 如果, 你想使用服务器帮你统计你app的点击率请自行调用此方法
  * 方法放到:application:didReceiveRemoteNotification:回调中.
  * @param 
- *      messageId:Payload里面对应的miid参数
+ * messageId
  */
 + (void)openAppNotify:(NSString *)messageId;
 

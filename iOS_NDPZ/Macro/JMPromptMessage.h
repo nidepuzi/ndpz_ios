@@ -19,7 +19,7 @@
 #define redPageShareNotEnough @"红包数量不足,分享失败。如有疑问,请咨询小鹿客服哦~!"
 #define orderDetailCancelOrder @"取消的产品可能会被人抢走哦~\n要取消吗？"
 #define orderDetailReturnMoney @"退款立即退到小鹿零钱账户，该退款可以用于重新购买商品或者提现。"
-#define orderDetailAlreadyOrder @"您的订单已经向工厂订货，暂不支持退款，请您耐心等待，在收货确认签收后申请退货，如有疑问请咨询小鹿美美公众号或客服4008235355。"
+#define orderDetailAlreadyOrder @"您的订单已经向工厂订货，暂不支持退款，请您耐心等待，在收货确认签收后申请退货，如有疑问请咨询你的铺子公众号或客服4008999999。"
 #define orderDetailModifyLogistics @"非服装类商品是由供应商直接发货，只能尽量满足您选择的快递公司，如需确认能否满足您的快递需求，请联系客服。"
 
 

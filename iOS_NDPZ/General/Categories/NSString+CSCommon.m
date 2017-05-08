@@ -242,6 +242,16 @@
     NSString *string1 = [string substringWithRange:NSMakeRange(5,11)];
     return string1;
 }
+/**
+ *  时间字符串去掉秒
+ *
+ *  @return 需要的时间字符串
+ */
++ (NSString *)jm_cutOutSec:(NSString *)str {
+    NSString *string = [NSString jm_deleteTimeWithT:str];
+    NSString *string1 = [string substringWithRange:NSMakeRange(0,16)];
+    return string1;
+}
 
 /**
  *  时间字符串去掉年月日与秒
@@ -266,6 +276,7 @@
     NSString *year = [str substringWithRange:NSMakeRange(0, 10)];
     return year;
 }
+
 
 /**
  *  获取N天前的日期

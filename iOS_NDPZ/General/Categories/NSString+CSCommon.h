@@ -130,6 +130,12 @@
  *  @return 需要的时间字符串
  */
 + (NSString *)jm_cutOutYearWihtSec:(NSString *)timeStr;
+/**
+ *  时间字符串去掉秒
+ *
+ *  @return 需要的时间字符串
+ */
++ (NSString *)jm_cutOutSec:(NSString *)str;
 
 /**
  *  时间字符串去掉年月日与秒
@@ -145,6 +151,7 @@
  *  @return 需要的时间字符串
  */
 + (NSString *)yearDeal:(NSString *)str;
+
 
 /**
  *  获取N天前的日期

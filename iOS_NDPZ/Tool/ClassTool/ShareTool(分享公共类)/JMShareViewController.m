@@ -18,6 +18,8 @@
 #import "JMRichTextTool.h"
 #import "JMPopViewAnimationSpring.h"
 #import "JMPopViewAnimationDrop.h"
+#import "CSPopAnimationViewController.h"
+#import "CSHomePageSharePopView.h"
 
 @interface JMShareViewController ()<JMShareButtonViewDelegate>
 
@@ -31,7 +33,8 @@
 @property (nonatomic, strong)NSDictionary *nativeShare;
 
 @property (nonatomic, strong) UIView *maskView;
-@property (nonatomic, strong) UIView *classPopView;
+@property (nonatomic, strong) CSHomePageSharePopView *popView;
+
 
 @end
 
@@ -52,66 +55,72 @@
     NSString *_titleUrlString;
     
 }
-- (UIView *)maskView {
-    if (!_maskView) {
-        _maskView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//- (UIView *)maskView {
+//    if (!_maskView) {
+//        _maskView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//        
+//        UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+//        UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc]initWithEffect:blurEffect];
+//        blurEffectView.frame = _maskView.bounds;
+//        [_maskView addSubview:blurEffectView];
+//        
+//        UIButton *saveImageBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+//        [_maskView addSubview:saveImageBtn];
+////        saveImageBtn.backgroundColor = [UIColor orangeColor];
+//        [saveImageBtn setTitle:@"保存图片到相册" forState:UIControlStateNormal];
+//        [saveImageBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//        saveImageBtn.titleLabel.font = CS_UIFontSize(14.);
+//        [saveImageBtn sizeToFit];
+//
+//        [saveImageBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+//            make.bottom.equalTo(_maskView).offset(-40);
+//            make.centerX.equalTo(_maskView.mas_centerX);
+////            make.width.mas_equalTo(@80);
+//            make.height.mas_equalTo(@40);
+//        }];
+//        [saveImageBtn addTarget:self action:@selector(saveImageClick) forControlEvents:UIControlEventTouchUpInside];
+//    }
+//    return _maskView;
+//}
+//- (UIView *)classPopView {
+//    if (!_classPopView) {
+//        _classPopView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//        _classPopView.layer.cornerRadius = 10.f;
+////        _classPopView.layer.masksToBounds = YES;
+//        UIImageView *imageV = [[UIImageView alloc] initWithFrame:CGRectMake(SCREENWIDTH * 0.1, SCREENHEIGHT * 0.1, SCREENWIDTH * 0.8, SCREENHEIGHT * 0.7)];
+//        imageV.image = [UIImage imageNamed:@"iPhone4S"];
+////        imageV.userInteractionEnabled = YES;
+//        imageV.contentMode = UIViewContentModeScaleAspectFill;
+//        imageV.layer.cornerRadius = 10.f;
+//        imageV.clipsToBounds = YES;
+//        imageV.layer.masksToBounds = YES;
+//        [_classPopView addSubview:imageV];
+//        
+//        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+//        [_classPopView addSubview:button];
+//        [button setTitle:@"X" forState:UIControlStateNormal];
+//        [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//        button.titleLabel.font = CS_UIFontSize(12.);
+//        button.backgroundColor = [UIColor redColor];
+//        button.layer.cornerRadius = 10;
+//        button.layer.masksToBounds = YES;
+//        button.frame = CGRectMake(SCREENWIDTH * 0.9 - 10, SCREENHEIGHT * 0.1 - 10, 20, 20);
+////        button.cs_x = _classPopView.cs_max_X - 10;
+////        button.cs_y = _classPopView.cs_y + 10;
+////        button.cs_size = CGSizeMake(40, 40);
+//        [button addTarget:self action:@selector(canclePopView) forControlEvents:UIControlEventTouchUpInside];
+//        [button  bringSubviewToFront:_classPopView];
         
-        UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-        UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc]initWithEffect:blurEffect];
-        blurEffectView.frame = _maskView.bounds;
-        [_maskView addSubview:blurEffectView];
-        
-        UIButton *saveImageBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_maskView addSubview:saveImageBtn];
-//        saveImageBtn.backgroundColor = [UIColor orangeColor];
-        [saveImageBtn setTitle:@"保存图片到相册" forState:UIControlStateNormal];
-        [saveImageBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        saveImageBtn.titleLabel.font = CS_UIFontSize(14.);
-        [saveImageBtn sizeToFit];
-
-        [saveImageBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.bottom.equalTo(_maskView).offset(-40);
-            make.centerX.equalTo(_maskView.mas_centerX);
-//            make.width.mas_equalTo(@80);
-            make.height.mas_equalTo(@40);
-        }];
-        [saveImageBtn addTarget:self action:@selector(saveImageClick) forControlEvents:UIControlEventTouchUpInside];
+//    }
+//    return _classPopView;
+//}
+- (CSHomePageSharePopView *)popView {
+    if (_popView == nil) {
+        _popView = [CSHomePageSharePopView defaultPopView];
+        _popView.parentVC = self;
     }
-    return _maskView;
+    return _popView;
 }
-- (UIView *)classPopView {
-    if (!_classPopView) {
-        _classPopView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        _classPopView.layer.cornerRadius = 10.f;
-//        _classPopView.layer.masksToBounds = YES;
-        UIImageView *imageV = [[UIImageView alloc] initWithFrame:CGRectMake(SCREENWIDTH * 0.1, SCREENHEIGHT * 0.1, SCREENWIDTH * 0.8, SCREENHEIGHT * 0.7)];
-        imageV.image = [UIImage imageNamed:@"iPhone4S"];
-//        imageV.userInteractionEnabled = YES;
-        imageV.contentMode = UIViewContentModeScaleAspectFill;
-        imageV.layer.cornerRadius = 10.f;
-        imageV.clipsToBounds = YES;
-        imageV.layer.masksToBounds = YES;
-        [_classPopView addSubview:imageV];
-        
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_classPopView addSubview:button];
-        [button setTitle:@"X" forState:UIControlStateNormal];
-        [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        button.titleLabel.font = CS_UIFontSize(12.);
-        button.backgroundColor = [UIColor redColor];
-        button.layer.cornerRadius = 10;
-        button.layer.masksToBounds = YES;
-        button.frame = CGRectMake(SCREENWIDTH * 0.9 - 10, SCREENHEIGHT * 0.1 - 10, 20, 20);
-//        button.cs_x = _classPopView.cs_max_X - 10;
-//        button.cs_y = _classPopView.cs_y + 10;
-//        button.cs_size = CGSizeMake(40, 40);
-        [button addTarget:self action:@selector(canclePopView) forControlEvents:UIControlEventTouchUpInside];
-        [button  bringSubviewToFront:_classPopView];
-        
-    }
-    return _classPopView;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -415,33 +424,34 @@
     [JMPopView hide];
 
 }
-
 - (void)showClassPopVoew {
-    [JMKeyWindow addSubview:self.maskView];
-    [JMKeyWindow addSubview:self.classPopView];
-    [JMPopViewAnimationSpring showView:self.classPopView overlayView:self.maskView];
+//    [JMKeyWindow addSubview:self.maskView];
+//    [JMKeyWindow addSubview:self.classPopView];
+//    [JMPopViewAnimationSpring showView:self.classPopView overlayView:self.maskView];
+    [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] backgroundClickable:NO];
 }
-- (void)hideClassPopView {
-    [JMPopViewAnimationSpring dismissView:self.classPopView overlayView:self.maskView];
-}
--(void)canclePopView {
-    [self hideClassPopView];
-}
-- (void)saveImageClick { // 保存图片
-    UIImage *viewImage = [self createViewImage:self.classPopView];
-    UIImageWriteToSavedPhotosAlbum(viewImage, self, @selector(image:didFinishSavingWithError:contextInfo:), (__bridge void *)self);
-}
-- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
-    
-    NSLog(@"image = %@, error = %@, contextInfo = %@", image, error, contextInfo);
-}
-- (UIImage *)createViewImage:(UIView *)shareView {
-    UIGraphicsBeginImageContextWithOptions(shareView.bounds.size, NO, [UIScreen mainScreen].scale);
-    [shareView.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
-}
+//- (void)hideClassPopView {
+//    [JMPopViewAnimationSpring dismissView:self.classPopView overlayView:self.maskView];
+//}
+//-(void)canclePopView {
+//    [self hideClassPopView];
+//    [self cs_dismissPopViewWithAnimation:[CSPopViewAnimationSpring new]];
+//}
+//- (void)saveImageClick { // 保存图片
+//    UIImage *viewImage = [self createViewImage:self.popView];
+//    UIImageWriteToSavedPhotosAlbum(viewImage, self, @selector(image:didFinishSavingWithError:contextInfo:), (__bridge void *)self);
+//}
+//- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
+//    
+//    NSLog(@"image = %@, error = %@, contextInfo = %@", image, error, contextInfo);
+//}
+//- (UIImage *)createViewImage:(UIView *)shareView {
+//    UIGraphicsBeginImageContextWithOptions(shareView.bounds.size, NO, [UIScreen mainScreen].scale);
+//    [shareView.layer renderInContext:UIGraphicsGetCurrentContext()];
+//    UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+//    return image;
+//}
 
 
 //提示分享失败

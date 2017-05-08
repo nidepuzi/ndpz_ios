@@ -106,22 +106,22 @@
 }
 - (void)newFeature {
     //1.获取当前版本号
-    NSString *currentVersion = [NSBundle mainBundle].infoDictionary[@"CFBundleVersion"];
+//    NSString *currentVersion = [NSBundle mainBundle].infoDictionary[@"CFBundleVersion"];
     //2.获取上一次版本号
-    NSString *lastVersion = [[NSUserDefaults standardUserDefaults] objectForKey:@"version"];
-    if (![currentVersion isEqualToString:lastVersion]) { // 没有新的版本号
-        [[NSUserDefaults standardUserDefaults] setObject:currentVersion forKey:@"version"];
+//    NSString *lastVersion = [[NSUserDefaults standardUserDefaults] objectForKey:@"version"];
+//    if (![currentVersion isEqualToString:lastVersion]) { // 没有新的版本号
+//        [[NSUserDefaults standardUserDefaults] setObject:currentVersion forKey:@"version"];
         CSNewFeatureController *loginVC = [[CSNewFeatureController alloc] init];
         RootNavigationController *rootNav = [[RootNavigationController alloc] initWithRootViewController:loginVC];
         [XLMM_APP.window.rootViewController presentViewController:rootNav animated:YES completion:^{
         }];
-    }
+//    }
     
 }
 - (void)showNewFeatureView {
-    if (!isSureLogin) {
-        [[JMGlobal global] showLoginViewController];
-    }
+//    if (!isSureLogin) {
+//        [[JMGlobal global] showLoginViewController];
+//    }
 }
 - (void)lodaUserInfo {
     isSureLogin = YES;
@@ -155,6 +155,7 @@
 }
 #pragma mark ======== 程序开始启动 ========
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
     //注意!!!umeng必须要在udesk初始化之后，否则umeng crasklog会不生效，可能udesk自己捕获了一些crash信号处理
     [self udeskInit];
     [self umengTrackInit];

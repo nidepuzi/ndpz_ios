@@ -1,0 +1,127 @@
+{
+    "head": {
+        "code": "1000",
+        "ret_code": "0"
+    },
+    "body": {
+        "groups": [
+                   {
+                   "group_id": "35ea5621962baa0e2b3dca2d4",
+                   "group_name": "2017-05-01",
+                   "group_type": "1",
+                   "member_num": "3",
+                   "contacts": [
+                                {
+                                "id": "5848ead4d9e8d7b31172a285",
+                                "head_img": "default.png",
+                                "name": "订单金额",
+                                "describe": "09:19:23",
+                                "active_time": "66.00"
+                                },
+                                {
+                                "id": "a243e23848ea43fddfs347b1",
+                                "head_img": "default.png",
+                                "name": "订单金额",
+                                "describe": "09:16:23",
+                                "active_time": "66.00"
+                                },
+                                {
+                                "id": "fsdfre522a43fddfs337b1",
+                                "head_img": "default.png",
+                                "name": "订单金额",
+                                "describe": "09:12:23",
+                                "active_time": "66.00"
+                                }
+                                ]
+                   },
+                   {
+                   "group_id": "80adasdas092dee232b74ca232",
+                   "group_name": "2017-04-29",
+                   "group_type": "2",
+                   "member_num": "2",
+                   "contacts": [
+                                {
+                                "id": "e323e65842ea43fd3sde367e4",
+                                "head_img": "default.png",
+                                "name": "订单金额",
+                                "describe": "10:47:23",
+                                "active_time": "66.00"
+                                },
+                                {
+                                "id": "dwedwe3242cdw43fd3s3227e4",
+                                "head_img": "default.png",
+                                "name": "订单金额",
+                                "describe": "10:34:23",
+                                "active_time": "66.00"
+                                }
+                                ]
+                   },
+                   {
+                   "group_id": "dwe2357ec923e0e2b23a47",
+                   "group_name": "2017-04-28",
+                   "group_type": "2",
+                   "member_num": "1",
+                   "contacts": [
+                                {
+                                "id": "2dd4ddf65842dsd323d44fscsa21",
+                                "head_img": "default.png",
+                                "name": "订单金额",
+                                "describe": "09:56:23",
+                                "active_time": "66.00"
+                                }
+                                ]
+                   },
+                   {
+                   "group_id": "58ae5800963bee0e2b74ca48",
+                   "group_name": "2017-04-27",
+                   "group_type": "2",
+                   "member_num": "0",
+                   "contacts": [
+                                {
+                                "id": "2dd4ddf65842dsd323d44fscsa21",
+                                "head_img": "default.png",
+                                "name": "订单金额",
+                                "describe": "08:37:23",
+                                "active_time": "66.00"
+                                },
+                                {
+                                "id": "dwedwe3242cdw43fd3s3227e4",
+                                "head_img": "default.png",
+                                "name": "订单金额",
+                                "describe": "08:24:23",
+                                "active_time": "66.00"
+                                }
+                                ]
+                   },
+                   {
+                   "group_id": "fdsds3233463bee0e2eeweffw",
+                   "group_name": "2017-04-26",
+                   "group_type": "2",
+                   "member_num": "0",
+                   "contacts": [
+                                {
+                                "id": "2dd4ddf65842dsd323d44fscsa21",
+                                "head_img": "default.png",
+                                "name": "订单金额",
+                                "describe": "09:28:23",
+                                "active_time": "66.00"
+                                },
+                                {
+                                "id": "dwedwe3242cdw43fd3s3227e4",
+                                "head_img": "default.png",
+                                "name": "订单金额",
+                                "describe": "09:37:23",
+                                "active_time": "66.00"
+                                },
+                                {
+                                "id": "dwedwe3242cdw43fd3s3227e4",
+                                "head_img": "default.png",
+                                "name": "订单金额",
+                                "describe": "09:43:23",
+                                "active_time": "66.00"
+                                }
+                                ]
+                   }
+                   ]
+    }
+}

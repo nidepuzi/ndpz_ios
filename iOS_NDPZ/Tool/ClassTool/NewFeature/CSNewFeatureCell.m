@@ -39,22 +39,22 @@
 //}
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        UIImageView *imageV = [[UIImageView alloc] initWithFrame:self.bounds];
+        UIImageView *imageV = [[UIImageView alloc] initWithFrame:self.frame];
         imageV.contentMode = UIViewContentModeScaleAspectFill;
         imageV.clipsToBounds = YES;
         [self.contentView addSubview:imageV];
         self.imageView = imageV;
         
         UIButton *startBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        startBtn.backgroundColor = [UIColor buttonEnabledBackgroundColor];
-        [startBtn setTitle:@"开始体验" forState:UIControlStateNormal];
-        [startBtn setBackgroundImage:[UIImage imageNamed:@"new_feature_finish_button"] forState:UIControlStateNormal];
-        [startBtn setBackgroundImage:[UIImage imageNamed:@"new_feature_finish_button_highlighted"] forState:UIControlStateHighlighted];
-        [startBtn sizeToFit];
+//        startBtn.backgroundColor = [UIColor buttonEnabledBackgroundColor];
+//        [startBtn setTitle:@"开始体验" forState:UIControlStateNormal];
+//        [startBtn setBackgroundImage:[UIImage imageNamed:@"new_feature_finish_button"] forState:UIControlStateNormal];
+//        [startBtn setBackgroundImage:[UIImage imageNamed:@"new_feature_finish_button_highlighted"] forState:UIControlStateHighlighted];
+//        [startBtn sizeToFit];
         [startBtn addTarget:self action:@selector(start:) forControlEvents:UIControlEventTouchUpInside];
-        startBtn.titleLabel.font = CS_UIFontSize(14.);
-        startBtn.layer.cornerRadius = 20.;
-        startBtn.layer.masksToBounds = YES;
+//        startBtn.titleLabel.font = CS_UIFontSize(14.);
+//        startBtn.layer.cornerRadius = 20.;
+//        startBtn.layer.masksToBounds = YES;
         [self addSubview:startBtn];
         self.startButton = startBtn;
         
@@ -62,9 +62,9 @@
         
         [self.startButton mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(weakSelf.contentView.mas_centerX);
-            make.bottom.equalTo(weakSelf.contentView).offset(-80);
-            make.width.mas_equalTo(@(80));
-            make.height.mas_equalTo(@(40));
+            make.bottom.equalTo(weakSelf.contentView).offset(-60);
+            make.width.mas_equalTo(@(120));
+            make.height.mas_equalTo(@(60));
         }];
         
         

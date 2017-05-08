@@ -35,7 +35,7 @@
 
 - (UIImage *)placeholderImage {
     if (!_placeholderImage) {
-        _placeholderImage = [UIImage imageNamed:@"zhanwei"];
+        _placeholderImage = [UIImage imageNamed:@"icon_placeholderEmpty"];
     }
     return _placeholderImage;
 }

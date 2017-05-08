@@ -333,6 +333,7 @@ static NSString *userCustomerID;
     if ([NSString isStringEmpty:endTime]) {
         return 0;
     }
+//    endTime = @"2017-05-06 14:44:08";
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];  // 设置时间格式
     //    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"GMT"];

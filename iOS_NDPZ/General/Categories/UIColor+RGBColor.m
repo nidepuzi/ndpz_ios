@@ -123,7 +123,8 @@
 }
 
 + (UIColor *)dingfanxiangqingColor{
-    return [UIColor colorWithR:155 G:155 B:155 alpha:1];
+//    return [UIColor colorWithR:155 G:155 B:155 alpha:1];
+    return [UIColor colorWithHex:0x999999];
 }
 
 + (UIColor *)countLabelColor{
@@ -132,6 +133,7 @@
 
 + (UIColor *)buttonTitleColor{
     return [UIColor colorWithR:74 G:74 B:74 alpha:1];
+//    return [UIColor colorWithHex:0x999999];
 }
 
 + (UIColor *)timeLabelColor {

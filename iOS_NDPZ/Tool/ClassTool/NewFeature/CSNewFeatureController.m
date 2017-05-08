@@ -82,6 +82,13 @@ static NSString * const reuseIdentifier = @"CSNewFeatureCellIdentifier";
     control.center = CGPointMake(self.view.cs_w * 0.5, self.view.cs_h - 20);
     _control = control;
     [self.view addSubview:control];
+    
+    if (showIndex == 1) {
+        control.hidden = YES;
+    }
+    
+    
+    
 }
 
 #pragma mark - UIScrollView代理
