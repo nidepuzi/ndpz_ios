@@ -8,23 +8,40 @@
 
 #import "CSPerformanceManagerController.h"
 #import "CSAccountSecurityCell.h"
+#import "JMShareViewController.h"
+#include "JMShareModel.h"
+#import "JMOrderListController.h"
 
 @interface CSPerformanceManagerController () <UITableViewDelegate, UITableViewDataSource> {
     NSArray *dataArr;
 }
 @property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic,strong) JMShareViewController *shareView;
+@property (nonatomic, strong) JMShareModel *share_model;
 
 @end
 
 @implementation CSPerformanceManagerController
-
+- (JMShareModel*)share_model {
+    if (!_share_model) {
+        _share_model = [[JMShareModel alloc] init];
+    }
+    return _share_model;
+}
+- (JMShareViewController *)shareView {
+    if (!_shareView) {
+        _shareView = [[JMShareViewController alloc] init];
+        _shareView.shareType = shareVCTypeInvite;
+    }
+    return _shareView;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    [self createNavigationBarWithTitle:@"账户与安全" selecotr:@selector(backClick)];
-    dataArr = [self getData:nil];
+    [self createNavigationBarWithTitle:@"业绩管理" selecotr:@selector(backClick)];
+    dataArr = [self getData:self.profileInfo];
     [self createTableView];
-    
+    [self loadData];
     
 }
 - (void)createTableView {
@@ -77,9 +94,41 @@
         make.left.equalTo(iconImageV.mas_right).offset(10);
     }];
     
-    
-    
 }
+
+- (void)loadData {
+    NSString *string = [NSString stringWithFormat:@"%@/rest/v1/activitys/%@/get_share_params", Root_URL, @"8"];
+    [JMHTTPManager requestWithType:RequestTypeGET WithURLString:string WithParaments:nil WithSuccess:^(id responseObject) {
+        if (!responseObject) {
+            [MBProgressHUD hideHUDForView:self.view];
+            return;
+        }
+        [self resolveActivityShareParam:responseObject];
+    } WithFail:^(NSError *error) {
+        [MBProgressHUD hideHUDForView:self.view];
+    } Progress:^(float progress) {
+        
+    }];
+}
+- (void)resolveActivityShareParam:(NSDictionary *)dic {
+    self.share_model.share_type = [dic objectForKey:@"share_type"];
+    self.share_model.share_img = [dic objectForKey:@"share_icon"]; //图片
+    self.share_model.desc = [dic objectForKey:@"active_dec"]; // 文字详情
+    self.share_model.title = [dic objectForKey:@"title"]; //标题
+    self.share_model.share_link = [dic objectForKey:@"share_link"];
+    self.shareView.model = self.share_model;
+}
+
+
+- (void)inviteClick {
+    [[JMGlobal global] showpopBoxType:popViewTypeShare Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, kAppShareViewHeight) ViewController:self.shareView WithBlock:^(UIView *maskView) {
+    }];
+    self.shareView.blcok = ^(UIButton *button) {
+        [MobClick event:@"WebViewController_shareFail_cancel"];
+    };
+}
+
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return dataArr.count;
 }
@@ -118,8 +167,47 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
-
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSInteger index = indexPath.row;
+    switch (index) {
+        case 0: {
+            [self inviteClick];
+        }
+            
+            break;
+        case 1: {
+            [MBProgressHUD showMessage:@"暂无记录"];
+        }
+            
+            break;
+        case 2: {
+            
+        }
+            
+            break;
+        case 3: {
+            [self pushOrderIndexVC:0];
+        }
+            
+            break;
+        case 4: {
+            [self pushOrderIndexVC:0];
+        }
+            
+            break;
+            
+        default:
+            break;
+    }
+}
+- (void)pushOrderIndexVC:(NSInteger)index {
+    JMOrderListController *order = [[JMOrderListController alloc] init];
+    order.currentIndex = index;
+    order.ispopToView = YES;
+    [self.navigationController pushViewController:order animated:YES];
+}
 - (NSArray *)getData:(NSDictionary *)dic {
+    
     NSArray *arr = @[
                      @{
                          @"title":@"分享好礼",

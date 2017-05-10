@@ -255,7 +255,7 @@
     //confirm -- 创建成功显示图片
     UIImageView *successImage = [UIImageView new];
     [timeView addSubview:successImage];
-    successImage.image = [UIImage imageNamed:@"confirm"];
+    successImage.image = [UIImage imageNamed:@"success_Image"];
     
     [successImage mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.top.equalTo(timeView).offset(10);
@@ -303,7 +303,7 @@
 
     UIImageView *successImageTwo = [UIImageView new];
     [timeViewTwo addSubview:successImageTwo];
-    successImageTwo.image = [UIImage imageNamed:@"confirm"];
+    successImageTwo.image = [UIImage imageNamed:@"success_Image"];
     
     [successImageTwo mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.top.equalTo(timeViewTwo).offset(10);
@@ -401,7 +401,7 @@
     UIPasteboard *pab = [UIPasteboard generalPasteboard];
     [pab setString:self.logNumLabel.text];
     if (pab != nil) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"小鹿小贴士" message:@"亲爱的小鹿妈妈,现在运单号已经复制成功了哦~可以粘贴啦。" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"铺子小贴士" message:@"亲爱的铺子用户,现在运单号已经复制成功了哦~可以粘贴啦。" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alert show];
     }else {
         [MBProgressHUD showWarning:@"复制失败!"];
@@ -413,12 +413,10 @@
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     self.navigationController.navigationBarHidden = NO;
-    [MobClick beginLogPageView:@"QueryLogInfo"];
     
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [MobClick endLogPageView:@"QueryLogInfo"];
 }
 
 @end

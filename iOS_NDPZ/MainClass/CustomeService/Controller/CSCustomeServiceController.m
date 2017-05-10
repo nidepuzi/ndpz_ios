@@ -11,32 +11,52 @@
 #import "QYSDK.h"
 
 @interface CSCustomeServiceController ()
+@property (nonatomic, strong) QYSessionViewController *sessionViewController;
 
 @end
 
 @implementation CSCustomeServiceController
-
+- (QYSessionViewController *)sessionViewController {
+    if (_sessionViewController == nil) {
+        QYSource *source = [[QYSource alloc] init];
+        source.title =  @"你的铺子";
+        source.urlString = @"http://m.nidepuzi.com";
+        _sessionViewController = [[QYSDK sharedSDK] sessionViewController];
+        _sessionViewController.sessionTitle = @"你的铺子";
+        _sessionViewController.source = source;
+        //    sessionViewController.hidesBottomBarWhenPushed = NO;
+        
+        _sessionViewController.navigationItem.leftBarButtonItem =
+        [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain
+                                        target:self action:@selector(onBack:)];
+    }
+    return _sessionViewController;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self createNavigationBarWithTitle:@"客服" selecotr:nil];
-    [self setUserInfo];
     
-    UIButton *kefuButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.view addSubview:kefuButton];
-    [kefuButton setTitle:@"进入客服" forState:UIControlStateNormal];
-    kefuButton.backgroundColor = [UIColor buttonEnabledBackgroundColor];
-    kefuButton.frame = CGRectMake(SCREENWIDTH / 2 - 50, 200, 100, 50);
     
-    [kefuButton addTarget:self action:@selector(kefuButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+//    UIButton *kefuButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    [self.view addSubview:kefuButton];
+//    [kefuButton setTitle:@"进入客服" forState:UIControlStateNormal];
+//    kefuButton.backgroundColor = [UIColor buttonEnabledBackgroundColor];
+//    kefuButton.frame = CGRectMake(SCREENWIDTH / 2 - 50, 200, 100, 50);
+//    
+//    [kefuButton addTarget:self action:@selector(kefuButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     
     
 //    [[QYSDK sharedSDK] sessionViewController];
     
     
-    
-    
-    
 
+}
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+//    [self kefuButtonClick];
+    [self setUserInfo];
+    [self.navigationController pushViewController:self.sessionViewController animated:NO];
+    
 }
 // 个人信息请求
 - (void)setUserInfo{
@@ -135,28 +155,27 @@
 }
 
 
-- (void)waitButtonStatus:(UIButton *)button {
-    button.enabled = YES;
-}
-- (void)kefuButtonClick:(UIButton *)button {
-    button.enabled = NO;
-    [self performSelector:@selector(waitButtonStatus:) withObject:button afterDelay:1.];
+//- (void)waitButtonStatus:(UIButton *)button {
+//    button.enabled = YES;
+//}
+- (void)kefuButtonClick {
+//    button.enabled = NO;
+//    [self performSelector:@selector(waitButtonStatus:) withObject:button afterDelay:1.];
 //    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
 //    [chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self];
     
-    QYSource *source = [[QYSource alloc] init];
-    source.title =  @"你的铺子";
-    source.urlString = @"http://m.nidepuzi.com";
-    QYSessionViewController *sessionViewController = [[QYSDK sharedSDK] sessionViewController];
-    sessionViewController.sessionTitle = @"你的铺子";
-    sessionViewController.source = source;
-    sessionViewController.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:sessionViewController animated:YES];
     
+    [self.navigationController pushViewController:self.sessionViewController animated:NO];
     
+
+    
+}
+- (void)onBack:(id)sender {
+    [JMNotificationCenter postNotificationName:@"kuaiquguangguangButtonClick" object:nil];
 }
 - (void)backClick {
     [self.navigationController popViewControllerAnimated:YES];
+    
 }
 
 @end

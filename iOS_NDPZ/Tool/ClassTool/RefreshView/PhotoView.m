@@ -46,7 +46,7 @@
 - (UIPageControl *)pageControl {
     if (!_pageControl) {
         self.pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(SWIDTH * 0.5 - 60, SHEIGHT - 34, 120, 20)];
-        _pageControl.currentPageIndicatorTintColor = [UIColor pagecontrolBackgroundColor];
+        _pageControl.currentPageIndicatorTintColor = [UIColor buttonEnabledBackgroundColor];
         _pageControl.pageIndicatorTintColor = [UIColor pagecontrolCurrentIndicatorColor];
         [self addSubview:_pageControl];
     }

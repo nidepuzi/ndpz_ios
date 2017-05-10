@@ -8,7 +8,6 @@
 
 #import "JumpUtils.h"
 #import "JMPushingDaysController.h"
-#import "ProductSelectionListViewController.h"
 #import "WebViewController.h"
 #import "JMOrderDetailController.h"
 #import "JMCouponController.h"
@@ -21,7 +20,6 @@
 #import "JMCartViewController.h"
 #import "JMPurchaseController.h"
 #import "JMFineCounpGoodsController.h"
-#import "JMMaMaHomeController.h"
 #import "JMRootTabBarController.h"
 #import "JMClassifyListController.h"
 #import "MMCollectionController.h"
@@ -130,8 +128,8 @@
     }
     else if ([target_url isEqualToString:@"com.danlai.ndpz://app/v1/vip_choice"]) {
         //跳转到选品上架
-        ProductSelectionListViewController *mamachoiceVC = [[ProductSelectionListViewController alloc] init];
-        [vc.navigationController pushViewController:mamachoiceVC animated:YES];
+//        ProductSelectionListViewController *mamachoiceVC = [[ProductSelectionListViewController alloc] init];
+//        [vc.navigationController pushViewController:mamachoiceVC animated:YES];
         
     }else if ([target_url hasPrefix:@"com.danlai.ndpz://app/v1/shopping_cart"]) {
         BOOL login = [JMUserDefaults boolForKey:@"login"];

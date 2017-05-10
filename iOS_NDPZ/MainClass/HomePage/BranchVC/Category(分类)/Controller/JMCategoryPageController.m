@@ -126,11 +126,9 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [MobClick beginLogPageView:@"JMCategoryPageController"];
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [MobClick endLogPageView:@"JMCategoryPageController"];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];

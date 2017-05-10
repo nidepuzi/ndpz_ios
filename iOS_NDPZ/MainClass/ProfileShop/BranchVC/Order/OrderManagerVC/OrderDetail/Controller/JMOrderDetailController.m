@@ -255,7 +255,7 @@
 //        _timeLineHeight = 60.;
 //    }else {
 //    }
-    JMOrderDetailHeaderView *orderDetailHeaderView = [[JMOrderDetailHeaderView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 380)];
+    JMOrderDetailHeaderView *orderDetailHeaderView = [[JMOrderDetailHeaderView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 390)];
     self.orderDetailHeaderView = orderDetailHeaderView;
     self.orderDetailHeaderView.delegate = self;
 //    self.orderDetailHeaderView.isTimeLineView = _isTimeLineView;
@@ -428,7 +428,7 @@
         [self.navigationController pushViewController:editVC animated:YES];
     }else {
         // 修改物流  (如果需要判断是否可以更改物流在这里弹出一个提示)
-        [self createClassPopView:@"提示" Message:orderDetailModifyLogistics Index:0];
+//        [self createClassPopView:@"提示" Message:orderDetailModifyLogistics Index:0];
     }
 }
 - (void)createChangeLogisticsView {  // Index == 0  修改物流
@@ -493,9 +493,17 @@
 //    }
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 40;
+    if (isChakanWuliu) {
+        return 40;
+    }else {
+        return 0.01;
+    }
+    
 }
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    if (!isChakanWuliu) {
+        return nil;
+    }
     UIView *sectionView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENHEIGHT, 40)];
     sectionView.backgroundColor = [UIColor whiteColor];
     sectionView.layer.borderColor = [UIColor lineGrayColor].CGColor;
@@ -605,7 +613,7 @@
                 [[JMGlobal global] showpopBoxType:popViewTypeBox Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, 260) ViewController:self.refundVC WithBlock:^(UIView *maskView) {
                 }];
             }else {
-                [self createClassPopView:@"小鹿退款说明" Message:orderDetailReturnMoney Index:1];
+                [self createClassPopView:@"铺子退款说明" Message:orderDetailReturnMoney Index:1];
             }
 //        }
     }else if (button.tag == 101) {
@@ -645,12 +653,12 @@
  */
 - (void)Clickrefund:(JMRefundController *)click OrderGoods:(JMOrderGoodsModel *)goodsModel Refund:(NSDictionary *)refundDic {
     _choiseRefundDict = refundDic;
-    [self createClassPopView:@"小鹿退款说明" Message:orderDetailReturnMoney Index:1];
+    [self createClassPopView:@"铺子退款说明" Message:orderDetailReturnMoney Index:1];
 }
 #pragma mark 订单倒计时点击时间
 - (void)composeOutDateView:(JMOrderPayOutdateView *)outDateView Index:(NSInteger)index {
     if (index == 100) { // 取消支付
-        [self createClassPopView:@"小鹿美美" Message:orderDetailCancelOrder Index:2];
+        [self createClassPopView:@"你的铺子" Message:orderDetailCancelOrder Index:2];
     }else if (index == 101) { // 继续支付
         self.refundVC.continuePayDic = _refundDic;
         [[JMGlobal global] showpopBoxType:popViewTypeBox Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, 260) ViewController:self.refundVC WithBlock:^(UIView *maskView) {
@@ -760,7 +768,6 @@
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:app];
     [self.tableView.mj_header beginRefreshing];
-    [MobClick beginLogPageView:@"OrderDetail"];
     if ([WXApi isWXAppInstalled]) {
         //  NSLog(@"安装了微信");
         self.isInstallWX = YES;
@@ -776,7 +783,6 @@
     [JMNotificationCenter removeObserver:self
                                                     name:UIApplicationWillEnterForegroundNotification
                                                   object:app];
-    [MobClick endLogPageView:@"OrderDetail"];
 }
 - (void)purchaseViewWillEnterForeground:(NSNotification *)notification {
 
@@ -794,12 +800,12 @@
     [self.view addSubview:self.classPopView];
     [self showClassPopVoew];
     if (index == 0) {
-        self.classPopView.block = ^(NSInteger index) {
-            [weakSelf hideClassPopView];
-            if (index == 101) {
-                [weakSelf createChangeLogisticsView];
-            }else { }
-        };
+//        self.classPopView.block = ^(NSInteger index) {
+//            [weakSelf hideClassPopView];
+//            if (index == 101) {
+//                [weakSelf createChangeLogisticsView];
+//            }else { }
+//        };
     }else if (index == 1) {
         self.classPopView.block = ^(NSInteger index) {
             [weakSelf hideClassPopView];
@@ -815,11 +821,11 @@
             }
         };
     }else if (index == 3) {
-        self.classPopView.block = ^(NSInteger index) {
-            [weakSelf hideClassPopView];
-            if (index == 101) {
-            }
-        };
+//        self.classPopView.block = ^(NSInteger index) {
+//            [weakSelf hideClassPopView];
+//            if (index == 101) {
+//            }
+//        };
     }else if (index == 4) {
         self.classPopView.block = ^(NSInteger index) {
             [weakSelf hideClassPopView];

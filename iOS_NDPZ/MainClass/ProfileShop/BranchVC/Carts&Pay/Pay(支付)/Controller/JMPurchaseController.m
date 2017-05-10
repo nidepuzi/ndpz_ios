@@ -33,6 +33,9 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "CSPopAnimationViewController.h"
 #import "CSPurchaseTermsPopView.h"
+#import <STPopup/STPopup.h>
+#import "CSPopDescriptionController.h"
+
 
 #define iOS7Later ([UIDevice currentDevice].systemVersion.floatValue >= 7.0f)
 #define iOS8Later ([UIDevice currentDevice].systemVersion.floatValue >= 8.0f)
@@ -173,6 +176,7 @@ static BOOL isAgreeTerms = YES;
 - (CSPurchaseTermsPopView *)termsPopView {
     if (!_termsPopView) {
         _termsPopView = [CSPurchaseTermsPopView defaultPopView];
+        _termsPopView.termsPopType = termsPopViewTypePurchase;
         _termsPopView.parentVC = self;
     }
     return _termsPopView;
@@ -196,7 +200,6 @@ static BOOL isAgreeTerms = YES;
     if (_isRefreshAddressInfo) {
         [self loadAddressInfo];
     }
-    [MobClick beginLogPageView:@"purchase"];
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -205,7 +208,6 @@ static BOOL isAgreeTerms = YES;
                                                   object:nil];
     [JMNotificationCenter removeObserver:self name:UIApplicationDidBecomeActiveNotification
                                                   object:nil];
-    [MobClick endLogPageView:@"purchase"];
 }
 - (void)dealloc {
     [JMNotificationCenter removeObserver:self];
@@ -555,7 +557,7 @@ static BOOL isAgreeTerms = YES;
     [self hideNaviDesViwe];
 }
 - (void)createTableHeaderView {
-    self.purchaseHeaderView = [[JMPurchaseHeaderView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 150)];
+    self.purchaseHeaderView = [[JMPurchaseHeaderView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 105)];
     self.purchaseHeaderView.backgroundColor = [UIColor whiteColor];
     self.tableView.tableHeaderView = self.purchaseHeaderView;
     self.purchaseHeaderView.delegate = self;
@@ -763,7 +765,7 @@ static BOOL isAgreeTerms = YES;
             [self calculationLabelValue];
             
         }else {
-            [MBProgressHUD showWarning:@"小鹿币不足"];
+            [MBProgressHUD showWarning:@"铺子币不足"];
         }
         
     }else if (button.tag == 103) {
@@ -800,12 +802,12 @@ static BOOL isAgreeTerms = YES;
                     [self createPayPopView];
                 }else {
                     self.isXLWforAlipay = NO;
-                    [MBProgressHUD showLoading:@"小鹿正在为您支付....."];
+                    [MBProgressHUD showLoading:@"支付中....."];
                     [self payMoney];
                 }
             }else {
                 if (self.isCouponEnoughPay) {
-                    [MBProgressHUD showLoading:@"小鹿正在为您支付....."];
+                    [MBProgressHUD showLoading:@"支付中....."];
                     [self payMoney];
                 }else {
                     [self createPayPopView];
@@ -958,7 +960,12 @@ static BOOL isAgreeTerms = YES;
 }
 // 购买条款
 - (void)composeFooterTapView:(JMPurchaseFooterView *)headerView {
-    [self cs_presentPopView:self.termsPopView animation:[CSPopViewAnimationSpring new]];
+    CSPopDescriptionController *popDescVC = [[CSPopDescriptionController alloc] init];
+    popDescVC.popDescType = popDescriptionTypePurchase;
+    STPopupController *popupController = [[STPopupController alloc] initWithRootViewController:popDescVC];
+    popupController.containerView.layer.cornerRadius = 5;
+    [popupController presentInViewController:self];
+//    [self cs_presentPopView:self.termsPopView animation:[CSPopViewAnimationSpring new]];
 //    NSString *terms = promptMessage_termsOfPurchase;
 //    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"购买条款" message:terms delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
 //    [alert show];

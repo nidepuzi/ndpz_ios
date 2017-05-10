@@ -220,7 +220,7 @@
 // wx25fcb32689872499",@"3c7b4e3eb5ae4cfb132b2ac060a872ee
 -(void)getAccess_token
 {
-    
+    [MBProgressHUD showLoading:@""];
     NSString *url =[NSString stringWithFormat:@"https://api.weixin.qq.com/sns/oauth2/access_token?appid=%@&secret=%@&code=%@&grant_type=authorization_code",@"wxa6e8010fa0b31eb3",@"a894a72567440fa7317843d76dd7bf03",self.wxCode];
     
     dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -248,6 +248,8 @@
                 
                 [self getUserInfo];
                 //传入openID and
+            }else {
+                [MBProgressHUD hideHUD];
             }
             
         });
@@ -291,7 +293,7 @@
 //                [userdefault setBool:YES forKey:kIsLogin];
                 NSString *author = [JMUserDefaults objectForKey:kWeiXinauthorize];
                 [JMUserDefaults synchronize];
-                
+                [MBProgressHUD hideHUD];
                 if ([author isEqualToString:@"wxlogin"]) {
                     [JMNotificationCenter postNotificationName:@"WeChatLogin" object:self];
 //                    NSNotification * broadcastMessage = [ NSNotification notificationWithName:@"WeChatLogin" object:self];
@@ -304,6 +306,8 @@
 //                    [notificationCenter postNotification: broadcastMessage];
                 }
                 
+            }else {
+                [MBProgressHUD hideHUD];
             }
         });
         

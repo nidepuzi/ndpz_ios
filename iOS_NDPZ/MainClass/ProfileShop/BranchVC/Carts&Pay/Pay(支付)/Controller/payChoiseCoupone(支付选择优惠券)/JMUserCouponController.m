@@ -42,12 +42,10 @@
 #pragma mark 生命周期函数
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [MobClick beginLogPageView:@"JMUserCouponController"];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [MobClick endLogPageView:@"JMUserCouponController"];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];

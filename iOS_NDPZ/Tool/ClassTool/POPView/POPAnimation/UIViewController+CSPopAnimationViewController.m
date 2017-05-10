@@ -137,7 +137,12 @@
 
     
     [self.csMaskView addSubview:popView];
-    [JMKeyWindow addSubview:self.csMaskView];
+    if (clickable) {
+        [sourceView addSubview:self.csMaskView];
+    }else {
+        [JMKeyWindow addSubview:self.csMaskView];
+    }
+    
     
     self.csMaskView.alpha = 1.f;
     popView.center = self.csMaskView.center;

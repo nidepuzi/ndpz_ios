@@ -13,6 +13,9 @@
 #import "CSPersonalInfoController.h"
 #import "CSAccountSecurityController.h"
 #import "CSOnlineTestController.h"
+#import "MiPushSDK.h"
+#import "QYSDK.h"
+#import "JMVerificationCodeController.h"
 
 
 @interface CSProfilerSettingController () <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate> {
@@ -44,6 +47,26 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:self.tableView];
     
+    UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 120)];
+    self.tableView.tableFooterView = bottomView;
+    
+    UIButton *tuichuButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    tuichuButton.backgroundColor = [UIColor buttonEnabledBackgroundColor];
+    [tuichuButton setTitle:@"退出账号" forState:UIControlStateNormal];
+    [tuichuButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    tuichuButton.titleLabel.font = CS_UIFontSize(16.);
+    tuichuButton.layer.cornerRadius = 5.;
+    tuichuButton.layer.masksToBounds = YES;
+    [tuichuButton addTarget:self action:@selector(tuichuClick:) forControlEvents:UIControlEventTouchUpInside];
+    [bottomView addSubview:tuichuButton];
+    
+    [tuichuButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(bottomView.mas_centerX);
+        make.bottom.equalTo(bottomView);
+        make.width.mas_equalTo(@(SCREENWIDTH - 40));
+        make.height.mas_equalTo(@(40));
+    }];
+    
     
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -65,15 +88,15 @@
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier = nil;
-    if (indexPath.section == 1) {
-        if (indexPath.row !=0 ) {
-            identifier = @"cell1";
-        }else {
-            identifier = @"cell0";
-        }
-    }else {
+//    if (indexPath.section == 1) {
+//        if (indexPath.row !=0 ) {
+//            identifier = @"cell1";
+//        }else {
+//            identifier = @"cell0";
+//        }
+//    }else {
         identifier = @"cell0";
-    }
+//    }
     CSProfilerSettingCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (!cell) {
         cell = [[CSProfilerSettingCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
@@ -95,7 +118,11 @@
             CSPersonalInfoController *vc = [[CSPersonalInfoController alloc] init];
             [self.navigationController pushViewController:vc animated:YES];
         }else {
-            CSAccountSecurityController *vc = [[CSAccountSecurityController alloc] init];
+            NSDictionary *weChatInfo = [JMUserDefaults objectForKey:kWxLoginUserInfo];
+            JMVerificationCodeController *vc = [[JMVerificationCodeController alloc] init];
+            vc.verificationCodeType = SMSVerificationCodeWithBind;
+            vc.userInfo = weChatInfo;
+            vc.userLoginMethodWithWechat = YES;
             [self.navigationController pushViewController:vc animated:YES];
         }
     }else if (sectionIndex == 1) {
@@ -103,25 +130,69 @@
             UIAlertView *alterView = [[UIAlertView alloc] initWithTitle:nil message:@"确定要清空缓存吗？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
             alterView.delegate = self;
             [alterView show];
-        }
-    }else if (sectionIndex == 2) {
-        if (rowIndex == 1 || rowIndex == 3) {
+        }else {
             NSString *titleString = rowIndex == 1 ? @"关于你的铺子" : @"当前版本";
             CSAboutNDPZController *vc = [[CSAboutNDPZController alloc] init];
             vc.navigationTitleString = titleString;
             [self.navigationController pushViewController:vc animated:YES];
-        }else if (rowIndex == 2 || rowIndex == 0) {
-            NSString *titleString = rowIndex == 0 ? @"店主服务" : @"在线测试";
-            CSOnlineTestController *vc = [[CSOnlineTestController alloc] init];
-            vc.navigationTitleString = titleString;
-            [self.navigationController pushViewController:vc animated:YES];
         }
-    
     }else { }
+//    else if (sectionIndex == 2) {
+//        if (rowIndex == 1 || rowIndex == 3) {
+//            NSString *titleString = rowIndex == 1 ? @"关于你的铺子" : @"当前版本";
+//            CSAboutNDPZController *vc = [[CSAboutNDPZController alloc] init];
+//            vc.navigationTitleString = titleString;
+//            [self.navigationController pushViewController:vc animated:YES];
+//        }else if (rowIndex == 2 || rowIndex == 0) {
+//            NSString *titleString = rowIndex == 0 ? @"店主服务" : @"在线测试";
+//            CSOnlineTestController *vc = [[CSOnlineTestController alloc] init];
+//            vc.navigationTitleString = titleString;
+//            [self.navigationController pushViewController:vc animated:YES];
+//        }
+//    
+//    }
+//else { }
     
     
     
 }
+- (void)tuichuClick:(UIButton *)button {
+    NSLog(@"点击 --> 退出登录");
+    [MBProgressHUD showLoading:@""];
+    NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/users/customer_logout", Root_URL];
+    [JMHTTPManager requestWithType:RequestTypePOST WithURLString:urlString WithParaments:nil WithSuccess:^(id responseObject) {
+        if ([[responseObject objectForKey:@"code"] integerValue] != 0) {
+            [MBProgressHUD showMessage:@"退出登录失败"];
+            return;
+        }
+        //注销账号
+        NSString *user_account = [JMUserDefaults objectForKey:@"user_account"];
+        if (!([user_account isEqualToString:@""] || [user_account class] == [NSNull null])) {
+            [MiPushSDK unsetAccount:user_account];
+            [JMUserDefaults setObject:@"" forKey:@"user_account"];
+        }
+        [[QYSDK sharedSDK] logout:^{
+            NSLog(@"七鱼客服已经退出");
+        }];
+        [JMUserDefaults setBool:NO forKey:@"login"];
+        [JMUserDefaults setBool:NO forKey:@"isXLMM"];
+        [JMUserDefaults setObject:@"unlogin" forKey:kLoginMethod];
+        [JMUserDefaults synchronize];
+        [JMNotificationCenter postNotificationName:@"logout" object:nil];
+        [self.navigationController popToRootViewControllerAnimated:YES];
+        [[JMGlobal global] showLoginViewController];
+        [MBProgressHUD hideHUD];
+        //            RootNavigationController *rootNav = [[RootNavigationController alloc] initWithRootViewController:loginVC];
+        //            [XLMM_APP.window.rootViewController presentViewController:rootNav animated:YES completion:nil];
+        //            [self.navigationController popViewControllerAnimated:YES];
+        //            [self removeFromParentViewController];
+    } WithFail:^(NSError *error) {
+        [MBProgressHUD showMessage:@"退出登录失败"];
+    } Progress:^(float progress) {
+        
+    }];
+}
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
         [MBProgressHUD showLoading:@""];
@@ -163,9 +234,9 @@
                              @"cellImage":@"cs_pushInImage"
                              },
                          @{
-                             @"title":@"账户与安全",
+                             @"title":@"绑定手机",
                              @"descTitle":@"",
-                             @"iconImage":@"cs_profile_anquan",
+                             @"iconImage":@"cs_profile_bindPhone",
                              @"cellImage":@"cs_pushInImage"
                              },
                          ],
@@ -177,35 +248,9 @@
                              @"cellImage":@"cs_pushInImage"
                              },
                          @{
-                             @"title":@"广告拦截模式已关闭",
-                             @"descTitle":@"",
-                             @"iconImage":@"cs_profile_guanlao",
-                             @"cellImage":@""
-                             },
-                         @{
-                             @"title":@"兼容模式已关闭",
-                             @"descTitle":@"",
-                             @"iconImage":@"cs_profile_jianrong",
-                             @"cellImage":@""
-                             },
-                         ],
-                     @[
-                         @{
-                             @"title":@"店主服务",
-                             @"descTitle":@"",
-                             @"iconImage":@"cs_profile_fuwu",
-                             @"cellImage":@"cs_pushInImage"
-                             },
-                         @{
                              @"title":@"关于你的铺子",
                              @"descTitle":@"",
                              @"iconImage":@"cs_profile_guanyu",
-                             @"cellImage":@"cs_pushInImage"
-                             },
-                         @{
-                             @"title":@"在线测试",
-                             @"descTitle":@"未测试",
-                             @"iconImage":@"cs_profile_ceshi",
                              @"cellImage":@"cs_pushInImage"
                              },
                          @{

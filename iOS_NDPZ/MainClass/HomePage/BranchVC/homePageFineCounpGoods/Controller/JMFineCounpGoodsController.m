@@ -249,12 +249,10 @@
 }
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [MobClick beginLogPageView:@"JMFineCounpGoodsController"];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [MobClick endLogPageView:@"JMFineCounpGoodsController"];
     if (self.pageView) {
         [self.pageView endAutoScroll];
     }

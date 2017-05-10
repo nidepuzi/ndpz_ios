@@ -62,12 +62,10 @@ static NSUInteger selectedIndex = 0;
 }
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [MobClick beginLogPageView:@"JMHomeRootCategoryController"];
     
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [MobClick endLogPageView:@"JMHomeRootCategoryController"];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];

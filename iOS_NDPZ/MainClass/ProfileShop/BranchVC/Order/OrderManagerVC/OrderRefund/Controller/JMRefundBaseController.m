@@ -190,7 +190,6 @@
     [super viewWillAppear:animated];
     self.isPopToRootView = NO;
     self.navigationController.navigationBarHidden = NO;
-    [MobClick beginLogPageView:@"JMRefundBaseController"];
 
 }
 - (void)viewWillDisappear:(BOOL)animated{
@@ -199,7 +198,6 @@
         [JMNotificationCenter postNotificationName:@"kuaiquguangguangButtonClick" object:nil];
     }
     [MBProgressHUD hideHUD];
-    [MobClick endLogPageView:@"JMRefundBaseController"];
 
 }
 @end

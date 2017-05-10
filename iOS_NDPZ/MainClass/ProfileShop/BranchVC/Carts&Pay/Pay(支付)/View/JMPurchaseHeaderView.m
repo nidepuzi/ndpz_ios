@@ -293,31 +293,31 @@
     
     
     // == 物流信息视图 == //
-    UIView *fourView = [UIView new];
-    [self addSubview:fourView];
-    self.logisticsView = fourView;
-    self.logisticsView.backgroundColor = [UIColor whiteColor];
-    UITapGestureRecognizer *tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapClick:)];
-    [self.logisticsView addGestureRecognizer:tap1];
-    UIView *fourTapView = [tap1 view];
-    fourTapView.tag = 101;
-    
-    UILabel *logistics = [UILabel new];
-    [fourView addSubview:logistics];
-    logistics.font = [UIFont systemFontOfSize:13.];
-    logistics.textColor = [UIColor buttonTitleColor];
-    logistics.text = @"物流配送";
-    
-    UIImageView *logisticeImage = [UIImageView new];
-    [fourView addSubview:logisticeImage];
-    logisticeImage.image = [UIImage imageNamed:@"rightArrow"];
-    
-    UILabel *logisticsLabel = [UILabel new];
-    [fourView addSubview:logisticsLabel];
-    self.logisticsLabel = logisticsLabel;
-    self.logisticsLabel.font = [UIFont systemFontOfSize:13.];
-    self.logisticsLabel.textColor = [UIColor buttonTitleColor];
-    self.logisticsLabel.text = @"小鹿推荐";
+//    UIView *fourView = [UIView new];
+//    [self addSubview:fourView];
+//    self.logisticsView = fourView;
+//    self.logisticsView.backgroundColor = [UIColor whiteColor];
+//    UITapGestureRecognizer *tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapClick:)];
+//    [self.logisticsView addGestureRecognizer:tap1];
+//    UIView *fourTapView = [tap1 view];
+//    fourTapView.tag = 101;
+//    
+//    UILabel *logistics = [UILabel new];
+//    [fourView addSubview:logistics];
+//    logistics.font = [UIFont systemFontOfSize:13.];
+//    logistics.textColor = [UIColor buttonTitleColor];
+//    logistics.text = @"物流配送";
+//    
+//    UIImageView *logisticeImage = [UIImageView new];
+//    [fourView addSubview:logisticeImage];
+//    logisticeImage.image = [UIImage imageNamed:@"rightArrow"];
+//    
+//    UILabel *logisticsLabel = [UILabel new];
+//    [fourView addSubview:logisticsLabel];
+//    self.logisticsLabel = logisticsLabel;
+//    self.logisticsLabel.font = [UIFont systemFontOfSize:13.];
+//    self.logisticsLabel.textColor = [UIColor buttonTitleColor];
+//    self.logisticsLabel.text = @"铺子推荐";
     
     kWeakSelf
     // == 地址信息视图 == //
@@ -421,39 +421,39 @@
     
     
     [lineView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(weakSelf).offset(-45);
+        make.bottom.equalTo(weakSelf);
         make.left.right.equalTo(weakSelf);
         make.height.mas_equalTo(@15);
     }];
     
     // == 物流信息视图 == //
-    [fourView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineView.mas_bottom);
-        make.left.right.equalTo(weakSelf);
-        make.height.mas_equalTo(@45);
-    }];
-    [logistics mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(fourView).offset(10);
-        make.centerY.equalTo(fourView.mas_centerY);
-    }];
-    [logisticeImage mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(fourView).offset(-10);
-        make.centerY.equalTo(fourView.mas_centerY);
-        make.width.mas_equalTo(@16);
-        make.height.mas_equalTo(@25);
-    }];
-    [self.logisticsLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(logisticeImage.mas_left).offset(-10);
-        make.centerY.equalTo(fourView.mas_centerY);
-    }];
+//    [fourView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(lineView.mas_bottom);
+//        make.left.right.equalTo(weakSelf);
+//        make.height.mas_equalTo(@45);
+//    }];
+//    [logistics mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.equalTo(fourView).offset(10);
+//        make.centerY.equalTo(fourView.mas_centerY);
+//    }];
+//    [logisticeImage mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.right.equalTo(fourView).offset(-10);
+//        make.centerY.equalTo(fourView.mas_centerY);
+//        make.width.mas_equalTo(@16);
+//        make.height.mas_equalTo(@25);
+//    }];
+//    [self.logisticsLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.right.equalTo(logisticeImage.mas_left).offset(-10);
+//        make.centerY.equalTo(fourView.mas_centerY);
+//    }];
     
-    UIView *fourLineV = [UIView new];
-    [fourView addSubview:fourLineV];
-    fourLineV.backgroundColor = [UIColor countLabelColor];
-    [fourLineV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(@1);
-        make.left.right.bottom.equalTo(fourView);
-    }];
+//    UIView *fourLineV = [UIView new];
+//    [fourView addSubview:fourLineV];
+//    fourLineV.backgroundColor = [UIColor countLabelColor];
+//    [fourLineV mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.height.mas_equalTo(@1);
+//        make.left.right.bottom.equalTo(fourView);
+//    }];
 
     self.nomalLabel = [UILabel new];
     [self.addressView addSubview:self.nomalLabel];

@@ -33,12 +33,10 @@
     [super viewWillAppear:animated];
     [self loadHistoryData];
     
-    [MobClick beginLogPageView:@"JMSearchController"];
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.searchBar resignFirstResponder];
-    [MobClick endLogPageView:@"JMSearchController"];
 }
 // 视图完全显示
 - (void)viewDidAppear:(BOOL)animated {
@@ -167,7 +165,7 @@
     UIButton *navRightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
     [navRightButton addTarget:self action:@selector(cancelDidClick) forControlEvents:UIControlEventTouchUpInside];
     [navRightButton setTitle:@"取消" forState:UIControlStateNormal];
-    [navRightButton setTitleColor:[UIColor buttonEnabledBackgroundColor] forState:UIControlStateNormal];
+    [navRightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     navRightButton.titleLabel.font = [UIFont systemFontOfSize:16.];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:navRightButton];
     

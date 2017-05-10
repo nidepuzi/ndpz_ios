@@ -16,6 +16,7 @@
 @property (nonatomic, strong) UIImageView *iconImage;
 @property (nonatomic, strong) UILabel *userNameLabel;
 @property (nonatomic, strong) UILabel *userShopDescLabel;
+@property (nonatomic, strong) UIImageView *yaoqinghaoyouImageV;
 
 @end
 
@@ -56,6 +57,15 @@
     [self addSubview:xiugaiImageView];
     xiugaiImageView.image = [UIImage imageNamed:@"cs_profileShop_xiugai"];
     
+    UIImageView *yaoqinghaoyouImageV = [UIImageView new];
+    [self addSubview:yaoqinghaoyouImageV];
+    yaoqinghaoyouImageV.image = [UIImage imageNamed:@"cs_yaoqinghaoyou"];
+    yaoqinghaoyouImageV.contentMode = UIViewContentModeScaleAspectFill;
+    yaoqinghaoyouImageV.clipsToBounds = YES;
+    yaoqinghaoyouImageV.userInteractionEnabled = YES;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(yaoqinghaoyouImageVTap)];
+    [yaoqinghaoyouImageV addGestureRecognizer:tap];
+    
     self.userNameLabel = [UILabel new];
     self.userNameLabel.font = CS_UIFontSize(14.);
     self.userNameLabel.textColor = [UIColor whiteColor];
@@ -83,6 +93,12 @@
         make.bottom.equalTo(weakSelf.iconImage.mas_bottom).offset(-6);
         make.width.mas_equalTo(@(12));
         make.height.mas_equalTo(@(13));
+    }];
+    [yaoqinghaoyouImageV mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(weakSelf);
+        make.centerY.equalTo(weakSelf.iconImage.mas_centerY);
+        make.width.mas_equalTo(@110);
+        make.height.mas_equalTo(@30);
     }];
     [self.userNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(headerIconButton.mas_centerX);
@@ -137,11 +153,16 @@
     _mamaCenterModel = mamaCenterModel;
     
     UILabel *fensiLabel = (UILabel *)[self viewWithTag:13];
-    UILabel *xiaoliangLabel = (UILabel *)[self viewWithTag:11];
+//    UILabel *dingdanLabel = (UILabel *)[self viewWithTag:10];
+    UILabel *leijixiaoliangLabel = (UILabel *)[self viewWithTag:11];
+    
     NSString *fansNum = mamaCenterModel.fans_num == nil ? @"0" : mamaCenterModel.fans_num;
-    NSString *orderNum = mamaCenterModel.order_num == nil ? @"0" : mamaCenterModel.order_num;
+//    NSString *orderNum = mamaCenterModel.order_num == nil ? @"0" : mamaCenterModel.order_num;
+    NSString *leijixiaoliang = [NSString stringWithFormat:@"%.2f", [self.mamaCenterModel.carry_value floatValue]];   // 累计收益
     fensiLabel.text = [NSString stringWithFormat:@"%@",fansNum];                                                     // 我的粉丝
-    xiaoliangLabel.text = [NSString stringWithFormat:@"%@",orderNum];                                                // 订单记录
+//    dingdanLabel.text = [NSString stringWithFormat:@"%@",orderNum];                                                  // 订单记录
+    leijixiaoliangLabel.text = leijixiaoliang;
+    
 }
 - (void)setMamaResults:(NSArray *)mamaResults {
     _mamaResults = mamaResults;
@@ -151,6 +172,12 @@
     UILabel *jinridingdanLabel = (UILabel *)[self viewWithTag:10];
     fangwenLabel.text = [dic[@"visitor_num"] stringValue];                         // 访客
     jinridingdanLabel.text = [dic[@"order_num"] stringValue];                      // 订单
+    
+    
+    
+    
+    
+    
 }
 - (void)setUserInfoDic:(NSDictionary *)userInfoDic {
     _userInfoDic = userInfoDic;
@@ -171,7 +198,11 @@
     
     
 }
-
+- (void)yaoqinghaoyouImageVTap {
+    if (_delegate && [_delegate respondsToSelector:@selector(composeProfileShopHeaderTap:)]) {
+        [_delegate composeProfileShopHeaderTap:self];
+    }
+}
 - (void)buttonClick:(UIButton *)button {
     NSLog(@"%ld",button.tag);
     button.enabled = NO;

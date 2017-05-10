@@ -181,7 +181,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.automaticallyAdjustsScrollViewInsets = NO;
-    [MBProgressHUD showLoading:@"小鹿努力加载中~" ToView:self.view];
+    [MBProgressHUD showLoading:@"加载中~" ToView:self.view];
     [MobClick event:@"activity"];
     [self createNavigationBarWithTitle:self.titleName selecotr:@selector(backClicked:)];
     
@@ -254,7 +254,7 @@
         [self createTabBarButton];
     }
     _shareImage = [UIImage imageNamed:@"icon-xiaolu.png"];
-    _content = @"小鹿美美";
+    _content = @"你的铺子";
 
 
 }

@@ -77,7 +77,6 @@
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     self.isPopToRootView = NO;
-    [MobClick beginLogPageView:@"PersonOrder"];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
@@ -86,7 +85,6 @@
         [JMNotificationCenter postNotificationName:@"kuaiquguangguangButtonClick" object:nil];
     }
     [MBProgressHUD hideHUD];
-    [MobClick endLogPageView:@"PersonOrder"];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];

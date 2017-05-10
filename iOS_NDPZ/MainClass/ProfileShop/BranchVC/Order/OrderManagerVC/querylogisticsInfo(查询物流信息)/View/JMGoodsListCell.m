@@ -100,7 +100,7 @@ NSString *const JMGoodsListCellIdentifier = @"JMGoodsListCellIdentifier";
     /**
      *  处理图片显示...
      */
-    [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:[model.pic_path JMUrlEncodedString]] placeholderImage:[UIImage imageNamed:@"profiles"]];    
+    [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:[model.pic_path JMUrlEncodedString]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"]];    
     
 //     NSString *url = [model.pic_path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 //    [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:url] placeholderImage:[UIImage imageNamed:@"profiles"]];

@@ -27,6 +27,8 @@
 #import "CSSalesManagerController.h"
 #import "CSAddressManagerController.h"
 #import "JMWithdrawCashController.h"
+#import "CSInviteViewController.h"
+#import "CSPersonalInfoController.h"
 
 
 #define Max_OffsetY  50
@@ -209,12 +211,12 @@
     [self.view addSubview:naviView];
     naviView.backgroundColor = [UIColor clearColor];
 
-    UIButton *messageButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [messageButton setImage:[UIImage imageNamed:@"navigation_message_image"] forState:UIControlStateNormal];
-    [messageButton setImage:[UIImage imageNamed:@"navigation_message_image"] forState:UIControlStateHighlighted];
-    messageButton.tag = 10;
-    [messageButton addTarget:self action:@selector(navigationBarButton:) forControlEvents:UIControlEventTouchUpInside];
-    [naviView addSubview:messageButton];
+//    UIButton *messageButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    [messageButton setImage:[UIImage imageNamed:@"navigation_message_image"] forState:UIControlStateNormal];
+//    [messageButton setImage:[UIImage imageNamed:@"navigation_message_image"] forState:UIControlStateHighlighted];
+//    messageButton.tag = 10;
+//    [messageButton addTarget:self action:@selector(navigationBarButton:) forControlEvents:UIControlEventTouchUpInside];
+//    [naviView addSubview:messageButton];
     
     UIButton *shopCartButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [shopCartButton setImage:[UIImage imageNamed:@"cs_profileShop_shopCart"] forState:UIControlStateNormal];
@@ -236,24 +238,24 @@
     naviTitleLabel.font = CS_UIFontBoldSize(18.);
     [naviView addSubview:naviTitleLabel];
     
-    [messageButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(naviView.mas_centerY).offset(10);
-        make.left.equalTo(naviView);
-        make.width.height.mas_equalTo(@(44));
-    }];
+//    [messageButton mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.centerY.equalTo(naviView.mas_centerY).offset(10);
+//        make.left.equalTo(naviView);
+//        make.width.height.mas_equalTo(@(44));
+//    }];
     [shopCartButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(messageButton.mas_centerY);
+        make.centerY.equalTo(naviView.mas_centerY).offset(10);
         make.right.equalTo(settingButton.mas_left);
         make.width.height.mas_equalTo(@(44));
     }];
     [settingButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(messageButton.mas_centerY);
+        make.centerY.equalTo(naviView.mas_centerY).offset(10);
         make.right.equalTo(naviView);
         make.width.height.mas_equalTo(@(44));
     }];
     [naviTitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(naviView.mas_centerX);
-        make.centerY.equalTo(messageButton.mas_centerY);
+        make.centerY.equalTo(naviView.mas_centerY).offset(10);
     }];
     
 }
@@ -274,10 +276,14 @@
 /**
  *  100 --> 头像
  *  101 --> 今日订单
- *  102 --> 本月销量
+ *  102 --> 累计销量
  *  103 --> 累计访问
  *  104 --> 粉丝人数
  */
+- (void)composeProfileShopHeaderTap:(CSProfileShopHeaderView *)headerView { // 邀请好友
+    CSInviteViewController *inviteVC = [[CSInviteViewController alloc] init];
+    [self.navigationController pushViewController:inviteVC animated:YES];
+}
 - (void)composeProfileShopHeader:(CSProfileShopHeaderView *)headerView ButtonActionClick:(UIButton *)button {
     if (![[CSDevice defaultDevice] userIsLogin]) {
         [[JMGlobal global] showLoginViewController];
@@ -286,8 +292,8 @@
     NSInteger currentIndex = button.tag;
     switch (currentIndex) {
         case 100: {
-            CSProfilerSettingController *settingVC = [[CSProfilerSettingController alloc] init];
-            [self.navigationController pushViewController:settingVC animated:YES];
+            CSPersonalInfoController *vc = [[CSPersonalInfoController alloc] init];
+            [self.navigationController pushViewController:vc animated:YES];
         }
             
             break;
@@ -350,18 +356,18 @@
             break;
         case 100: {
             JMWithdrawCashController *drawCash = [[JMWithdrawCashController alloc] init];
-            if ([_persinCenterDict isKindOfClass:[NSDictionary class]] && [_persinCenterDict objectForKey:@"user_budget"]) {
-                NSDictionary *userBudget = _persinCenterDict[@"user_budget"];
-                if ([userBudget isKindOfClass:[NSDictionary class]] && [userBudget objectForKey:@"cash_out_limit"]) {
+//            if ([_persinCenterDict isKindOfClass:[NSDictionary class]] && [_persinCenterDict objectForKey:@"user_budget"]) {
+//                NSDictionary *userBudget = _persinCenterDict[@"user_budget"];
+//                if ([userBudget isKindOfClass:[NSDictionary class]] && [userBudget objectForKey:@"cash_out_limit"]) {
                     drawCash.personCenterDict = _persinCenterDict;
                     drawCash.isMaMaWithDraw = NO;
-                }else {
-                    [MBProgressHUD showError:@"不可提现"];
-                    return ;
-                }
-            }else {
-                
-            }
+//                }else {
+//                    [MBProgressHUD showError:@"不可提现"];
+//                    return ;
+//                }
+//            }else {
+//                
+//            }
             [self.navigationController pushViewController:drawCash animated:YES];
 //            Account1ViewController *account = [[Account1ViewController alloc] init];
 //            account.accountMoney = _accountMoney;
@@ -376,7 +382,8 @@
             
             break;
         case 102: {
-            CSSalesManagerController *product = [[CSSalesManagerController alloc] init];
+            CSPerformanceManagerController *product = [[CSPerformanceManagerController alloc] init];
+            product.profileInfo = _persinCenterDict;
             [self.navigationController pushViewController:product animated:YES];
         }
             
@@ -436,11 +443,11 @@
         return;
     }
     switch (button.tag) {
-        case 10: {
-            CSMineMessageController *messageVC = [[CSMineMessageController alloc] init];
-            [self.navigationController pushViewController:messageVC animated:YES];
-        }
-            break;
+//        case 10: {
+//            CSMineMessageController *messageVC = [[CSMineMessageController alloc] init];
+//            [self.navigationController pushViewController:messageVC animated:YES];
+//        }
+//            break;
         case 11: {
             JMCartViewController *cartVC = [[JMCartViewController alloc] init];
             cartVC.cartType = @"0";

@@ -134,12 +134,12 @@
                              @"iconImage":imageUrl,
                              @"cellImage":@"cs_pushInImage"
                              },
-                         @{
-                             @"title":@"店招图",
-                             @"descTitle":@"",
-                             @"iconImage":imageUrl,
-                             @"cellImage":@"cs_pushInImage"
-                             },
+//                         @{
+//                             @"title":@"店招图",
+//                             @"descTitle":@"",
+//                             @"iconImage":imageUrl,
+//                             @"cellImage":@"cs_pushInImage"
+//                             },
                          @{
                              @"title":@"店主名片",
                              @"descTitle":@"",

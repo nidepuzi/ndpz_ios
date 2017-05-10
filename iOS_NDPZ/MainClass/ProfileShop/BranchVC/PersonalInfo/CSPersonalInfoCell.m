@@ -92,12 +92,6 @@
             self.iconImageView.hidden = NO;
         }else if (row == 3) {
             self.iconImageView.hidden = NO;
-            [self.iconImageView mas_updateConstraints:^(MASConstraintMaker *make) {
-                make.width.mas_equalTo(@100);
-                make.height.mas_equalTo(@60);
-            }];
-        }else if (row == 4) {
-            self.iconImageView.hidden = NO;
             
         }else {
             

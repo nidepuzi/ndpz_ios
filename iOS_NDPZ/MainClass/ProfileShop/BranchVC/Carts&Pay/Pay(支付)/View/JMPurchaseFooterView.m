@@ -76,8 +76,8 @@
     [walletButton setTitle:@"零钱" forState:UIControlStateNormal];
     walletButton.titleLabel.font = [UIFont systemFontOfSize:14.];
     [walletButton setTitleColor:[UIColor buttonTitleColor] forState:UIControlStateNormal];
-    [walletButton setImage:[UIImage imageNamed:@"circle_wallet_Normal"] forState:UIControlStateNormal];
-    [walletButton setImage:[UIImage imageNamed:@"circle_wallet_Selected"] forState:UIControlStateSelected];
+    [walletButton setImage:[UIImage imageNamed:@"cs_yuanquan_nomal"] forState:UIControlStateNormal];
+    [walletButton setImage:[UIImage imageNamed:@"cs_yuanquan_selected"] forState:UIControlStateSelected];
     walletButton.titleEdgeInsets = UIEdgeInsetsMake(0, -SCREENWIDTH + 40, 0, 0);
     walletButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -SCREENWIDTH + 10);
     walletButton.tag = 101;
@@ -93,11 +93,11 @@
     [self addSubview:xiaoluCoinButton];
     xiaoluCoinButton.layer.borderColor = [UIColor lineGrayColor].CGColor;
     xiaoluCoinButton.layer.borderWidth = 0.5f;
-    [xiaoluCoinButton setTitle:@"小鹿币" forState:UIControlStateNormal];
+    [xiaoluCoinButton setTitle:@"铺子币" forState:UIControlStateNormal];
     xiaoluCoinButton.titleLabel.font = [UIFont systemFontOfSize:14.];
     [xiaoluCoinButton setTitleColor:[UIColor buttonTitleColor] forState:UIControlStateNormal];
-    [xiaoluCoinButton setImage:[UIImage imageNamed:@"circle_wallet_Normal"] forState:UIControlStateNormal];
-    [xiaoluCoinButton setImage:[UIImage imageNamed:@"circle_wallet_Selected"] forState:UIControlStateSelected];
+    [xiaoluCoinButton setImage:[UIImage imageNamed:@"cs_yuanquan_nomal"] forState:UIControlStateNormal];
+    [xiaoluCoinButton setImage:[UIImage imageNamed:@"cs_yuanquan_selected"] forState:UIControlStateSelected];
     xiaoluCoinButton.titleEdgeInsets = UIEdgeInsetsMake(0, -SCREENWIDTH + 58, 0, 0);
     xiaoluCoinButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -SCREENWIDTH - 6);
     xiaoluCoinButton.tag = 102;
@@ -138,8 +138,8 @@
     
     UIButton *termsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [termsView addSubview:termsButton];
-    [termsButton setImage:[UIImage imageNamed:@"right_button"] forState:UIControlStateNormal];
-    [termsButton setImage:[UIImage imageNamed:@"termsImage"] forState:UIControlStateSelected];
+    [termsButton setImage:[UIImage imageNamed:@"cs_duihao_nomal"] forState:UIControlStateNormal];
+    [termsButton setImage:[UIImage imageNamed:@"cs_duihao_selected"] forState:UIControlStateSelected];
 //    termsButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -SCREENWIDTH + 40);
     termsButton.tag = 103;
     [termsButton addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -148,8 +148,8 @@
     UILabel *termsLabel = [UILabel new];
     [termsView addSubview:termsLabel];
     termsLabel.font = [UIFont systemFontOfSize:13.];
-    NSString *termStr = @"我已阅读并同意小鹿美美购买条款";
-    termsLabel.attributedText = [JMRichTextTool cs_changeColorWithColor:[UIColor buttonEnabledBackgroundColor] AllString:termStr SubStringArray:@[@"小鹿美美购买条款"]];
+    NSString *termStr = @"我已阅读并同意你的铺子购买条款";
+    termsLabel.attributedText = [JMRichTextTool cs_changeColorWithColor:[UIColor buttonEnabledBackgroundColor] AllString:termStr SubStringArray:@[@"你的铺子购买条款"]];
     termsLabel.userInteractionEnabled = YES;
     UITapGestureRecognizer *termsTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(termsTapClick:)];
     [termsLabel addGestureRecognizer:termsTap];

@@ -55,12 +55,10 @@
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     self.navigationController.navigationBarHidden = YES;
-    [MobClick beginLogPageView:@"JMLogInViewController"];
     
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [MobClick endLogPageView:@"JMLogInViewController"];
 //    [JMNotificationCenter removeObserver:self name:@"phoneNumberLogin" object:nil];
 //    [JMNotificationCenter removeObserver:self name:@"WeChatLogin" object:nil];
 }
@@ -96,17 +94,17 @@
     headView.clipsToBounds = YES;
     self.headView = headView;
     
-    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.headView addSubview:backButton];
-    [backButton setTitle:@"X" forState:UIControlStateNormal];
-    [backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    backButton.layer.cornerRadius = 18.;
-    backButton.layer.masksToBounds = YES;
-    backButton.backgroundColor = [UIColor blackColor];
-    backButton.alpha = 0.7;
-    backButton.titleLabel.font = CS_UIFontSize(18.);
-    [backButton addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
-    self.backButton = backButton;
+//    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    [self.headView addSubview:backButton];
+//    [backButton setTitle:@"X" forState:UIControlStateNormal];
+//    [backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//    backButton.layer.cornerRadius = 18.;
+//    backButton.layer.masksToBounds = YES;
+//    backButton.backgroundColor = [UIColor blackColor];
+//    backButton.alpha = 0.7;
+//    backButton.titleLabel.font = CS_UIFontSize(18.);
+//    [backButton addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
+//    self.backButton = backButton;
 //    if (self.navigationController.viewControllers.count == 1) {
 //        self.backButton.hidden = YES;
 //    }else {
@@ -184,11 +182,11 @@
     //        make.width.mas_equalTo(imageW);
     //        make.height.mas_equalTo(imageH);
     //    }];
-    [self.backButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(weakSelf.headView).offset(15);
-        make.top.equalTo(weakSelf.headView).offset(30);
-        make.width.height.mas_equalTo(@(36));
-    }];
+//    [self.backButton mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.equalTo(weakSelf.headView).offset(15);
+//        make.top.equalTo(weakSelf.headView).offset(30);
+//        make.width.height.mas_equalTo(@(36));
+//    }];
     
     //    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
     //        make.top.equalTo(weakSelf.headView.mas_bottom);
@@ -295,7 +293,7 @@
     }
     [JMUserDefaults setObject:@"wxlogin" forKey:kWeiXinauthorize];
     [JMUserDefaults synchronize];
-
+    
     SendAuthReq* req =[[SendAuthReq alloc ] init];
     req.scope = @"snsapi_userinfo,snsapi_base";
     req.state = @"nidepuzi"; // xiaolumeimei
@@ -343,7 +341,7 @@
         BOOL kIsVIP = NO;
         if (kIsXLMMStatus) {
             NSDictionary *xlmmDict = responseObject[@"xiaolumm"];
-            kIsVIP = [xlmmDict[@"last_renew_type"] integerValue] >= 90 ? YES : NO;
+            kIsVIP = [xlmmDict[@"status"] isEqual:@"effect"] ? YES : NO;
         }
         [JMUserDefaults setBool:kIsLoginStatus forKey:kIsLogin];
         [JMUserDefaults setBool:kIsXLMMStatus forKey:kISXLMM];
@@ -351,8 +349,15 @@
         [JMUserDefaults synchronize];
         
         if (!kIsBindPhone) {
-            [self dismissViewControllerAnimated:YES completion:nil];
-            [JMNotificationCenter postNotificationName:@"WeChatLoginSuccess" object:nil];
+            if (kIsVIP) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+                [JMNotificationCenter postNotificationName:@"WeChatLoginSuccess" object:nil];
+            }else {
+                JMVerificationCodeController *verfyCodeVC = [[JMVerificationCodeController alloc] init];
+                verfyCodeVC.verificationCodeType = SMSVerificationCodeWithLogin;
+                verfyCodeVC.userLoginMethodWithWechat = YES;
+                [self.navigationController pushViewController:verfyCodeVC animated:YES];
+            }
         }else {
             NSDictionary *weChatInfo = [JMUserDefaults objectForKey:kWxLoginUserInfo];
             JMVerificationCodeController *vc = [[JMVerificationCodeController alloc] init];

@@ -56,13 +56,11 @@
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     self.navigationController.navigationBarHidden = NO;
-    [MobClick beginLogPageView:@"RefundDetailsViewController"];
     
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     self.navigationController.navigationBarHidden = YES;
-    [MobClick endLogPageView:@"RefundDetailsViewController"];
 }
 
 
@@ -243,7 +241,7 @@
         }
 
     }else {
-        self.afterServiceLabel = @"小鹿售后  021-50939326";
+        self.afterServiceLabel = @"你的铺子售后  021-50939326";
         self.addressLabel = @"收货地址: 上海杨市松江区佘山镇吉业路245号5号楼";
     }
     

@@ -26,6 +26,7 @@ PODS:
   - SDWebImage (3.8.2):
     - SDWebImage/Core (= 3.8.2)
   - SDWebImage/Core (3.8.2)
+  - STPopup (1.8.2)
   - UMengAnalytics-NO-IDFA (4.2.5)
 
 DEPENDENCIES:
@@ -37,6 +38,7 @@ DEPENDENCIES:
   - Qiniu (~> 7.1.5)
   - RESideMenu (~> 4.0.7)
   - SDWebImage (~> 3.8.1)
+  - STPopup
   - UMengAnalytics-NO-IDFA
 
 SPEC CHECKSUMS:
@@ -49,8 +51,9 @@ SPEC CHECKSUMS:
   Qiniu: 77a3dba411556a383d72d17e842345a9d4c83252
   RESideMenu: f24c508404b49c667344c54aba7e590883533958
   SDWebImage: 098e97e6176540799c27e804c96653ee0833d13c
+  STPopup: b69b3e7484ef7d2baec5f9ab2939f8a7bcdfe218
   UMengAnalytics-NO-IDFA: 16666e32edce5be44ae5b14aaaa7f3582e09d6ab
 
-PODFILE CHECKSUM: f7347015b42016a37e813447d86638774072798e
+PODFILE CHECKSUM: 52ef4a1e322594be38936fcfffd9fe2dd47cf48c
 
 COCOAPODS: 1.0.1

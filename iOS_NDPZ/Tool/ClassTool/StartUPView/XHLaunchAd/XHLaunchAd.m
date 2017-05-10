@@ -457,7 +457,7 @@ static NSInteger defaultWaitDataDuration = 12;
 - (void)cancelWaitDataTimer {
     DISPATCH_SOURCE_CANCEL_SAFE(_waitDataTimer);
     DISPATCH_SOURCE_CANCEL_SAFE(_skipTimer);
-    __block NSInteger duration = 2;
+    __block NSInteger duration = 1;
     NSTimeInterval period = 1.0;
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     _waitDataTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);

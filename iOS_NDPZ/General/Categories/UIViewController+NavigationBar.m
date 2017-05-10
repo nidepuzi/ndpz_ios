@@ -17,25 +17,40 @@ static const void *kVTReuseIdentifier = &kVTReuseIdentifier;
 
 @implementation UIViewController (NavigationBar)
 
-//+ (void)load {    Method Swizzling
-//    [super load];
-//    Method fromMethod = class_getInstanceMethod([self class], @selector(viewDidLoad));
-//    Method toMethod = class_getInstanceMethod([self class], @selector(swizzlingViewDidLoad));
-//    
-//    if (!class_addMethod([self class], @selector(viewDidLoad), method_getImplementation(toMethod), method_getTypeEncoding(toMethod))) {
++ (void)load {   // Method Swizzling
+    [super load];
+    Method viewWillMethod = class_getInstanceMethod([self class], @selector(viewWillAppear:));
+    Method csViewWillMethod = class_getInstanceMethod([self class], @selector(csviewWillAppear:));
+    
+    Method viewWillDisMethod = class_getInstanceMethod([self class], @selector(viewWillDisappear:));
+    Method csViewWillDisMethod = class_getInstanceMethod([self class], @selector(csviewWillDisappear:));
+    
+//    if (!class_addMethod([self class], @selector(viewWillAppear:), method_getImplementation(toMethod), method_getTypeEncoding(toMethod))) {
 //        method_exchangeImplementations(fromMethod, toMethod);
 //    }
-//    
-//}
-//- (void)swizzlingViewDidLoad {
+    method_exchangeImplementations(viewWillMethod, csViewWillMethod);
+    method_exchangeImplementations(viewWillDisMethod, csViewWillDisMethod);
+    
+}
+- (void)csviewWillAppear:(BOOL)animated {
 //    NSString *str = [NSString stringWithFormat:@"%@", self.class];
-//    // 我们在这里加一个判断，将系统的UIViewController的对象剔除掉
-//    if([str rangeOfString:@"UI"].location == NSNotFound){
-//        NSLog(@"统计打点 : %@", self.class);
-//    }
-//    [self swizzlingViewDidLoad];
-//}
-
+    NSString *className = NSStringFromClass([self class]);
+    // 我们在这里加一个判断，将系统的UIViewController的对象剔除掉
+//    if([className rangeOfString:@"UI"].location == NSNotFound){
+    if ([className hasPrefix:@"UI"] == NO) {
+//        NSLog(@"csviewWillAppear -- > %@",className);
+        [MobClick beginLogPageView:className];
+    }
+    [self csviewWillAppear:animated];
+}
+- (void)csviewWillDisappear:(BOOL)animated {
+    NSString *className = NSStringFromClass([self class]);
+    if ([className hasPrefix:@"UI"] == NO) {
+//        NSLog(@"csviewWillDisappear -- > %@",className);
+        [MobClick endLogPageView:className];
+    }
+    [self csviewWillDisappear:animated];
+}
 
 - (void)createNavigationBarWithTitle:(NSString *)title selecotr:(SEL)aSelector{
     self.navigationController.navigationBar.backgroundColor = [UIColor buttonEnabledBackgroundColor];

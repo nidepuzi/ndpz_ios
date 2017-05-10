@@ -17,7 +17,7 @@
 #import <ContactsUI/ContactsUI.h>
 #import "JMBlockAlertView.h"
 
-static NSString *const APPNAME = @"小鹿美美";  //填写自己APP NAME
+static NSString *const APPNAME = @"你的铺子";  //填写自己APP NAME
 
 static JMSystemPermissionsManager *systemPermissionsManager = nil;
 

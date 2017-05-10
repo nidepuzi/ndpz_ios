@@ -13,8 +13,6 @@
 #import "JMHomeRootCategoryController.h"
 #import "JMGoodsCountTime.h"
 #import "JMCartViewController.h"
-#import "JMFineClassController.h"
-#import "JMMaMaHomeController.h"
 #import "JumpUtils.h"
 #import "JMAutoLoopPageView.h"
 #import "JMUpdataAppPopView.h"
@@ -28,7 +26,6 @@
 #import "JMEmptyView.h"
 #import "JMPushingDaysController.h"
 #import "JMRefundBaseController.h"
-#import "ProductSelectionListViewController.h"
 #import "JMClassifyListController.h"
 #import "JMCouponController.h"
 #import "CSInviteViewController.h"
@@ -114,7 +111,7 @@
     [JumpUtils jumpToLocation:[notification.userInfo objectForKey:@"target_url"] viewController:self];
 }
 - (void)showNewFeatureView {
-    [self performSelector:@selector(joinVipPopView) withObject:self afterDelay:3.];
+    [self performSelector:@selector(joinVipPopView) withObject:self afterDelay:1.];
 }
 #pragma mark 视图生命周期
 - (instancetype)init {
@@ -127,7 +124,6 @@
 }
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [MobClick beginLogPageView:@"main"];
     
     UIApplication *app = [UIApplication sharedApplication];
     [JMNotificationCenter addObserver:self
@@ -141,7 +137,6 @@
 }
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [MobClick endLogPageView:@"main"];
 }
 - (void)dealloc {
     [JMNotificationCenter removeObserver:self];
@@ -299,48 +294,48 @@
 
 }
 - (void)createNaviView {
-    UIButton *naviLeftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [naviLeftButton setImage:[UIImage imageNamed:@"navigation_message_image"] forState:UIControlStateNormal];
-    [naviLeftButton setImage:[UIImage imageNamed:@"navigation_message_image"] forState:UIControlStateHighlighted];
-    naviLeftButton.frame = CGRectMake(0, 0, 40, 40);
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:naviLeftButton];
+//    UIButton *naviLeftButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    [naviLeftButton setImage:[UIImage imageNamed:@"navigation_message_image"] forState:UIControlStateNormal];
+//    [naviLeftButton setImage:[UIImage imageNamed:@"navigation_message_image"] forState:UIControlStateHighlighted];
+//    naviLeftButton.frame = CGRectMake(0, 0, 40, 40);
+//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:naviLeftButton];
     
-    UIButton *naviRightButton1 = [UIButton buttonWithType:UIButtonTypeCustom];
-    [naviRightButton1 setImage:[UIImage imageNamed:@"navigation_search_image"] forState:UIControlStateNormal];
-    [naviRightButton1 setImage:[UIImage imageNamed:@"navigation_search_image"] forState:UIControlStateHighlighted];
-    naviRightButton1.frame = CGRectMake(0, 0, 40, 40);
+//    UIButton *naviRightButton1 = [UIButton buttonWithType:UIButtonTypeCustom];
+//    [naviRightButton1 setImage:[UIImage imageNamed:@"navigation_search_image"] forState:UIControlStateNormal];
+//    [naviRightButton1 setImage:[UIImage imageNamed:@"navigation_search_image"] forState:UIControlStateHighlighted];
+//    naviRightButton1.frame = CGRectMake(0, 0, 40, 40);
     UIButton *naviRightButton2 = [UIButton buttonWithType:UIButtonTypeCustom];
     [naviRightButton2 setImage:[UIImage imageNamed:@"navigation_yaoqing_image"] forState:UIControlStateNormal];
     [naviRightButton2 setImage:[UIImage imageNamed:@"navigation_yaoqing_image"] forState:UIControlStateHighlighted];
     naviRightButton2.frame = CGRectMake(0, 0, 40, 40);
-    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithCustomView:naviRightButton1],[[UIBarButtonItem alloc] initWithCustomView:naviRightButton2]];
+    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithCustomView:naviRightButton2]];
     
-    naviLeftButton.tag = 100;
-    naviRightButton1.tag = 101;
+//    naviLeftButton.tag = 100;
+//    naviRightButton1.tag = 101;
     naviRightButton2.tag = 102;
     
-    naviLeftButton.imageEdgeInsets = UIEdgeInsetsMake(0, -25, 0, 0);
-    naviRightButton1.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, -5);
+//    naviLeftButton.imageEdgeInsets = UIEdgeInsetsMake(0, -25, 0, 0);
+//    naviRightButton1.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, -5);
     naviRightButton2.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, -10);
     
-    [naviLeftButton addTarget:self action:@selector(homeNaviButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    [naviRightButton1 addTarget:self action:@selector(homeNaviButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+//    [naviLeftButton addTarget:self action:@selector(homeNaviButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+//    [naviRightButton1 addTarget:self action:@selector(homeNaviButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [naviRightButton2 addTarget:self action:@selector(homeNaviButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     
 }
 
 - (void)homeNaviButtonClick:(UIButton *)button {
     switch (button.tag) {
-        case 100: {
-            CSMineMessageController *mineMessageVC = [[CSMineMessageController alloc] init];
-            [self.navigationController pushViewController:mineMessageVC animated:YES];
-        }
-            break;
-        case 101:{
-            JMHomeRootCategoryController *searchVC = [[JMHomeRootCategoryController alloc] init];
-            [self.navigationController pushViewController:searchVC animated:YES];
-        }
-            break;
+//        case 100: {
+//            CSMineMessageController *mineMessageVC = [[CSMineMessageController alloc] init];
+//            [self.navigationController pushViewController:mineMessageVC animated:YES];
+//        }
+//            break;
+//        case 101:{
+//            JMHomeRootCategoryController *searchVC = [[JMHomeRootCategoryController alloc] init];
+//            [self.navigationController pushViewController:searchVC animated:YES];
+//        }
+//            break;
         case 102:{
             CSInviteViewController *inviteVC = [[CSInviteViewController alloc] init];
             [self.navigationController pushViewController:inviteVC animated:YES];

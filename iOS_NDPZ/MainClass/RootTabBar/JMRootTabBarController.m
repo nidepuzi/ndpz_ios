@@ -10,9 +10,10 @@
 #import "RootNavigationController.h"
 #import "JMLogInViewController.h"
 #import "CSCustomeServiceController.h"
-#import "JMFineClassController.h"
+#import "CSTrainingController.h"
 #import "CSProfileShopController.h"
 #import "JMHomePageController.h"
+#import "CSPopAnimationViewController.h"
 
 #define kClassKey   @"rootVCClassString"
 #define kTitleKey   @"title"
@@ -68,8 +69,8 @@
                                    kImgKey    : @"tabBar_homeRoot_xuanpin",
                                    kSelImgKey : @"tabBar_homeRoot_xuanpin_selected"},
                                  
-                                 @{kClassKey  : @"JMFineClassController",
-                                   kTitleKey  : @"分享",
+                                 @{kClassKey  : @"CSTrainingController",
+                                   kTitleKey  : @"培训",
                                    kImgKey    : @"tabBar_homeRoot_share",
                                    kSelImgKey : @"tabBar_homeRoot_share_selected"},
                                  
@@ -105,7 +106,7 @@
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
     if ([viewController.tabBarItem.title isEqualToString:@"选品"]) {
         
-    }else if ([viewController.tabBarItem.title isEqualToString:@"分享"]) {
+    }else if ([viewController.tabBarItem.title isEqualToString:@"培训"]) {
     }else if ([viewController.tabBarItem.title isEqualToString:@"客服"]) {
     }else if ([viewController.tabBarItem.title isEqualToString:@"店铺"]) {
         if ([JMUserDefaults boolForKey:kIsLogin]) {
@@ -130,7 +131,7 @@
     }else if ([viewController.tabBarItem.title isEqualToString:@"选品"]) {
         [MobClick event:@"tabBarWithHomeRoot"];
         return YES;
-    }else if ([viewController.tabBarItem.title isEqualToString:@"分享"]) {
+    }else if ([viewController.tabBarItem.title isEqualToString:@"培训"]) {
         [MobClick event:@"tabBarWithMineCategory"];
         return YES;
     }

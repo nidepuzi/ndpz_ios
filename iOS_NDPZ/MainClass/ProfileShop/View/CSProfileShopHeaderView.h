@@ -13,6 +13,7 @@
 @protocol CSProfileShopHeaderViewDelegte <NSObject>
 
 - (void)composeProfileShopHeader:(CSProfileShopHeaderView *)headerView ButtonActionClick:(UIButton *)button;
+- (void)composeProfileShopHeaderTap:(CSProfileShopHeaderView *)headerView;
 
 @end
 

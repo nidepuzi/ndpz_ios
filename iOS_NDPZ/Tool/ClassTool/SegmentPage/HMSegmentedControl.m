@@ -1017,7 +1017,7 @@
 - (NSDictionary *)resultingSelectedDescTitleTextAttributes {
     NSDictionary *defaults = @{
                                NSFontAttributeName : [UIFont systemFontOfSize:12.0f],
-                               NSForegroundColorAttributeName : [UIColor orangeColor],
+                               NSForegroundColorAttributeName : [UIColor buttonEnabledBackgroundColor],
                                };
     
     

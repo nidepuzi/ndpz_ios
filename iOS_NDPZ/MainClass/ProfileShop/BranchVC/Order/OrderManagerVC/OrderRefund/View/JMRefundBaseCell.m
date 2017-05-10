@@ -245,7 +245,7 @@ NSString *const JMRefundBaseCellIdentifier = @"JMRefundBaseCellIdentifier";
     
     
     
-    [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[[refundModel.pic_path imageGoodsOrderCompression] JMUrlEncodedString]] placeholderImage:[UIImage imageNamed:@"profiles"]];
+    [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[[refundModel.pic_path imageGoodsOrderCompression] JMUrlEncodedString]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"]];
     self.iconImage.contentMode = UIViewContentModeScaleAspectFill;
     self.iconImage.layer.masksToBounds = YES;
     self.iconImage.layer.borderWidth = 0.5;
@@ -270,7 +270,7 @@ NSString *const JMRefundBaseCellIdentifier = @"JMRefundBaseCellIdentifier";
         make.height.mas_equalTo(@0);
     }];
     
-    [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[[refundModel.pic_path imageGoodsOrderCompression] JMUrlEncodedString]] placeholderImage:[UIImage imageNamed:@"profiles"]];
+    [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[[refundModel.pic_path imageGoodsOrderCompression] JMUrlEncodedString]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"]];
     self.iconImage.contentMode = UIViewContentModeScaleAspectFill;
     self.iconImage.layer.masksToBounds = YES;
     self.iconImage.layer.borderWidth = 0.5;

@@ -59,7 +59,7 @@
     if ([NSString isStringEmpty:addressStr]) {
         self.nameL.text = @"";
         self.PhoneL.text = @"";
-        self.addressL.text = @"退货地址请咨询小鹿美美客服哦";
+        self.addressL.text = @"退货地址请咨询你的铺子客服哦";
         self.addressL.textColor = [UIColor redColor];
         return ;
     }
@@ -82,7 +82,7 @@
     }else {
         self.nameL.text = @"";
         self.PhoneL.text = @"";
-        self.addressL.text = @"退货地址请咨询小鹿美美客服哦";
+        self.addressL.text = @"退货地址请咨询你的铺子客服哦";
         self.addressL.textColor = [UIColor redColor];
     }
     

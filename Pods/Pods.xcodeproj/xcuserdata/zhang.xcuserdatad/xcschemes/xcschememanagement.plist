@@ -54,10 +54,15 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>STPopup.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>219D8B68654FEA2E89D396349C2FBC53</key>
+		<key>3F36667F168FEB0CC49FF7F37E9C6B1D</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -72,7 +77,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>71142DBE1E8385566C741FF06B202036</key>
+		<key>7516B38F592765522F5FE736B8C99C58</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>778BF42A90768E00F1233FABD5BEC9B8</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>8BB034E2D6BAD1FDE9542FA563A49881</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -87,22 +102,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>AC07C0DB3BA21CD5195C5CE2CC2E05D6</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>AF7CB1533205F819BEA8BED0998147DE</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>D058B89EB3B3DF45457A2DCD3971AFFE</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>D0EA7BD0DF7B64D1D22AE99C93B3613D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E28D6C4FFEE0331D9152358EE6A61659</key>
 		<dict>
 			<key>primary</key>
 			<true/>

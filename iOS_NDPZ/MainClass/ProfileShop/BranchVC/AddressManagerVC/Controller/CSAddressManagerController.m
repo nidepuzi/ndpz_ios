@@ -70,12 +70,10 @@ static NSString *CSAddressManagerCellIdentifier = @"CSAddressManagerCellIdentifi
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self loadAddressData];
-    [MobClick beginLogPageView:@"CSAddressManagerController"];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [MobClick endLogPageView:@"CSAddressManagerController"];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];

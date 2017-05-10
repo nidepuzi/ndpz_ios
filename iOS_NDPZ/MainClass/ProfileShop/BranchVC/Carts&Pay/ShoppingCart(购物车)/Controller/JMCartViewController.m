@@ -54,7 +54,6 @@
 }
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [MobClick beginLogPageView:@"ShoppingCart"];
     
     [[JMGlobal global] showWaitLoadingInView:self.view];
     isEmpty = YES;
@@ -66,7 +65,6 @@
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [MobClick endLogPageView:@"ShoppingCart"];
 }
 
 - (void)viewDidLoad {

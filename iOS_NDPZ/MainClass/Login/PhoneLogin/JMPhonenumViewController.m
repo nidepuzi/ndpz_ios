@@ -67,7 +67,7 @@
     [self createNavigationBarWithTitle:@"手机号登录" selecotr:@selector(btnClickedLogin:)];
     
     [self prepareUI];
-    [self prepareInitUI];
+//    [self prepareInitUI];
     
     //设置记住密码的默认值
     self.rememberPwdBtn.selected = [JMUserDefaults boolForKey:rememberPwdKey];
@@ -130,8 +130,8 @@
     [self.bottomView addSubview:rememberPwdBtn];
     self.rememberPwdBtn = rememberPwdBtn;
     [rememberPwdBtn setAdjustsImageWhenHighlighted:NO];
-    [rememberPwdBtn setImage:[UIImage imageNamed:@"empty"] forState:UIControlStateNormal];
-    [rememberPwdBtn setImage:[UIImage imageNamed:@"remember_password"] forState:UIControlStateSelected];
+    [rememberPwdBtn setImage:[UIImage imageNamed:@"cs_duihao_nomal"] forState:UIControlStateNormal];
+    [rememberPwdBtn setImage:[UIImage imageNamed:@"cs_duihao_selected"] forState:UIControlStateSelected];
     [rememberPwdBtn setTitle:@"记住密码" forState:UIControlStateNormal];
     [rememberPwdBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     rememberPwdBtn.titleLabel.font = [UIFont systemFontOfSize:13.];
@@ -154,7 +154,6 @@
     [forgetPwdBtn addTarget:self action:@selector(forgetPasswordClicked:) forControlEvents:UIControlEventTouchUpInside];
     
     
-    
     UIButton *loginBtn = [UIButton new];
     [self.bottomView addSubview:loginBtn];
     self.loginBtn = loginBtn;
@@ -175,7 +174,65 @@
     [self.registeredButton addTarget:self action:@selector(registeredButtonClicked) forControlEvents:UIControlEventTouchUpInside];
 
     
+    kWeakSelf
+    
+    [self.phoneNumTextF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(weakSelf.lineView).offset(64);
+        make.left.equalTo(weakSelf.lineView).offset(15);
+        make.right.equalTo(weakSelf.lineView).offset(-15);
+        make.height.mas_equalTo(60);
+    }];
+    
+    [self.passwordTextF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(weakSelf.phoneNumTextF.mas_bottom);
+        make.left.equalTo(weakSelf.lineView).offset(15);
+        make.right.equalTo(weakSelf.isSeePwdBtn.mas_left).offset(-15);
+        make.height.mas_equalTo(60);
+    }];
+    //密码是否可见的按钮
+    [self.isSeePwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(weakSelf.phoneNumTextF.mas_bottom).offset(10);
+        make.right.equalTo(weakSelf.lineView).offset(-10);
+        make.width.mas_equalTo(@40);
+        make.height.mas_equalTo(@40);
+    }];
+    
+    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(weakSelf.passwordTextF.mas_bottom);
+        make.left.right.bottom.equalTo(weakSelf.lineView);
+    }];
+    
+    [self.rememberPwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(weakSelf.bottomView).offset(10);
+        make.left.equalTo(weakSelf.bottomView).offset(10);
+        make.height.mas_equalTo(@25);
+        make.width.mas_equalTo(@100);
+    }];
+    
+    [self.forgetPwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(weakSelf.bottomView).offset(10);
+        make.right.equalTo(weakSelf.bottomView).offset(-10);
+        make.height.mas_equalTo(@30);
+        make.width.mas_equalTo(@80);
+    }];
+    
+    [self.loginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(weakSelf.bottomView).offset(60);
+        make.centerX.equalTo(weakSelf.bottomView.mas_centerX);
+        make.width.mas_equalTo(SCREENWIDTH - 30);
+        make.height.mas_equalTo(@43);
+    }];
+    
+    CGFloat registW = [@"如何注册?" widthWithHeight:20. andFont:13.].width + 20;
+    [self.registeredButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(weakSelf.loginBtn.mas_bottom).offset(10);
+        make.centerX.equalTo(weakSelf.loginBtn.mas_centerX);
+        make.width.mas_equalTo(@(registW));
+    }];
+    
+
 }
+
 
 #pragma mark --- 记住密码按钮的点击
 - (void)remenberClick:(UIButton *)sender {
@@ -371,78 +428,15 @@
 - (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
 }
-- (void)prepareInitUI {
-    
-    kWeakSelf
-    
-    [self.phoneNumTextF mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.lineView).offset(64);
-        make.left.equalTo(weakSelf.lineView).offset(15);
-        make.right.equalTo(weakSelf.lineView).offset(-15);
-        make.height.mas_equalTo(60);
-    }];
-    
-    [self.passwordTextF mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.phoneNumTextF.mas_bottom);
-        make.left.equalTo(weakSelf.lineView).offset(15);
-        make.right.equalTo(weakSelf.isSeePwdBtn.mas_left).offset(-15);
-        make.height.mas_equalTo(60);
-    }];
-    //密码是否可见的按钮
-    [self.isSeePwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.phoneNumTextF.mas_bottom).offset(10);
-        make.right.equalTo(weakSelf.lineView).offset(-10);
-        make.width.mas_equalTo(@40);
-        make.height.mas_equalTo(@40);
-    }];
-    
-    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.passwordTextF.mas_bottom);
-        make.left.right.bottom.equalTo(weakSelf.lineView);
-    }];
-    
-    [self.rememberPwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.bottomView).offset(10);
-        make.left.equalTo(weakSelf.bottomView).offset(10);
-        make.height.mas_equalTo(@25);
-        make.width.mas_equalTo(@100);
-    }];
-    
-    [self.forgetPwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.bottomView).offset(10);
-        make.right.equalTo(weakSelf.bottomView).offset(-10);
-        make.height.mas_equalTo(@30);
-        make.width.mas_equalTo(@80);
-    }];
-    
-    [self.loginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.bottomView).offset(60);
-        make.centerX.equalTo(weakSelf.bottomView.mas_centerX);
-        make.width.mas_equalTo(SCREENWIDTH - 30);
-        make.height.mas_equalTo(@43);
-    }];
-    
-    CGFloat registW = [@"如何注册?" widthWithHeight:20. andFont:13.].width + 20;
-    [self.registeredButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.loginBtn.mas_bottom).offset(10);
-        make.centerX.equalTo(weakSelf.loginBtn.mas_centerX);
-        make.width.mas_equalTo(@(registW));
-    }];
-    
-    
-}
-
 - (void)btnClickedLogin:(UIButton *)button{
     [self.navigationController popViewControllerAnimated:YES];
 }
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [MobClick beginLogPageView:@"JMPhonenumViewController"];
     self.loginBtn.enabled = YES;
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [MobClick endLogPageView:@"JMPhonenumViewController"];
 }
 
 - (void)backApointInterface {
@@ -457,7 +451,7 @@
     }
 }
 - (void)registeredButtonClicked {
-    NSString *urlString = @"https://m.xiaolumeimei.com/mall/boutiqueinvite";
+    NSString *urlString = @"http://m.nidepuzi.com/mall/boutiqueinvite";
     NSString *active = @"myInvite";
     NSString *titleName = @"我的邀请";
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];

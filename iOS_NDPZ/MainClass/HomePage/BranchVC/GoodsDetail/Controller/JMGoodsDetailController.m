@@ -189,13 +189,11 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.hidden = YES;
     [MobClick event:@"checkGoodsDetail"];
-    [MobClick beginLogPageView:@"JMGoodsDetailController"];
     [self loadCatrsNumData];
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     self.navigationController.navigationBar.hidden = NO;
-    [MobClick endLogPageView:@"JMGoodsDetailController"];
     if (self.pageView) {
         [self.pageView endAutoScroll];
     }
@@ -713,7 +711,7 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
             if (typeNumber == 3) {
                 [MobClick event:@"TeamAddShoppingCartSuccess"];
                 [self getCartsFirstGoodsInfoGoodsTypeNumber:@(typeNumber) Parmer:paramer];
-            }else if (typeNumber == 5 && _isUserClickAddCart == NO) {
+            }else if (typeNumber == 0 && _isUserClickAddCart == NO) {
                 [MobClick event:@"TspecialAddShoppingCartSuccess"];
                 [self getCartsFirstGoodsInfoGoodsTypeNumber:@(typeNumber) Parmer:paramer];
             }else {
@@ -778,13 +776,13 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
     self.navigationView = [UIView new];
     self.navigationView.frame = CGRectMake(0, 0, SCREENWIDTH, 64);
     [self.view addSubview:self.navigationView];
-    self.navigationView.backgroundColor = [UIColor whiteColor];
+    self.navigationView.backgroundColor = [UIColor buttonEnabledBackgroundColor];
     self.navigationView.alpha = 0;
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.navigationView addSubview:button];
     //    button.frame = CGRectMake(10, 17, 100, NavigationMaskWH);
-    [button setImage:[UIImage imageNamed:@"goodsDetailBackColorImage"] forState:UIControlStateNormal];
+    [button setImage:[UIImage imageNamed:@"goodsDetailBackImage"] forState:UIControlStateNormal];
     button.tag = 100;
     [button addTarget:self action:@selector(navigationBarButton:) forControlEvents:UIControlEventTouchUpInside];
     self.backButton = button;
@@ -796,7 +794,7 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
     }];
     UIButton *shareButtoncolor = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.navigationView addSubview:shareButtoncolor];
-    [shareButtoncolor setImage:[UIImage imageNamed:@"goodsDetailShareColorImage"] forState:UIControlStateNormal];
+    [shareButtoncolor setImage:[UIImage imageNamed:@"goodsDetailShareImage"] forState:UIControlStateNormal];
     shareButtoncolor.layer.cornerRadius = NavigationMaskWH / 2;
     shareButtoncolor.tag = 101;
     [shareButtoncolor addTarget:self action:@selector(navigationBarButton:) forControlEvents:UIControlEventTouchUpInside];

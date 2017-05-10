@@ -54,7 +54,6 @@
     self.navigationController.navigationBarHidden = NO;
     [JMNotificationCenter addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardWillShowNotification object:nil];
     [JMNotificationCenter addObserver:self selector:@selector(keyboardDidHiden:) name:UIKeyboardWillHideNotification object:nil];
-    [MobClick beginLogPageView:@"ShenQingTuiHuoController"];
 
 }
 
@@ -82,7 +81,6 @@
         self.changeStatusBlock(isChangeBtn);
     }
     
-    [MobClick endLogPageView:@"ShenQingTuiHuoController"];
 
 }
 

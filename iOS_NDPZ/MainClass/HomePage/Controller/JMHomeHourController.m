@@ -56,11 +56,9 @@
 #pragma mark 生命周期函数
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [MobClick beginLogPageView:@"JMHomeHourController"];
 }
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [MobClick endLogPageView:@"JMHomeHourController"];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -143,17 +141,20 @@
 #pragma mark JMHomeHourCellDelegate 点击事件
 - (void)composeHourCell:(JMHomeHourCell *)cell Model:(JMHomeHourModel *)model ButtonClick:(UIButton *)button {
     if (button.tag == 100) {
-        if ([[JMGlobal global] userVerificationLogin]) {
-            NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/pmt/ninepic/page_list?model_id=%@",Root_URL,model.model_id];
-            //    urlString = [NSString stringWithFormat:@"%@?model_id=%@",urlString,model.fineCouponModelID];
-            JMPushingDaysController *pushVC = [[JMPushingDaysController alloc] init];
-            //        pushVC.isPushingDays = YES;
-            pushVC.pushungDaysURL = urlString;
-            pushVC.navTitle = @"文案精选";
-            [self.navigationController pushViewController:pushVC animated:YES];
-        }else {
-            [[JMGlobal global] showLoginViewController];
-        }
+        JMGoodsDetailController *detailVC = [[JMGoodsDetailController alloc] init];
+        detailVC.goodsID = model.model_id;
+        [self.navigationController pushViewController:detailVC animated:YES];
+//        if ([[JMGlobal global] userVerificationLogin]) {
+//            NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/pmt/ninepic/page_list?model_id=%@",Root_URL,model.model_id];
+//            //    urlString = [NSString stringWithFormat:@"%@?model_id=%@",urlString,model.fineCouponModelID];
+//            JMPushingDaysController *pushVC = [[JMPushingDaysController alloc] init];
+//            //        pushVC.isPushingDays = YES;
+//            pushVC.pushungDaysURL = urlString;
+//            pushVC.navTitle = @"文案精选";
+//            [self.navigationController pushViewController:pushVC animated:YES];
+//        }else {
+//            [[JMGlobal global] showLoginViewController];
+//        }
         
     }else if (button.tag == 101) {
         NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/share/model?model_id=%@",Root_URL,model.model_id];

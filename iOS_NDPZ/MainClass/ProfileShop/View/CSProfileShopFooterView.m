@@ -49,17 +49,22 @@
     [yueButton addSubview:ableBlanceLabel];
     ableBlanceLabel.text = @"可用余额";
     
+    UIButton *outBlancePushInButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [sectionView1 addSubview:outBlancePushInButton];
+    //    [outBlancePushInButton setImage:[UIImage imageNamed:@"cs_pushInImage"] forState:UIControlStateNormal];
+    outBlancePushInButton.tag = 100;
+    [outBlancePushInButton addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
+    
     UILabel *outBlanceLabel = [UILabel new];
     outBlanceLabel.textColor = [UIColor buttonTitleColor];
     outBlanceLabel.font = CS_UIFontSize(14.);
-    [sectionView1 addSubview:outBlanceLabel];
+    [outBlancePushInButton addSubview:outBlanceLabel];
     outBlanceLabel.text = @"提现";
     
-    UIButton *outBlancePushInButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [sectionView1 addSubview:outBlancePushInButton];
-    [outBlancePushInButton setImage:[UIImage imageNamed:@"cs_pushInImage"] forState:UIControlStateNormal];
-    outBlancePushInButton.tag = 100;
-    [outBlancePushInButton addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
+    UIImageView *csPushImage1 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cs_pushInImage"]];
+    [outBlancePushInButton addSubview:csPushImage1];
+    
+    
     
     [yueButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.bottom.equalTo(sectionView1);
@@ -77,21 +82,27 @@
         make.centerX.equalTo(yueButton.mas_centerX);
         make.centerY.equalTo(yueButton.mas_centerY).offset(10);
     }];
-    [outBlanceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(sectionView1.mas_centerY);
-        make.right.equalTo(outBlancePushInButton.mas_left);
-    }];
     [outBlancePushInButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(sectionView1);
         make.centerY.equalTo(sectionView1.mas_centerY);
-        make.width.mas_equalTo(@(30));
+        make.width.mas_equalTo(@(100));
         make.height.mas_equalTo(@(50));
+    }];
+    [outBlanceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(outBlancePushInButton.mas_centerY);
+        make.right.equalTo(csPushImage1.mas_left).offset(-10);
+    }];
+    [csPushImage1 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(outBlancePushInButton).offset(-15);
+        make.centerY.equalTo(outBlancePushInButton.mas_centerY);
+        make.width.mas_equalTo(@8);
+        make.height.mas_equalTo(@15);
     }];
     
     
     
-    NSArray *section1Title = @[@"累计收益",@"销售管理",@"优惠券",@"收货地址"];
-    NSArray *section1Image = @[@"cs_profileShop_leijishouyi",@"cs_profileShop_xiaoshou",@"cs_profileShop_coupon",@"cs_profileShop_address"];
+    NSArray *section1Title = @[@"累计收益",@"业绩管理",@"优惠券",@"收货地址"];
+    NSArray *section1Image = @[@"cs_profileShop_leijishouyi",@"cs_profileShop_yeji",@"cs_profileShop_coupon",@"cs_profileShop_address"];
     CGFloat spaceLine = SCREENWIDTH / 4;
     CGFloat itemHeight = 80.;
     for (int i = 0; i < section1Title.count; i++) {
@@ -149,32 +160,44 @@
     [sectionView2 addSubview:orderGuanliLabel];
     orderGuanliLabel.text = @"订单管理";
     
-    UILabel *allOrderLabel = [UILabel new];
-    allOrderLabel.textColor = [UIColor buttonTitleColor];
-    allOrderLabel.font = CS_UIFontSize(14.);
-    [sectionView2 addSubview:allOrderLabel];
-    allOrderLabel.text = @"全部订单";
-    
     UIButton *orderPushInButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [sectionView2 addSubview:orderPushInButton];
     orderPushInButton.tag = 105;
     [orderPushInButton addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
-    [orderPushInButton setImage:[UIImage imageNamed:@"cs_pushInImage"] forState:UIControlStateNormal];
+//    [orderPushInButton setImage:[UIImage imageNamed:@"cs_pushInImage"] forState:UIControlStateNormal];
+    
+    UILabel *allOrderLabel = [UILabel new];
+    allOrderLabel.textColor = [UIColor buttonTitleColor];
+    allOrderLabel.font = CS_UIFontSize(14.);
+    [orderPushInButton addSubview:allOrderLabel];
+    allOrderLabel.text = @"全部订单";
+    
+    UIImageView *csPushImage2 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cs_pushInImage"]];
+    [orderPushInButton addSubview:csPushImage2];
+    
     
     [orderGuanliLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(sectionView2).offset(15);
         make.centerY.equalTo(sectionView2.mas_centerY);
     }];
-    [allOrderLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(sectionView2.mas_centerY);
-        make.right.equalTo(orderPushInButton.mas_left);
-    }];
     [orderPushInButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(sectionView2);
         make.centerY.equalTo(sectionView2.mas_centerY);
-        make.width.mas_equalTo(@(30));
+        make.width.mas_equalTo(@(100));
         make.height.mas_equalTo(@(50));
     }];
+    [allOrderLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(orderPushInButton.mas_centerY);
+        make.right.equalTo(csPushImage2.mas_left).offset(-10);
+    }];
+    [csPushImage2 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(orderPushInButton).offset(-15);
+        make.centerY.equalTo(orderPushInButton.mas_centerY);
+        make.width.mas_equalTo(@8);
+        make.height.mas_equalTo(@15);
+    }];
+
+    
     NSArray *section2Title = @[@"待付款",@"待发货",@"已完成"];
     NSArray *section2Image = @[@"cs_profileShop_orderWaitPay",@"cs_profileShop_orderWaitFahuo",@"cs_profileShop_orderWancheng"];
     CGFloat spaceLine2 = SCREENWIDTH / 3;
@@ -215,10 +238,22 @@
             make.centerX.equalTo(iconImage.mas_centerX);
         }];
         
-        
-        
+        UIView *lineV = [UIView new];
+        [self addSubview:lineV];
+        lineV.backgroundColor = [UIColor lineGrayColor];
+        kWeakSelf
+        [lineV mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.right.equalTo(weakSelf);
+            make.top.equalTo(sectionView2.mas_bottom).offset(80);
+            make.height.mas_equalTo(@1);
+        }];
         
     }
+    
+    
+    
+    
+    
     
 
 }

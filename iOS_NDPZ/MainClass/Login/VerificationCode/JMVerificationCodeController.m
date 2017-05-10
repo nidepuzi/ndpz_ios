@@ -15,7 +15,9 @@
 #import "WebViewController.h"
 #import "JMRootTabBarController.h"
 #import "Udesk.h"
-
+#import "JMRichTextTool.h"
+#import <STPopup/STPopup.h>
+#import "CSPopDescriptionController.h"
 
 @interface JMVerificationCodeController () <JMSliderLockViewDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate> {
     BOOL isUnlock;
@@ -59,13 +61,11 @@
 }
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [MobClick beginLogPageView:@"JMVerificationCodeController"];
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.phoneNumberField resignFirstResponder];
     [self.verificationCodeField resignFirstResponder];
-    [MobClick endLogPageView:@"JMVerificationCodeController"];
 }
 -(void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
@@ -228,28 +228,27 @@
         case SMSVerificationCodeWithLogin:      // 验证码登录
             [self.sureButton setTitle:@"登录" forState:UIControlStateNormal];
             self.verificationCodeField.placeholder = @"请输入验证码";
-            self.title = @"短信登录";
+            self.navigationItem.title = @"短信登录";
             break;
         case SMSVerificationCodeWithRegistered: // 注册新用户
             [self.sureButton setTitle:@"确定" forState:UIControlStateNormal];
-            self.title = @"手机注册";
+            self.navigationItem.title = @"手机注册";
             break;
         case SMSVerificationCodeWithBind:       // 微信登录用户绑定手机号
             [self.sureButton setTitle:@"绑定手机号" forState:UIControlStateNormal];
-            self.title = @"手机绑定";
+            self.navigationItem.title = @"手机绑定";
             break;
         case SMSVerificationCodeWithChangePWD:  // 修改密码
             [self.sureButton setTitle:@"下一步" forState:UIControlStateNormal];
-            self.title = @"修改密码";
+            self.navigationItem.title = @"修改密码";
             break;
         case SMSVerificationCodeWithForgetPWD:  // 忘记密码
             [self.sureButton setTitle:@"下一步" forState:UIControlStateNormal];
-            self.title = @"忘记密码";
+            self.navigationItem.title = @"忘记密码";
             break;
         default:
             break;
     }
-    [self createNavigationBarWithTitle:self.title selecotr:@selector(backClick)];
     
     if (self.verificationCodeType == SMSVerificationCodeWithBind) {
         self.skipButton = [JMSelecterButton buttonWithType:UIButtonTypeCustom];
@@ -262,6 +261,33 @@
         self.maskScrollView.contentSize = CGSizeMake(SCREENWIDTH, self.sureButton.cs_max_Y + 20);
     }
     
+    UILabel *registDescLabel = [UILabel new];
+    registDescLabel.textColor = [UIColor dingfanxiangqingColor];
+    registDescLabel.font = CS_UIFontSize(12.);
+    registDescLabel.textAlignment = NSTextAlignmentCenter;
+    registDescLabel.numberOfLines = 0;
+    [self.view addSubview:registDescLabel];
+    
+    NSString *allString = @"登录代表您以阅读并同意《你的铺子微店用户服务协议》内容";
+    registDescLabel.attributedText = [JMRichTextTool cs_changeColorWithColor:[UIColor buttonTitleColor] AllString:allString SubStringArray:@[@"《你的铺子微店用户服务协议》"]];
+    registDescLabel.userInteractionEnabled = YES;
+    UITapGestureRecognizer *termsTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(termsTapClick)];
+    [registDescLabel addGestureRecognizer:termsTap];
+    kWeakSelf
+    [registDescLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(weakSelf.view).offset(10);
+        make.right.equalTo(weakSelf.view).offset(-10);
+        make.bottom.equalTo(weakSelf.view).offset(-20);
+        make.centerX.equalTo(weakSelf.view.mas_centerX);
+    }];
+    
+}
+- (void)termsTapClick {
+    CSPopDescriptionController *popDescVC = [[CSPopDescriptionController alloc] init];
+    popDescVC.popDescType = popDescriptionTypeRegist;
+    STPopupController *popupController = [[STPopupController alloc] initWithRootViewController:popDescVC];
+    popupController.containerView.layer.cornerRadius = 5;
+    [popupController presentInViewController:self];
 }
 - (UITextField *)createTextFieldWithFrame:(CGRect)frame PlaceHolder:(NSString *)placeHolder KeyboardType:(UIKeyboardType)keyboardType {
     UITextField *textField = [[UITextField alloc] initWithFrame:frame];
@@ -278,7 +304,7 @@
     [self.phoneNumberField resignFirstResponder];
     [self.verificationCodeField resignFirstResponder];
     if (self.userNotXLMM) {
-        [MBProgressHUD showMessage:@"您还不是小鹿精英妈妈~!"];
+        [MBProgressHUD showMessage:@"您还不是你的铺子会员~!"];
         return;
     }
     isClickGetCode = YES;
@@ -489,7 +515,7 @@
         BOOL kIsVIP = NO;
         if (kIsXLMMStatus) {
             NSDictionary *xlmmDict = responseObject[@"xiaolumm"];
-            kIsVIP = [xlmmDict[@"last_renew_type"] integerValue] >= 90 ? YES : NO;
+            kIsVIP = [xlmmDict[@"status"] isEqual:@"effect"] ? YES : NO;
         }
         [JMUserDefaults setBool:kIsLoginStatus forKey:kIsLogin];
         [JMUserDefaults setBool:kIsXLMMStatus forKey:kISXLMM];
@@ -764,7 +790,7 @@
     [UdeskManager createCustomerWithCustomerInfo:parameters];
     UIButton *serViceButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 44)];
     [serViceButton addTarget:self action:@selector(serViceButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    [serViceButton setTitle:@"小鹿客服" forState:UIControlStateNormal];
+    [serViceButton setTitle:@"铺子客服" forState:UIControlStateNormal];
     [serViceButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     serViceButton.titleLabel.font = [UIFont systemFontOfSize:14.];
     //    UIImageView *serviceImage = [[UIImageView alloc] initWithFrame:CGRectMake(30, 5, 30, 30)];

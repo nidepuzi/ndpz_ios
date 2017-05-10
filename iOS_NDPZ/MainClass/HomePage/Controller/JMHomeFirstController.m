@@ -114,12 +114,10 @@ NSString *const JMPageScrollControllerLeaveTopNotifition = @"JMPageScrollControl
 #pragma mark  视图生命周期函数
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [MobClick beginLogPageView:@"main"];
     
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [MobClick endLogPageView:@"main"];
     if (self.pageView) {
         [self.pageView endAutoScroll];
     }

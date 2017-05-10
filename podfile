@@ -11,6 +11,7 @@ pod 'MJExtension', '~> 3.0.13'
 pod 'RESideMenu', '~> 4.0.7'
 pod 'MBProgressHUD', '~> 1.0.0'
 pod 'UMengAnalytics-NO-IDFA'
+pod 'STPopup'
 
 
 

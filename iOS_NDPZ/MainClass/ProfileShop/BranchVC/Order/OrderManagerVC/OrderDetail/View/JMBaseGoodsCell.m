@@ -106,7 +106,7 @@
     [self.contentView addSubview:self.earningButton];
     [self.earningButton sizeToFit];
     self.earningButton.titleLabel.font = CS_UIFontSize(13.);
-    [self.earningButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+    [self.earningButton setTitleColor:[UIColor buttonEnabledBackgroundColor] forState:UIControlStateNormal];
 }
 - (void)layoutUI {
     kWeakSelf

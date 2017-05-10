@@ -20,7 +20,7 @@
 
 #define login @"login"
 
-#define appleID @"so.xiaolu.m.xiaolumeimei"
+#define appleID @"com.danlai.nidepuzi"
 
 @interface AppDelegate () <XHLaunchAdDelegate> {
     NSString *_imageUrl;
@@ -52,7 +52,7 @@
         //qq分享
         [UMSocialQQHandler setQQWithAppId:@"1105009062" appKey:@"V5H2L8ij9BNx6qQw" url:@"https://www.umeng.com/social"];
         //微信分享
-        [UMSocialWechatHandler setWXAppId:@"3c7b4e3eb5ae4cfb132b2ac060a872ee" appSecret:@"wx25fcb32689872499" url:@"https://www.umeng.com/social"];
+        [UMSocialWechatHandler setWXAppId:@"3c7b4e3eb5ae4cfb132b2ac060a872ee" appSecret:@"wxa6e8010fa0b31eb3" url:@"https://www.umeng.com/social"]; // wx25fcb32689872499
         //微博分享
         [WeiboSDK registerApp:@"2475629754"];
         [WXApi registerApp:@"wxa6e8010fa0b31eb3" withDescription:@"weixin"];
@@ -80,6 +80,8 @@
         imageAdconfiguration.skipButtonType = SkipTypeTimeText;
         imageAdconfiguration.showEnterForeground = NO;
         [XHLaunchAd imageAdWithImageAdConfiguration:imageAdconfiguration delegate:self];
+        
+        [self newFeature];
     } WithFail:^(NSError *error) {
     } Progress:^(float progress) { 
         
@@ -93,16 +95,16 @@
     JMRootTabBarController *tabBarVC = [[JMRootTabBarController alloc] init];
     self.window.rootViewController = tabBarVC;
     [self.window makeKeyAndVisible];
-//    NSInteger netWorkStatus = [AFNetworkReachabilityManager manager].networkReachabilityStatus;
-//    if (netWorkStatus == 0) {
-//        [[JMGlobal global] showLoginViewController];
-//        return ;
-//    }
-//    [self lodaUserInfo];
-//    [XHLaunchAd setWaitDataDuration:2];
-    [self cancleWaitTimerAndReuestLaunchImage];
-    [self getLaunchImage];
-    [self newFeature];
+    NSInteger netWorkStatus = [AFNetworkReachabilityManager manager].networkReachabilityStatus;
+    if (netWorkStatus == 0) {
+        [[JMGlobal global] showLoginViewController];
+        return ;
+    }
+    [self lodaUserInfo];
+    [XHLaunchAd setWaitDataDuration:2];
+//    [self cancleWaitTimerAndReuestLaunchImage];
+//    [self getLaunchImage];
+    
 }
 - (void)newFeature {
     //1.获取当前版本号
@@ -132,21 +134,24 @@
         BOOL kIsVIP = NO;
         if (kIsXLMMStatus) {
             NSDictionary *xlmmDict = responseObject[@"xiaolumm"];
-            kIsVIP = [xlmmDict[@"last_renew_type"] integerValue] >= 90 ? YES : NO;
+            kIsVIP = [xlmmDict[@"status"] isEqual:@"effect"] ? YES : NO;
         }
-//        if (kIsVIP) {
-//            if (kIsBindPhone) {
-//                return ;
-//            }
-//        }
-//        [[JMGlobal global] showLoginViewController];
+        if (kIsVIP) {
+            if (kIsBindPhone) {
+                return ;
+            }else {
+                [[JMGlobal global] showLoginViewController];
+            }
+        }else {
+            [[JMGlobal global] showLoginViewController];
+        }
         isSureLogin = YES;
 //        [self showNewFeatureView];
     } failure:^(NSInteger errorCode) {
         isSureLogin = NO;
         [self cancleWaitTimerAndReuestLaunchImage];
 //        [self showNewFeatureView];
-//        [[JMGlobal global] showLoginViewController];
+        [[JMGlobal global] showLoginViewController];
     }];
 }
 - (void)cancleWaitTimerAndReuestLaunchImage {

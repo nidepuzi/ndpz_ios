@@ -39,14 +39,12 @@
 }
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [MobClick beginLogPageView:@"JMInstallPasswordController"];
     
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.pwdTextField1 resignFirstResponder];
     [self.pwdTextField2 resignFirstResponder];
-    [MobClick endLogPageView:@"JMInstallPasswordController"];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
