@@ -311,7 +311,7 @@
 #pragma mark ----- 创建导航栏按钮
 - (void)createTabBarButton {
     UIButton *button1 = [[UIButton alloc] initWithFrame:CGRectMake(SCREENWIDTH - 20, 0, 44, 44)];
-    UIImageView *imageView1 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"shareIconImage2.png"]];
+    UIImageView *imageView1 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"shareIconImage2"]];
     imageView1.frame = CGRectMake(25, 13, 20, 20);
     [button1 addSubview:imageView1];
     [button1 addTarget:self action:@selector(rightBarButtonAction) forControlEvents:UIControlEventTouchUpInside];

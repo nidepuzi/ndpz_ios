@@ -107,7 +107,7 @@
     footView.backgroundColor = [UIColor whiteColor];
     
     UIImageView *oneImage = [UIImageView new];
-    oneImage.image = [UIImage imageNamed:@"refundSuccessful"];
+    oneImage.image = [UIImage imageNamed:@"cs_duihao_selected"];
     [footView addSubview:oneImage];
     
     UILabel *shuxian = [UILabel new];
