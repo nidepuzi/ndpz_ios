@@ -14,7 +14,7 @@
 @property (strong, nonatomic) UIImageView *imageView;
 
 
-
+// gaidong /// 
 @end
 
 @implementation JMHomeHeaderCell
@@ -31,12 +31,13 @@
     self.imageView = [UIImageView new];
     [self addSubview:self.imageView];
     self.imageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.imageView.clipsToBounds = YES;
     
     kWeakSelf
     [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.top.equalTo(weakSelf);
         make.width.mas_equalTo(SCREENWIDTH);
-        make.height.mas_equalTo(SCREENWIDTH * 0.4);
+        make.height.mas_equalTo(SCREENWIDTH * 0.45);
     }];
     
     
@@ -47,7 +48,7 @@
     NSString *imageString = topDic[@"pic_link"];
     //    NSMutableString *newImageUrl = [NSMutableString stringWithString:imageString];
     //    [newImageUrl appendString:@"?"];
-    [self.imageView sd_setImageWithURL:[NSURL URLWithString:[[imageString JMUrlEncodedString] imageNormalCompression]] placeholderImage:nil];
+    [self.imageView sd_setImageWithURL:[NSURL URLWithString:[[imageString JMUrlEncodedString] imageNormalCompression]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"]];
     
     
     

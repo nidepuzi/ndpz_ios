@@ -19,7 +19,7 @@
 #import "JMRichTextTool.h"
 #import "JMPageContentView.h"
 
-#define contentOffsetY SCREENWIDTH * 0.4
+#define contentOffsetY SCREENWIDTH * 0.45
 
 NSString *const JMPageScrollControllerLeaveTopNotifition = @"JMPageScrollControllerLeaveTopNotifition";
 

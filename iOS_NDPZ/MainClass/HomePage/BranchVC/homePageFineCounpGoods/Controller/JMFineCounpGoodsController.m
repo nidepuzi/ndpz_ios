@@ -124,7 +124,7 @@
     self.tableView.rowHeight = SCREENWIDTH * 0.5 + 10;
     [self.view addSubview:self.tableView];
     [self.tableView registerClass:[JMHomeActiveCell class] forCellReuseIdentifier:JMHomeActiveCellIdentifier];
-    self.pageView = [[JMAutoLoopPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENWIDTH * 0.4)];
+    self.pageView = [[JMAutoLoopPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENWIDTH * 0.45)];
     self.pageView.dataSource = self;
     self.pageView.delegate = self;
     self.pageView.isCreatePageControl = YES;
