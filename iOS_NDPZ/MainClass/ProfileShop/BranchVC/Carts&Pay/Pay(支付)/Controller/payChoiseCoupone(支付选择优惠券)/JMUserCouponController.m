@@ -138,7 +138,7 @@
         bottomHeight = 60.f;
     }
     
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT - 64 - 45 - bottomHeight) style:UITableViewStylePlain];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT - 64 - 70 - bottomHeight) style:UITableViewStylePlain];
     self.tableView = tableView;
     [self.view addSubview:self.tableView];
     self.tableView.backgroundColor = [UIColor whiteColor];
@@ -155,7 +155,7 @@
     UIView *bottomView = [UIView new];
     [self.view addSubview:bottomView];
     bottomView.backgroundColor = [UIColor countLabelColor];
-    bottomView.frame = CGRectMake(0, SCREENHEIGHT - 64 - 45 - bottomHeight, SCREENWIDTH, 60);
+    bottomView.frame = CGRectMake(0, SCREENHEIGHT - 64 - 70 - bottomHeight, SCREENWIDTH, 60);
     
     self.disableButton = [JMSelecterButton buttonWithType:UIButtonTypeCustom];
     [bottomView addSubview:self.disableButton];

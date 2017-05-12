@@ -106,6 +106,11 @@ typedef NS_ENUM(NSUInteger, STPopupTransitionStyle) {
 @property (nonatomic, assign) BOOL hidesCloseButton;
 
 /**
+ Whether the background view is clickable.
+ */
+@property (nonatomic, assign) BOOL isTouchBackgorundView;
+
+/**
  Navigation bar of popup.
  @see STPopupNavigationBar
  */
@@ -132,6 +137,7 @@ typedef NS_ENUM(NSUInteger, STPopupTransitionStyle) {
  Indicates if the popup is current presented.
  */
 @property (nonatomic, assign, readonly) BOOL presented;
+
 
 /**
  Init the popup with root view controller.

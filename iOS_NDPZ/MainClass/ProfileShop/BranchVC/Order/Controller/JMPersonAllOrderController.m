@@ -373,7 +373,7 @@
 //        settingButton.cs_w = sizeW + 10;
     }else {
         xiangqingButton.hidden = NO;
-        settingButton.hidden = NO;
+        settingButton.hidden = YES;
         [xiangqingButton setTitle:@"详情" forState:UIControlStateNormal];
         [settingButton setTitle:@"删除" forState:UIControlStateNormal];
     }

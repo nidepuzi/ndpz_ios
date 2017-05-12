@@ -131,6 +131,7 @@
     CSPopDescriptionController *popDescVC = [[CSPopDescriptionController alloc] init];
     popDescVC.popDescType = popDescriptionTypeCoupon;
     STPopupController *popupController = [[STPopupController alloc] initWithRootViewController:popDescVC];
+    popupController.isTouchBackgorundView = NO;
     popupController.containerView.layer.cornerRadius = 5;
     [popupController presentInViewController:self];
     

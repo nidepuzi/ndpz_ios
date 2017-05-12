@@ -117,13 +117,18 @@
         if (rowIndex == 0) {
             CSPersonalInfoController *vc = [[CSPersonalInfoController alloc] init];
             [self.navigationController pushViewController:vc animated:YES];
-        }else {
+        }else if (rowIndex == 1) {
             NSDictionary *weChatInfo = [JMUserDefaults objectForKey:kWxLoginUserInfo];
             JMVerificationCodeController *vc = [[JMVerificationCodeController alloc] init];
             vc.verificationCodeType = SMSVerificationCodeWithBind;
             vc.userInfo = weChatInfo;
             vc.userLoginMethodWithWechat = YES;
             [self.navigationController pushViewController:vc animated:YES];
+        }else {
+            JMVerificationCodeController *verfyCodeVC = [[JMVerificationCodeController alloc] init];
+            verfyCodeVC.verificationCodeType = SMSVerificationCodeWithChangePWD;
+            verfyCodeVC.userLoginMethodWithWechat = YES;
+            [self.navigationController pushViewController:verfyCodeVC animated:YES];
         }
     }else if (sectionIndex == 1) {
         if (rowIndex == 0) {
@@ -237,6 +242,12 @@
                              @"title":@"绑定手机",
                              @"descTitle":@"",
                              @"iconImage":@"cs_profile_bindPhone",
+                             @"cellImage":@"cs_pushInImage"
+                             },
+                         @{
+                             @"title":@"修改密码",
+                             @"descTitle":@"",
+                             @"iconImage":@"cs_profile_changeMima",
                              @"cellImage":@"cs_pushInImage"
                              },
                          ],

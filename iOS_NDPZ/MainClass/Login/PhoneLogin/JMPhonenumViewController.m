@@ -20,7 +20,7 @@
 
 #define rememberPwdKey @"rememberPwd"
 
-@interface JMPhonenumViewController ()<UITextFieldDelegate>
+@interface JMPhonenumViewController ()<UITextFieldDelegate,UIScrollViewDelegate>
 
 @property (nonatomic,strong) JMLineView *lineView;
 
@@ -46,28 +46,25 @@
 
 @property (nonatomic, strong) UIButton *registeredButton;
 
-
+@property (nonatomic, strong) UIScrollView *maskScrollView;
 
 @end
 
 @implementation JMPhonenumViewController
 
-
+#pragma mark ==== 懒加载 ====
+- (UIScrollView *)maskScrollView {
+    if (!_maskScrollView) {
+        _maskScrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
+        _maskScrollView.delegate = self;
+    }
+    return _maskScrollView;
+}
 - (void)viewDidLoad {
-    
     [super viewDidLoad];
-    JMLineView *lineView = [[JMLineView alloc] init];
-    lineView.backgroundColor = [UIColor whiteColor];
-    lineView.frame  = self.view.frame;
-    self.lineView = lineView;
-    [self.view addSubview:lineView];
-    [lineView setNeedsDisplay];
-    
-    
-    [self createNavigationBarWithTitle:@"手机号登录" selecotr:@selector(btnClickedLogin:)];
-    
+    self.view.backgroundColor = [UIColor whiteColor];
+    [self createNavigationBarWithTitle:@"账号登录" selecotr:@selector(btnClickedLogin:)];
     [self prepareUI];
-//    [self prepareInitUI];
     
     //设置记住密码的默认值
     self.rememberPwdBtn.selected = [JMUserDefaults boolForKey:rememberPwdKey];
@@ -85,49 +82,85 @@
 
 
 - (void)prepareUI {
+    [self.view addSubview:self.maskScrollView];
     
-    UIView *bottomView = [UIView new];
-    [self.lineView addSubview:bottomView];
-    self.bottomView = bottomView;
-    bottomView.backgroundColor = [UIColor lineGrayColor];
+    CGFloat firstSectionViewH = 120.;
+    CGFloat spaceing = 15.f;
+    CGFloat topSpace = 60.;
     
-    /**
-     文本框控件
-     */
-    UITextField *phoneNumTextF  = [[UITextField alloc] init];
-    [self.lineView addSubview:phoneNumTextF];
-    self.phoneNumTextF = phoneNumTextF;
-    self.phoneNumTextF.keyboardType = UIKeyboardTypeNumberPad;
-    self.phoneNumTextF.leftViewMode = UITextFieldViewModeAlways;
-    self.phoneNumTextF.clearButtonMode = UITextFieldViewModeWhileEditing;
-    self.phoneNumTextF.font = [UIFont systemFontOfSize:14.];
-    self.phoneNumTextF.placeholder = @"请输入手机号";
-    self.phoneNumTextF.delegate = self;
+    UIView *textFieldView = [[UIView alloc] initWithFrame:CGRectMake(0, topSpace, SCREENWIDTH, firstSectionViewH)];
+    textFieldView.backgroundColor = [UIColor whiteColor];
+    [self.maskScrollView addSubview:textFieldView];
     
-    UITextField *passwordTextF = [UITextField new];
-    [self.lineView addSubview:passwordTextF];
-    self.passwordTextF = passwordTextF;
-    self.passwordTextF.keyboardType = UIKeyboardTypeDefault;
-    self.passwordTextF.leftViewMode = UITextFieldViewModeAlways;
-    self.passwordTextF.clearButtonMode = UITextFieldViewModeWhileEditing;
-    self.passwordTextF.font = [UIFont systemFontOfSize:14.];
-    self.passwordTextF.placeholder = @"请输入登录密码";
-    self.passwordTextF.delegate = self;
+    UIView *phoneTFView = [[UIView alloc] initWithFrame:CGRectMake(spaceing, 15, SCREENWIDTH - spaceing * 2, 40)];
+    phoneTFView.layer.cornerRadius = 5;
+    phoneTFView.layer.masksToBounds = YES;
+    phoneTFView.layer.borderWidth = 1.;
+    phoneTFView.layer.borderColor = [UIColor titleDarkGrayColor].CGColor;
+    [textFieldView addSubview:phoneTFView];
+    
+    UIView *verfiTFView = [[UIView alloc] initWithFrame:CGRectMake(spaceing, phoneTFView.cs_max_Y + 20, SCREENWIDTH - spaceing * 2, 40)];
+    verfiTFView.layer.cornerRadius = 5;
+    verfiTFView.layer.masksToBounds = YES;
+    verfiTFView.layer.borderWidth = 1.;
+    verfiTFView.layer.borderColor = [UIColor titleDarkGrayColor].CGColor;
+    [textFieldView addSubview:verfiTFView];
+    
+    
+    UITextField *phoneNumberField = [self createTextFieldWithFrame:CGRectMake(10, 5, verfiTFView.cs_w - 20, 30) PlaceHolder:@"请输入手机号" KeyboardType:UIKeyboardTypeNumberPad];
+    self.phoneNumTextF = phoneNumberField;
+    //    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, phoneNumberField.cs_max_Y + 15, SCREENWIDTH, 1.0f)];
+    //    lineView.backgroundColor = [UIColor lineGrayColor];
+    UITextField *verificationCodeField = [self createTextFieldWithFrame:CGRectMake(10, 5, verfiTFView.cs_w - 80, 30) PlaceHolder:@"请输入登录密码" KeyboardType:UIKeyboardTypeDefault];
+    self.passwordTextF = verificationCodeField;
     self.passwordTextF.secureTextEntry = YES;
+    [phoneTFView addSubview:phoneNumberField];
+    [verfiTFView addSubview:verificationCodeField];
+    
+    
+//    /**
+//     文本框控件
+//     */
+//    UITextField *phoneNumTextF  = [[UITextField alloc] init];
+//    [self.lineView addSubview:phoneNumTextF];
+//    self.phoneNumTextF = phoneNumTextF;
+//    self.phoneNumTextF.keyboardType = UIKeyboardTypeNumberPad;
+//    self.phoneNumTextF.leftViewMode = UITextFieldViewModeAlways;
+//    self.phoneNumTextF.clearButtonMode = UITextFieldViewModeWhileEditing;
+//    self.phoneNumTextF.font = [UIFont systemFontOfSize:14.];
+//    self.phoneNumTextF.placeholder = @"请输入手机号";
+//    self.phoneNumTextF.delegate = self;
+//    
+//    UITextField *passwordTextF = [UITextField new];
+//    [self.lineView addSubview:passwordTextF];
+//    self.passwordTextF = passwordTextF;
+//    self.passwordTextF.keyboardType = UIKeyboardTypeDefault;
+//    self.passwordTextF.leftViewMode = UITextFieldViewModeAlways;
+//    self.passwordTextF.clearButtonMode = UITextFieldViewModeWhileEditing;
+//    self.passwordTextF.font = [UIFont systemFontOfSize:14.];
+//    self.passwordTextF.placeholder = @"请输入登录密码";
+//    self.passwordTextF.delegate = self;
+//    self.passwordTextF.secureTextEntry = YES;
 
+    UIView *shuhangV = [[UIView alloc] initWithFrame:CGRectMake(verificationCodeField.cs_max_X + 10, verificationCodeField.cs_y + 5, 1, 20)];
+    shuhangV.backgroundColor = [UIColor titleDarkGrayColor];
+    [verfiTFView addSubview:shuhangV];
     
     /**
      按钮控件
      */
-    UIButton *isSeePwdBtn  = [UIButton new];
-    [self.lineView addSubview:isSeePwdBtn];
+    UIButton *isSeePwdBtn  = [UIButton buttonWithType:UIButtonTypeCustom];
+    [verfiTFView addSubview:isSeePwdBtn];
+    isSeePwdBtn.frame = CGRectMake(verificationCodeField.cs_max_X + 10, verificationCodeField.cs_y, 60, 30);
     self.isSeePwdBtn = isSeePwdBtn;
     [isSeePwdBtn setImage:[UIImage imageNamed:@"hide_passwd_icon"] forState:UIControlStateNormal];
     [isSeePwdBtn addTarget:self action:@selector(seePasswordButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     
     
-    UIButton *rememberPwdBtn = [UIButton new];
-    [self.bottomView addSubview:rememberPwdBtn];
+    
+    UIButton *rememberPwdBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.maskScrollView addSubview:rememberPwdBtn];
+    rememberPwdBtn.frame = CGRectMake(spaceing, textFieldView.cs_max_Y + 10, 100, 20);
     self.rememberPwdBtn = rememberPwdBtn;
     [rememberPwdBtn setAdjustsImageWhenHighlighted:NO];
     [rememberPwdBtn setImage:[UIImage imageNamed:@"cs_duihao_nomal"] forState:UIControlStateNormal];
@@ -141,7 +174,8 @@
     
     
     UIButton *forgetPwdBtn  = [[UIButton alloc] init];
-    [self.bottomView addSubview:forgetPwdBtn];
+    [self.maskScrollView addSubview:forgetPwdBtn];
+    forgetPwdBtn.frame = CGRectMake(textFieldView.cs_max_X - 95, textFieldView.cs_max_Y + 10, 80, 20);
     self.forgetPwdBtn = forgetPwdBtn;
     //设置按钮文字的下划线
     NSMutableAttributedString *title = [[NSMutableAttributedString alloc] initWithString:@"忘记密码"];
@@ -155,14 +189,22 @@
     
     
     UIButton *loginBtn = [UIButton new];
-    [self.bottomView addSubview:loginBtn];
+    [self.maskScrollView addSubview:loginBtn];
+    loginBtn.frame = CGRectMake(20, rememberPwdBtn.cs_max_Y + 20, SCREENWIDTH - 40, 40);
     self.loginBtn = loginBtn;
-    [loginBtn setBackgroundImage:[UIImage imageNamed:@"success_purecolor"] forState:UIControlStateNormal];
+//    [loginBtn setBackgroundImage:[UIImage imageNamed:@"success_purecolor"] forState:UIControlStateNormal];
+    loginBtn.backgroundColor = [UIColor buttonEnabledBackgroundColor];
+    loginBtn.layer.cornerRadius = 20.;
+    loginBtn.layer.masksToBounds = YES;
     [loginBtn setTitle:@"登录" forState:UIControlStateNormal];
+    [loginBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    loginBtn.titleLabel.font = CS_UIFontSize(14.);
     [loginBtn addTarget:self action:@selector(loginBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     
+    CGFloat registW = [@"如何注册?" widthWithHeight:20. andFont:13.].width + 20;
     self.registeredButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.bottomView addSubview:self.registeredButton];
+    [self.maskScrollView addSubview:self.registeredButton];
+    self.registeredButton.frame = CGRectMake((SCREENWIDTH - registW) / 2, loginBtn.cs_max_Y + 20, registW, 20);
     //设置按钮文字的下划线
     NSMutableAttributedString *muTitle = [[NSMutableAttributedString alloc] initWithString:@"如何注册?"];
     NSRange titleRange2 = {0,[muTitle length]};
@@ -172,67 +214,77 @@
     [self.registeredButton.titleLabel setFont:[UIFont systemFontOfSize:13.]];
     self.registeredButton.titleLabel.textColor = [UIColor redColor];
     [self.registeredButton addTarget:self action:@selector(registeredButtonClicked) forControlEvents:UIControlEventTouchUpInside];
-
     
-    kWeakSelf
+    self.maskScrollView.contentSize = CGSizeMake(SCREENWIDTH, self.registeredButton.cs_max_Y + 20);
     
-    [self.phoneNumTextF mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.lineView).offset(64);
-        make.left.equalTo(weakSelf.lineView).offset(15);
-        make.right.equalTo(weakSelf.lineView).offset(-15);
-        make.height.mas_equalTo(60);
-    }];
+//    kWeakSelf
     
-    [self.passwordTextF mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.phoneNumTextF.mas_bottom);
-        make.left.equalTo(weakSelf.lineView).offset(15);
-        make.right.equalTo(weakSelf.isSeePwdBtn.mas_left).offset(-15);
-        make.height.mas_equalTo(60);
-    }];
-    //密码是否可见的按钮
-    [self.isSeePwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.phoneNumTextF.mas_bottom).offset(10);
-        make.right.equalTo(weakSelf.lineView).offset(-10);
-        make.width.mas_equalTo(@40);
-        make.height.mas_equalTo(@40);
-    }];
+//    [self.phoneNumTextF mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(weakSelf.lineView).offset(64);
+//        make.left.equalTo(weakSelf.lineView).offset(15);
+//        make.right.equalTo(weakSelf.lineView).offset(-15);
+//        make.height.mas_equalTo(60);
+//    }];
+//    
+//    [self.passwordTextF mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(weakSelf.phoneNumTextF.mas_bottom);
+//        make.left.equalTo(weakSelf.lineView).offset(15);
+//        make.right.equalTo(weakSelf.isSeePwdBtn.mas_left).offset(-15);
+//        make.height.mas_equalTo(60);
+//    }];
+//    //密码是否可见的按钮
+//    [self.isSeePwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(weakSelf.phoneNumTextF.mas_bottom).offset(10);
+//        make.right.equalTo(weakSelf.lineView).offset(-10);
+//        make.width.mas_equalTo(@40);
+//        make.height.mas_equalTo(@40);
+//    }];
+//    
+//    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(weakSelf.passwordTextF.mas_bottom);
+//        make.left.right.bottom.equalTo(weakSelf.lineView);
+//    }];
     
-    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.passwordTextF.mas_bottom);
-        make.left.right.bottom.equalTo(weakSelf.lineView);
-    }];
-    
-    [self.rememberPwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.bottomView).offset(10);
-        make.left.equalTo(weakSelf.bottomView).offset(10);
-        make.height.mas_equalTo(@25);
-        make.width.mas_equalTo(@100);
-    }];
-    
-    [self.forgetPwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.bottomView).offset(10);
-        make.right.equalTo(weakSelf.bottomView).offset(-10);
-        make.height.mas_equalTo(@30);
-        make.width.mas_equalTo(@80);
-    }];
-    
-    [self.loginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.bottomView).offset(60);
-        make.centerX.equalTo(weakSelf.bottomView.mas_centerX);
-        make.width.mas_equalTo(SCREENWIDTH - 30);
-        make.height.mas_equalTo(@43);
-    }];
-    
-    CGFloat registW = [@"如何注册?" widthWithHeight:20. andFont:13.].width + 20;
-    [self.registeredButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.loginBtn.mas_bottom).offset(10);
-        make.centerX.equalTo(weakSelf.loginBtn.mas_centerX);
-        make.width.mas_equalTo(@(registW));
-    }];
+//    [self.rememberPwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(weakSelf.bottomView).offset(10);
+//        make.left.equalTo(weakSelf.bottomView).offset(10);
+//        make.height.mas_equalTo(@25);
+//        make.width.mas_equalTo(@100);
+//    }];
+//    
+//    [self.forgetPwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(weakSelf.bottomView).offset(10);
+//        make.right.equalTo(weakSelf.bottomView).offset(-10);
+//        make.height.mas_equalTo(@30);
+//        make.width.mas_equalTo(@80);
+//    }];
+//    
+//    [self.loginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(weakSelf.bottomView).offset(60);
+//        make.centerX.equalTo(weakSelf.bottomView.mas_centerX);
+//        make.width.mas_equalTo(SCREENWIDTH - 30);
+//        make.height.mas_equalTo(@43);
+//    }];
+//    
+//    CGFloat registW = [@"如何注册?" widthWithHeight:20. andFont:13.].width + 20;
+//    [self.registeredButton mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(weakSelf.loginBtn.mas_bottom).offset(10);
+//        make.centerX.equalTo(weakSelf.loginBtn.mas_centerX);
+//        make.width.mas_equalTo(@(registW));
+//    }];
     
 
 }
-
+- (UITextField *)createTextFieldWithFrame:(CGRect)frame PlaceHolder:(NSString *)placeHolder KeyboardType:(UIKeyboardType)keyboardType {
+    UITextField *textField = [[UITextField alloc] initWithFrame:frame];
+    textField.placeholder = placeHolder;
+    textField.borderStyle = UITextBorderStyleNone;
+    textField.keyboardType = keyboardType;
+    textField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    textField.font = [UIFont systemFontOfSize:13.];
+    textField.delegate = self;
+    return textField;
+}
 
 #pragma mark --- 记住密码按钮的点击
 - (void)remenberClick:(UIButton *)sender {
@@ -313,15 +365,31 @@
         BOOL kIsVIP = NO;
         if (kIsXLMMStatus) {
             NSDictionary *xlmmDict = responseObject[@"xiaolumm"];
-            kIsVIP = [xlmmDict[@"last_renew_type"] integerValue] >= 90 ? YES : NO;
+            kIsVIP = [xlmmDict[@"status"] isEqual:@"effect"] ? YES : NO;
         }
         [JMUserDefaults setBool:kIsLoginStatus forKey:kIsLogin];
         [JMUserDefaults setBool:kIsXLMMStatus forKey:kISXLMM];
         [JMUserDefaults synchronize];
         
         self.loginBtn.enabled = YES;
-        [self dismissViewControllerAnimated:YES completion:nil];
-        [JMNotificationCenter postNotificationName:@"WeChatLoginSuccess" object:nil];
+        
+        if (kIsVIP) {
+            if (!kIsBindPhone) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+                [JMNotificationCenter postNotificationName:@"WeChatLoginSuccess" object:nil];
+            }else {
+                JMVerificationCodeController *vc = [[JMVerificationCodeController alloc] init];
+                vc.verificationCodeType = SMSVerificationCodeWithBind;
+                vc.userLoginMethodWithWechat = YES;
+                [self.navigationController pushViewController:vc animated:YES];
+            }
+        }else {
+            JMVerificationCodeController *verfyCodeVC = [[JMVerificationCodeController alloc] init];
+            verfyCodeVC.verificationCodeType = SMSVerificationCodeWithLogin;
+            verfyCodeVC.userLoginMethodWithWechat = YES;
+            verfyCodeVC.userNotXLMM = YES;
+            [self.navigationController pushViewController:verfyCodeVC animated:YES];
+        }
         
         [MBProgressHUD hideHUD];
     } WithFail:^(NSError *error) {
@@ -451,11 +519,11 @@
     }
 }
 - (void)registeredButtonClicked {
-    NSString *urlString = @"http://m.nidepuzi.com/mall/boutiqueinvite";
+    NSString *urlString = @"https://m.nidepuzi.com/mall/boutiqueinvite";
     NSString *active = @"myInvite";
     NSString *titleName = @"我的邀请";
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    [dict setValue:@38 forKey:@"activity_id"];
+    [dict setValue:@8 forKey:@"activity_id"];
     [dict setValue:urlString forKey:@"web_url"];
     [dict setValue:active forKey:@"type_title"];
     [dict setValue:titleName forKey:@"name_title"];

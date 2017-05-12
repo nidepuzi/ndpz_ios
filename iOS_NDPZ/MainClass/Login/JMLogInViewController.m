@@ -137,10 +137,18 @@
     wechatLoginButton.imageEdgeInsets = UIEdgeInsetsMake(0, -8, 0, 0);
     wechatLoginButton.titleEdgeInsets = UIEdgeInsetsMake(0, 8, 0, 0);
     
+    UIButton *zhanghaoLoginButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.headView addSubview:zhanghaoLoginButton];
+    [zhanghaoLoginButton setTitle:@"账号登录" forState:UIControlStateNormal];
+    zhanghaoLoginButton.titleLabel.font = CS_UIFontSize(13.);
+    [zhanghaoLoginButton setTitleColor:[UIColor dingfanxiangqingColor] forState:UIControlStateNormal];
+    
+    
     self.phoneNumBtn = phoneLoginButton;
     self.wechatBtn = wechatLoginButton;
     [phoneLoginButton addTarget:self action:@selector(jumpToAuthcodeLoginVC:) forControlEvents:UIControlEventTouchUpInside];
     [wechatLoginButton addTarget:self action:@selector(wechatBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [zhanghaoLoginButton addTarget:self action:@selector(zhanghaoClick:) forControlEvents:UIControlEventTouchUpInside];
     
 //    UIView *bottomView = [[UIView alloc] init];
 //    [self.view addSubview:bottomView];
@@ -209,6 +217,13 @@
         make.width.mas_equalTo(SCREENWIDTH - 40);
     }];
     
+    [zhanghaoLoginButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(weakSelf.headView).offset(-40);
+        make.centerX.equalTo(weakSelf.headView.mas_centerX);
+        make.height.mas_equalTo(@30);
+        make.width.mas_equalTo(@90);
+    }];
+    
     
     
     
@@ -220,6 +235,7 @@
     //    }];
     
 }
+
 - (void)phoneNumberLogin:(NSNotification *)notification{
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -301,6 +317,10 @@
     [WXApi sendReq:req];
     
 }
+- (void)zhanghaoClick:(UIButton *)button {
+    JMPhonenumViewController *phoneVC = [[JMPhonenumViewController alloc] init];
+    [self.navigationController pushViewController:phoneVC animated:YES];
+}
 - (void)buttonEnable:(UIButton *)button {
     button.enabled = YES;
 }
@@ -348,24 +368,27 @@
         [JMUserDefaults setObject:kWeiXinLogin forKey:kLoginMethod];
         [JMUserDefaults synchronize];
         
-        if (!kIsBindPhone) {
-            if (kIsVIP) {
+        if (kIsVIP) {
+            if (!kIsBindPhone) {
                 [self dismissViewControllerAnimated:YES completion:nil];
                 [JMNotificationCenter postNotificationName:@"WeChatLoginSuccess" object:nil];
             }else {
-                JMVerificationCodeController *verfyCodeVC = [[JMVerificationCodeController alloc] init];
-                verfyCodeVC.verificationCodeType = SMSVerificationCodeWithLogin;
-                verfyCodeVC.userLoginMethodWithWechat = YES;
-                [self.navigationController pushViewController:verfyCodeVC animated:YES];
+                NSDictionary *weChatInfo = [JMUserDefaults objectForKey:kWxLoginUserInfo];
+                JMVerificationCodeController *vc = [[JMVerificationCodeController alloc] init];
+                vc.verificationCodeType = SMSVerificationCodeWithBind;
+                vc.userInfo = weChatInfo;
+                vc.userLoginMethodWithWechat = YES;
+                [self.navigationController pushViewController:vc animated:YES];
             }
         }else {
-            NSDictionary *weChatInfo = [JMUserDefaults objectForKey:kWxLoginUserInfo];
-            JMVerificationCodeController *vc = [[JMVerificationCodeController alloc] init];
-            vc.verificationCodeType = SMSVerificationCodeWithBind;
-            vc.userInfo = weChatInfo;
-            vc.userLoginMethodWithWechat = YES;
-            [self.navigationController pushViewController:vc animated:YES];
+            JMVerificationCodeController *verfyCodeVC = [[JMVerificationCodeController alloc] init];
+            verfyCodeVC.verificationCodeType = SMSVerificationCodeWithLogin;
+            verfyCodeVC.userLoginMethodWithWechat = YES;
+            verfyCodeVC.userNotXLMM = YES;
+            [self.navigationController pushViewController:verfyCodeVC animated:YES];
         }
+        
+        
         [MBProgressHUD hideHUD];
     } WithFail:^(NSError *error) {
         NSHTTPURLResponse *response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey];

@@ -174,16 +174,18 @@
         make.width.mas_equalTo(SCREENWIDTH - 60);
     }];
     
+    CGFloat sharButtonHeight = 200.f;
+//    if (self.shareType == shareVCTypeGoods) {
+//        self.shareButton.buttonType = shareButtonType1;
+//        JMShareButtonView *shareButton = [[JMShareButtonView alloc] initWithFrame:CGRectZero shareType:shareButtonType1];
+//        self.shareButton = shareButton;
+//    }else {
+//        sharButtonHeight = 200;
+//        self.shareButton.buttonType = shareButtonType2;
+        JMShareButtonView *shareButton = [[JMShareButtonView alloc] initWithFrame:CGRectZero];
+        self.shareButton = shareButton;
+//    }
     
-    if (self.shareType == shareVCTypeGoods) {
-        self.shareButton.buttonType = shareButtonType1;
-        JMShareButtonView *shareButton = [[JMShareButtonView alloc] initWithFrame:CGRectZero shareType:shareButtonType1];
-        self.shareButton = shareButton;
-    }else {
-        self.shareButton.buttonType = shareButtonType2;
-        JMShareButtonView *shareButton = [[JMShareButtonView alloc] initWithFrame:CGRectZero shareType:shareButtonType2];
-        self.shareButton = shareButton;
-    }
 //    if (self.shareType == shareVCTypeGoods) {
 //        self.shareButton.buttonType = shareButtonType1;
 //    }else {
@@ -202,11 +204,12 @@
     [self.canelButton addTarget:self action:@selector(cancelBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.canelButton];
     
+
     [self.shareButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view).offset(10);
         make.centerX.equalTo(self.view.mas_centerX);
         make.width.mas_equalTo(SCREENWIDTH - 30);
-        make.height.mas_equalTo(100);
+        make.height.mas_equalTo(sharButtonHeight);
     }];
     
     [self.canelButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -230,7 +233,7 @@
         NSString *minValue = [NSString stringWithFormat:@"%.2f",[profitDic[@"min"] floatValue]];
         NSString *allStr = [NSString stringWithFormat:@"只要你的好友通过你的链接购买此商品,你就能得到至少%@元的利润哦~",minValue];
         self.headerView.hidden = NO;
-        self.valueLabel.text = [NSString stringWithFormat:@"赚 ¥%.2f ~ ¥%.2f",[profitDic[@"min"] floatValue],[profitDic[@"max"] floatValue]];
+        self.valueLabel.text = [NSString stringWithFormat:@"赚 ¥%.2f",[profitDic[@"min"] floatValue]];
         self.earningLabel.attributedText = [JMRichTextTool cs_changeFontAndColorWithSubFont:[UIFont systemFontOfSize:13.] SubColor:[UIColor buttonEnabledBackgroundColor] AllString:allStr SubStringArray:@[minValue]];
     }else {
         if (!self.headerView) {
@@ -261,71 +264,120 @@
     _imageUrlString = _model.share_img;
     _url = _model.share_link;
 //    _kuaizhaoLink = _url;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+    dispatch_queue_t queue1 = dispatch_queue_create("dispatch.queue", DISPATCH_QUEUE_SERIAL);
+    dispatch_sync(queue1, ^{
         _imageData = [UIImage imagewithURLString:_imageUrlString];
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            if (!_imageData) {
-                _imageData = [UIImage imageNamed:@"icon-xiaolu.png"];
-            }
-        });
     });
+    if (!_imageData) {
+        _imageData = [UIImage imageNamed:@"Icon-60"];
+    }
+    
+//    dispatch_sync(dispatch_queue_t  _Nonnull queue, ^{
+//        
+//    });
+//    dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        
+//        dispatch_sync(dispatch_get_main_queue(), ^{
+//            
+//        });
+//    });
     _titleUrlString = [NSString stringWithFormat:@"%@",_content];
 }
-- (void)setShareType:(shareVCType)shareType {
-    _shareType = shareType;
-    
-}
+//- (void)setShareType:(shareVCType)shareType {
+//    _shareType = shareType;
+//    
+//}
 - (void)composeShareBtn:(JMShareButtonView *)shareBtn didClickBtn:(NSInteger)index {
     NSLog(@"composeShareBtn Index=%ld", index);
-    if (index == 10) {
-        //微信分享
-        if ([NSString isStringEmpty:_url]) {
-            [self createPrompt];
-            return ;
-        }
-        if (_isPic) {
-            _isWeixin = YES;
+        if (index == 10) {
+            //微信分享
+            if ([NSString isStringEmpty:_url]) {
+                [self createPrompt];
+                return ;
+            }
+            if (_isPic) {
+                _isWeixin = YES;
+                [self cancelBtnClick:nil];
+            }else {
+                [UMSocialData defaultData].extConfig.wechatSessionData.title = _titleStr;
+                [UMSocialData defaultData].extConfig.wechatSessionData.url = _url;
+                [UMSocialData defaultData].extConfig.wxMessageType = 0;
+                //            UMSocialUrlResource * urlResource = [[UMSocialUrlResource alloc] initWithSnsResourceType:(UMSocialUrlResourceTypeImage) url:_imageUrlString];
+                
+                [[UMSocialDataService defaultDataService]  postSNSWithTypes:@[UMShareToWechatSession] content:_titleUrlString image:_imageData location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response){
+                    //                [self hiddenNavigationView];
+                    if (response.responseCode == UMSResponseCodeSuccess) {
+                        NSLog(@"分享成功");
+                    }
+                }];
+                
+            }
             [self cancelBtnClick:nil];
-        }else {
-            [UMSocialData defaultData].extConfig.wechatSessionData.title = _titleStr;
-            [UMSocialData defaultData].extConfig.wechatSessionData.url = _url;
-            [UMSocialData defaultData].extConfig.wxMessageType = 0;
-//            UMSocialUrlResource * urlResource = [[UMSocialUrlResource alloc] initWithSnsResourceType:(UMSocialUrlResourceTypeImage) url:_imageUrlString];
-            
-            [[UMSocialDataService defaultDataService]  postSNSWithTypes:@[UMShareToWechatSession] content:_titleUrlString image:_imageData location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response){
-//                [self hiddenNavigationView];
-                if (response.responseCode == UMSResponseCodeSuccess) {
-                    NSLog(@"分享成功");
-                }
-            }];
-
         }
-        [self cancelBtnClick:nil];
-    }
-//    else if (index == 101) {
-//        if ([NSString isStringEmpty:_url]) {
-//            [self createPrompt];
-//            return;
-//        }
-//        if (_isPic) {
-//            //图片
-//            _isWeixinFriends = YES;
-//            //        [self createKuaiZhaoImagewithlink:self.kuaizhaoLink];
-////            [self createKuaiZhaoImage];
-//            //        [self createKuaiZhaoImage];
-//            [self cancelBtnClick:nil];
-//        }else {
-//            [UMSocialData defaultData].extConfig.wechatTimelineData.url = _url;
-//            [UMSocialData defaultData].extConfig.wechatTimelineData.title = _titleUrlString;
-//            [UMSocialData defaultData].extConfig.wxMessageType = 0;
-//            
-//            [[UMSocialDataService defaultDataService]  postSNSWithTypes:@[UMShareToWechatTimeline] content:_content image:_imageData location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response){
-//            }];
-//            [self cancelBtnClick:nil];
-//        }
-//    }
-    else if (index == 11) {
-        if (self.shareType == shareVCTypeGoods) {
+        else if (index == 11) {
+            if ([NSString isStringEmpty:_url]) {
+                [self createPrompt];
+                return;
+            }
+            [UMSocialData defaultData].extConfig.qqData.url = _url;
+            [UMSocialData defaultData].extConfig.qqData.title = _titleStr;
+            
+            [[UMSocialDataService defaultDataService]  postSNSWithTypes:@[UMShareToQQ] content:_titleUrlString image:_imageData location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response){
+            }];
+            
+            [self cancelBtnClick:nil];
+            
+            
+        }
+        else if (index == 12) {
+            if ([NSString isStringEmpty:_url]) {
+                [self createPrompt];
+                return;
+            }
+            NSString *sina_content = [NSString stringWithFormat:@"%@%@",_content, _url];
+            [SendMessageToWeibo sendMessageWithText:sina_content andPicture:UIImagePNGRepresentation(_imageData)];
+            [self cancelBtnClick:nil];
+            
+        }
+        else if (index == 13) {
+            if ([NSString isStringEmpty:_url]) {
+                [self createPrompt];
+                return;
+            }
+            if (_isPic) {
+                //图片
+                _isWeixinFriends = YES;
+                //        [self createKuaiZhaoImagewithlink:self.kuaizhaoLink];
+                //            [self createKuaiZhaoImage];
+                //        [self createKuaiZhaoImage];
+                [self cancelBtnClick:nil];
+            }else {
+                [UMSocialData defaultData].extConfig.wechatTimelineData.url = _url;
+                [UMSocialData defaultData].extConfig.wechatTimelineData.title = _titleUrlString;
+                [UMSocialData defaultData].extConfig.wxMessageType = 0;
+                
+                [[UMSocialDataService defaultDataService]  postSNSWithTypes:@[UMShareToWechatTimeline] content:_content image:_imageData location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response){
+                }];
+                [self cancelBtnClick:nil];
+            }
+        }
+        else if (index == 14) {
+            if ([NSString isStringEmpty:_url]) {
+                [self createPrompt];
+                return;
+            }
+            [UMSocialData defaultData].extConfig.qzoneData.url = _url;
+            [UMSocialData defaultData].extConfig.qzoneData.title = _titleStr;
+            
+            [[UMSocialDataService defaultDataService]  postSNSWithTypes:@[UMShareToQzone] content:_titleUrlString image:_imageData location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response){
+                //            [self hiddenNavigationView];
+            }];
+            [self cancelBtnClick:nil];
+            
+        }
+        
+        else if (index == 15) {
             _isCopy = YES;
             UIPasteboard *pab = [UIPasteboard generalPasteboard];
             if ([NSString isStringEmpty:_url]) {
@@ -341,78 +393,16 @@
             }
             //    [self createKuaiZhaoImagewithlink:self.kuaizhaoLink];
             [self cancelBtnClick:nil];
-        }else {
-            if ([NSString isStringEmpty:_url]) {
-                [self createPrompt];
-                return;
-            }
-            [UMSocialData defaultData].extConfig.qqData.url = _url;
-            [UMSocialData defaultData].extConfig.qqData.title = _titleStr;
             
-            [[UMSocialDataService defaultDataService]  postSNSWithTypes:@[UMShareToQQ] content:_titleUrlString image:_imageData location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response){
-            }];
-            
-            [self cancelBtnClick:nil];
         }
-        
-    }
-//    else if (index == 103) {
-//        if ([NSString isStringEmpty:_url]) {
-//            [self createPrompt];
-//            return;
-//        }
-//        [UMSocialData defaultData].extConfig.qzoneData.url = _url;
-//        [UMSocialData defaultData].extConfig.qzoneData.title = _titleStr;
-//        
-//        [[UMSocialDataService defaultDataService]  postSNSWithTypes:@[UMShareToQzone] content:_titleUrlString image:_imageData location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response){
-////            [self hiddenNavigationView];
-//        }];
-//        [self cancelBtnClick:nil];
-//
-//    }
-    else if (index == 12) {
-        if (self.shareType == shareVCTypeGoods) {
-            [self cancelBtnClick:nil];
+        else { // 6
+            NSLog(@"分享按钮被点击了 ===== index == 6");
             
-            
-            [self showClassPopVoew];
-        }else {
-            if ([NSString isStringEmpty:_url]) {
-                [self createPrompt];
-                return;
-            }
-            NSString *sina_content = [NSString stringWithFormat:@"%@%@",_content, _url];
-            [SendMessageToWeibo sendMessageWithText:sina_content andPicture:UIImagePNGRepresentation(_imageData)];
-            [self cancelBtnClick:nil];
-
         }
-        
-        
-        
-
-    }
-//    else if (index == 105) {
-//        _isCopy = YES;
-//        UIPasteboard *pab = [UIPasteboard generalPasteboard];
-//        if ([NSString isStringEmpty:_url]) {
-//            [MBProgressHUD showMessage:@"复制失败"];
-//        }else {
-//            [pab setString:_url];
-//            if (pab == nil) {
-//                [MBProgressHUD showMessage:@"请重新复制"];
-//            }else
-//            {
-//                [MBProgressHUD showMessage:@"已复制"];
-//            }
-//        }
-//        //    [self createKuaiZhaoImagewithlink:self.kuaizhaoLink];
-//        [self cancelBtnClick:nil];
-
-//    }
-    else { // 6
-        NSLog(@"分享按钮被点击了 ===== index == 6");
-
-    }
+    
+    
+    
+    
 }
 
 - (void)cancelBtnClick:(UIButton *)button {

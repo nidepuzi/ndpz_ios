@@ -35,10 +35,10 @@
     [self createNavigationBarWithTitle:@"关于粉丝" selecotr:@selector(backBtnClicked:)];
     
     
-    loadLink = @"http://m.nidepuzi.com/mall/mama/invited";
+    loadLink = @"https://m.nidepuzi.com/mall/mama/invited";
     
     [self emptyView];
-    self.baseWebView = [[IMYWebView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT - 104) usingUIWebView:NO];
+    self.baseWebView = [[IMYWebView alloc] initWithFrame:CGRectMake(0, 64, SCREENWIDTH, SCREENHEIGHT - 64) usingUIWebView:NO];
     self.baseWebView.scalesPageToFit = YES;
     self.baseWebView.viewController = self;
     self.baseWebView.delegate = self;

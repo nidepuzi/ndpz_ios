@@ -43,18 +43,20 @@
     //version标识
     NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     [MobClick setAppVersion:version];
-    UMConfigInstance.appKey = @"5665541ee0f55aedfc0034f4";
+    UMConfigInstance.appKey = @"58e1a333e88bad47760008dc";
     [MobClick startWithConfigure:UMConfigInstance];
 }
-- (void)umengShareInit{
+
+
+- (void)umengShareInit{  // weibo App Key： 1433464940   App Secret： f53fea3cee88a57a19578cdeff0e239d
     @try {
-        [UMSocialData setAppKey:@"5665541ee0f55aedfc0034f4"];
+        [UMSocialData setAppKey:@"58e1a333e88bad47760008dc"]; // 5665541ee0f55aedfc0034f4
         //qq分享
-        [UMSocialQQHandler setQQWithAppId:@"1105009062" appKey:@"V5H2L8ij9BNx6qQw" url:@"https://www.umeng.com/social"];
+        [UMSocialQQHandler setQQWithAppId:@"1106160060" appKey:@"aQjYEJmGje73bBGW" url:@"https://www.umeng.com/social"]; // QQ41dd19a6 // 1105009062 // V5H2L8ij9BNx6qQw
         //微信分享
         [UMSocialWechatHandler setWXAppId:@"3c7b4e3eb5ae4cfb132b2ac060a872ee" appSecret:@"wxa6e8010fa0b31eb3" url:@"https://www.umeng.com/social"]; // wx25fcb32689872499
         //微博分享
-        [WeiboSDK registerApp:@"2475629754"];
+        [WeiboSDK registerApp:@"1433464940"];   //2475629754
         [WXApi registerApp:@"wxa6e8010fa0b31eb3" withDescription:@"weixin"];
     } @catch (NSException *exception) {
         NSLog(@"DEBUG: failure to batch update.  %@", exception.description);
@@ -68,6 +70,7 @@
         if (!responseObject) return ; // @"http://c.hiphotos.baidu.com/image/pic/item/d62a6059252dd42a6a943c180b3b5bb5c8eab8e7.jpg";
         _imageUrl = responseObject[@"picture"];
         if ([NSString isStringEmpty:_imageUrl]) {
+            [self newFeature];
             return ;
         }
         XHLaunchImageAdConfiguration *imageAdconfiguration = [XHLaunchImageAdConfiguration new];
@@ -83,6 +86,7 @@
         
         [self newFeature];
     } WithFail:^(NSError *error) {
+        [self newFeature];
     } Progress:^(float progress) { 
         
     }];

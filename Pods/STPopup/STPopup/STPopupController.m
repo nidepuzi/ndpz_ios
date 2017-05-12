@@ -176,7 +176,10 @@ static NSMutableSet *_retainedPopupControllers;
     _hidesCloseButton = hidesCloseButton;
     [self updateNavigationBarAniamted:NO];
 }
-
+- (void)setIsTouchBackgorundView:(BOOL)isTouchBackgorundView {
+    _isTouchBackgorundView = isTouchBackgorundView;
+    
+}
 #pragma mark - Observers
 
 - (void)setupObservers
@@ -613,7 +616,12 @@ static NSMutableSet *_retainedPopupControllers;
 
 - (void)bgViewDidTap
 {
-    [_containerView endEditing:YES];
+    if (_isTouchBackgorundView) {
+        [self leftBarItemDidTap];
+    }else {
+        [_containerView endEditing:YES];
+    }
+    
 }
 
 - (void)setCornerRadius:(CGFloat)cornerRadius

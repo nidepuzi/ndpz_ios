@@ -55,6 +55,7 @@
 #define kISXLMM @"isXLMM"
 #define kUserAgent @"userAgent"
 #define LOGINDEVTYPE @"ios"
+#define kUserVipStatus @"UserVipStatus"
 
 #define kAPP_WXAPPID = @"wxa6e8010fa0b31eb3"  // wx25fcb32689872499
 #define kAPP_WXAPPSECRET = @"a894a72567440fa7317843d76dd7bf03"

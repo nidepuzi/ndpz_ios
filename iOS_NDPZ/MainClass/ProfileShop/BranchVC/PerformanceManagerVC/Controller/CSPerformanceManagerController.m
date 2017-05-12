@@ -8,33 +8,38 @@
 
 #import "CSPerformanceManagerController.h"
 #import "CSAccountSecurityCell.h"
-#import "JMShareViewController.h"
-#include "JMShareModel.h"
 #import "JMOrderListController.h"
+#import "CSFansTotalRevenueController.h"
+#import "CSShareManager.h"
+
 
 @interface CSPerformanceManagerController () <UITableViewDelegate, UITableViewDataSource> {
     NSArray *dataArr;
 }
 @property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic,strong) JMShareViewController *shareView;
-@property (nonatomic, strong) JMShareModel *share_model;
+@property (nonatomic, strong) JMShareModel *shareModel;
+@property (nonatomic, strong) STPopupController *popupController;
+@property (nonatomic, strong) CSSharePopController *sharPopVC;
+
 
 @end
 
 @implementation CSPerformanceManagerController
-- (JMShareModel*)share_model {
-    if (!_share_model) {
-        _share_model = [[JMShareModel alloc] init];
+#pragma mark 懒加载
+- (CSSharePopController *)sharPopVC {
+    if (!_sharPopVC) {
+        _sharPopVC = [[CSSharePopController alloc] init];
     }
-    return _share_model;
+    return _sharPopVC;
 }
-- (JMShareViewController *)shareView {
-    if (!_shareView) {
-        _shareView = [[JMShareViewController alloc] init];
-        _shareView.shareType = shareVCTypeInvite;
+- (JMShareModel *)shareModel {
+    if (!_shareModel) {
+        _shareModel = [[JMShareModel alloc] init];
     }
-    return _shareView;
+    return _shareModel;
 }
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
@@ -111,21 +116,18 @@
     }];
 }
 - (void)resolveActivityShareParam:(NSDictionary *)dic {
-    self.share_model.share_type = [dic objectForKey:@"share_type"];
-    self.share_model.share_img = [dic objectForKey:@"share_icon"]; //图片
-    self.share_model.desc = [dic objectForKey:@"active_dec"]; // 文字详情
-    self.share_model.title = [dic objectForKey:@"title"]; //标题
-    self.share_model.share_link = [dic objectForKey:@"share_link"];
-    self.shareView.model = self.share_model;
+    self.shareModel.share_type = [dic objectForKey:@"share_type"];
+    self.shareModel.share_img = [dic objectForKey:@"share_icon"]; //图片
+    self.shareModel.desc = [dic objectForKey:@"active_dec"]; // 文字详情
+    self.shareModel.title = [dic objectForKey:@"title"]; //标题
+    self.shareModel.share_link = [dic objectForKey:@"share_link"];
+    self.sharPopVC.model = self.shareModel;
 }
 
 
 - (void)inviteClick {
-    [[JMGlobal global] showpopBoxType:popViewTypeShare Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, kAppShareViewHeight) ViewController:self.shareView WithBlock:^(UIView *maskView) {
-    }];
-    self.shareView.blcok = ^(UIButton *button) {
-        [MobClick event:@"WebViewController_shareFail_cancel"];
-    };
+    self.sharPopVC.popViewHeight = kAppShareViewHeight;
+    [[CSShareManager manager] showSharepopViewController:self.sharPopVC withRootViewController:self];
 }
 
 
@@ -176,21 +178,18 @@
             
             break;
         case 1: {
-            [MBProgressHUD showMessage:@"暂无记录"];
+            [MBProgressHUD showMessage:@"暂无粉丝"];
+//            CSFansTotalRevenueController *fansTotalReve = [[CSFansTotalRevenueController alloc] init];
+//            [self.navigationController pushViewController:fansTotalReve animated:YES];
         }
             
             break;
         case 2: {
-            
-        }
-            
-            break;
-        case 3: {
             [self pushOrderIndexVC:0];
         }
             
             break;
-        case 4: {
+        case 3: {
             [self pushOrderIndexVC:0];
         }
             
@@ -215,12 +214,7 @@
                          @"cellImage":@"cs_pushInImage"
                          },
                      @{
-                         @"title":@"分享记录",
-                         @"descTitle":@"",
-                         @"cellImage":@"cs_pushInImage"
-                         },
-                     @{
-                         @"title":@"客户总收入",
+                         @"title":@"粉丝总收入",
                          @"descTitle":@"¥0.00",
                          @"cellImage":@"cs_pushInImage"
                          },

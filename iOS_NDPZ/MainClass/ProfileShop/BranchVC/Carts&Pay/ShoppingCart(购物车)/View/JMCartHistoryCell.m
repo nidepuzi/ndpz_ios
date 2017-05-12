@@ -124,8 +124,9 @@ NSString *const JMCartHistoryCellIdentifier = @"JMCartHistoryCellIdentifier";
     }];
     [deletLine mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(weakSelf.oldPriceLabel.mas_centerY);
-        make.left.right.equalTo(weakSelf.oldPriceLabel);
-        make.height.mas_equalTo(@1);
+        make.left.equalTo(oldPriceLabel).offset(-2);
+        make.right.equalTo(oldPriceLabel).offset(3);
+        make.height.mas_equalTo(@1.5);
     }];
     
     [self.addCartButton mas_makeConstraints:^(MASConstraintMaker *make) {

@@ -10,9 +10,12 @@
 #import "TixianSucceedViewController.h"
 #import "JMSelecterButton.h"
 #import "JMRichTextTool.h"
+#import "CSWithDrawPopView.h"
+#import "CSPopAnimationViewController.h"
 
 
 #define COUNTING_LIMIT 60
+
 
 
 @interface JMWithdrawCashController ()<UITextFieldDelegate> {
@@ -42,12 +45,20 @@
 @property (nonatomic,strong) UITextField *authcodeTextF;
 
 @property (nonatomic,strong) JMSelecterButton *selButton;
+@property (nonatomic, strong) CSWithDrawPopView *popView;
 
 @end
 
 @implementation JMWithdrawCashController
 
-
+- (CSWithDrawPopView *)popView {
+    if (_popView == nil) {
+        _popView = [CSWithDrawPopView defaultWithdrawPopView];
+        _popView.typeStatus = popTypeStatusWithdraw;
+        _popView.parentVC = self;
+    }
+    return _popView;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor lineGrayColor];
@@ -59,7 +70,17 @@
     if (self.isMaMaWithDraw) {
         [self loadCashoutPolicyData];
     }
+    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
+    if (![NSString isStringEmpty:vipStatus]) {
+        if ([vipStatus isEqual:@"15"]) { // 试用期 弹出框
+            [self performSelector:@selector(popWithdrawView) withObject:nil afterDelay:0.5];
+        }
+    }
     
+}
+- (void)popWithdrawView {
+    [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] dismiss:^{
+    }];
 }
 - (void)setPersonCenterDict:(NSDictionary *)personCenterDict {
     _personCenterDict = personCenterDict;
@@ -565,6 +586,7 @@
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
     self.navigationController.navigationBarHidden = YES;
 }
 

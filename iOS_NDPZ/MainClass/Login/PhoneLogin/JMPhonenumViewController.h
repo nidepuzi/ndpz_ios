@@ -6,9 +6,9 @@
 //  Copyright © 2016年 上海己美. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "JMInpotBoxBaseController.h"
 
-@interface JMPhonenumViewController : UIViewController
+@interface JMPhonenumViewController : JMInpotBoxBaseController
 
 
 @end

@@ -44,6 +44,7 @@
     NSString *_downloadURLString;           // 地址下载链接
     NSString *urlCategory;                  // 下载分类json文件
     NSMutableArray *_topImageArray;         // 主页头部滚动视图数据
+    NSString *_shengyushijian;
 }
 
 @property (nonatomic,strong) UIView *maskView;
@@ -87,6 +88,7 @@
 - (CSJoinVipPopView *)joinVipView {
     if (_joinVipView == nil) {
         _joinVipView = [CSJoinVipPopView defaultJoinVipPopView];
+        _joinVipView.shengyushijian = _shengyushijian;
         _joinVipView.parentVC = self;
     }
     return _joinVipView;
@@ -111,7 +113,18 @@
     [JumpUtils jumpToLocation:[notification.userInfo objectForKey:@"target_url"] viewController:self];
 }
 - (void)showNewFeatureView {
-    [self performSelector:@selector(joinVipPopView) withObject:self afterDelay:1.];
+    NSString *timeString = [JMUserDefaults objectForKey:@"huiyuanshijian"];
+    NSString *currentTime = [NSString getCurrentTime];
+    
+    if (![NSString isStringEmpty:timeString]) {
+        _shengyushijian = [NSString numberOfDaysWithFromDate:currentTime ToData:timeString];
+        _shengyushijian = [NSString stringWithFormat:@"%ld",[_shengyushijian integerValue] + 1];
+        NSLog(@"%@",_shengyushijian);
+    }
+    if (![_shengyushijian isEqualToString:@"0"]) {
+        [self performSelector:@selector(joinVipPopView) withObject:self afterDelay:0.5];
+    }
+    
 }
 #pragma mark 视图生命周期
 - (instancetype)init {
@@ -126,12 +139,10 @@
     [super viewWillAppear:animated];
     
     UIApplication *app = [UIApplication sharedApplication];
-    [JMNotificationCenter addObserver:self
-                                             selector:@selector(rootViewWillEnterForeground:)
+    [JMNotificationCenter addObserver:self selector:@selector(rootViewWillEnterForeground:)
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:app];
-    [JMNotificationCenter addObserver:self
-                                             selector:@selector(rootViewDidEnterBackground:)
+    [JMNotificationCenter addObserver:self selector:@selector(rootViewDidEnterBackground:)
                                                  name:UIApplicationDidEnterBackgroundNotification
                                                object:app];
 }
@@ -162,10 +173,6 @@
     self.session = [self backgroundSession];           // 后台下载...
     [[JMGlobal global] showWaitLoadingInView:self.view];
     
-//    UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-//    UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc]initWithEffect:blurEffect];
-//    blurEffectView.frame = self.view.bounds;
-//    [JMKeyWindow addSubview:blurEffectView];
     
     
 }
@@ -530,7 +537,7 @@
     static NSURLSession *session = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken,^{
-        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration backgroundSessionConfiguration:@"so.xiaolu.m.xiaolumeimei"];
+        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"com.danlai.nidepuzi"];
         session = [NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:nil];
     });
     return session;

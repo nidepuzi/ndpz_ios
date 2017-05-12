@@ -15,7 +15,7 @@
 	<key>CFBundleIcons~ipad</key>
 	<dict/>
 	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<string>com.danlai.nidepuzi</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -59,7 +59,7 @@
 			<string>com.danlai.nidepuzi</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>wb2475629754</string>
+				<string>wb1433464940</string>
 			</array>
 		</dict>
 		<dict>
@@ -71,12 +71,12 @@
 			<string>com.danlai.nidepuzi</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>QQ41dd19a6</string>
+				<string>QQ41eea9bc</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>4</string>
+	<string>7</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>

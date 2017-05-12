@@ -107,6 +107,7 @@
     [self.earningButton sizeToFit];
     self.earningButton.titleLabel.font = CS_UIFontSize(13.);
     [self.earningButton setTitleColor:[UIColor buttonEnabledBackgroundColor] forState:UIControlStateNormal];
+    self.earningButton.hidden = YES;
 }
 - (void)layoutUI {
     kWeakSelf
@@ -202,8 +203,14 @@
                     self.optionButton.tag = 100;
                 }else { }
             }else {
-                [self.optionButton setSelecterBorderColor:[UIColor buttonEnabledBackgroundColor] TitleColor:[UIColor buttonEnabledBackgroundColor] Title:@"申请退款" TitleFont:12. CornerRadius:10];
-                self.optionButton.tag = 100;
+                if (goodsModel.kill_title) {
+                    [self.optionButton setNomalBorderColor:[UIColor buttonDisabledBackgroundColor] TitleColor:[UIColor buttonDisabledBackgroundColor] Title:@"秒杀款不退不换" TitleFont:11. CornerRadius:10];
+                    self.optionButton.tag = 103;
+                    self.optionButton.enabled = NO;
+                }else {
+                    [self.optionButton setSelecterBorderColor:[UIColor buttonEnabledBackgroundColor] TitleColor:[UIColor buttonEnabledBackgroundColor] Title:@"申请退款" TitleFont:12. CornerRadius:10];
+                    self.optionButton.tag = 100;
+                }
             }
         }else {
             self.optionButton.hidden = YES;
@@ -254,8 +261,8 @@
     NSInteger goodsNum = [goodsModel.num integerValue];
     self.PriceLabel.text = [NSString stringWithFormat:@"¥%.2f",payment / goodsNum];
     self.numLabel.text = [NSString stringWithFormat:@"x%@",goodsModel.num];
-    [self.earningButton setImage:[UIImage imageNamed:@"order_sheng"] forState:UIControlStateNormal];
-    [self.earningButton setTitle:goodsModel.total_fee forState:UIControlStateNormal];
+//    [self.earningButton setImage:[UIImage imageNamed:@"order_sheng"] forState:UIControlStateNormal];
+//    [self.earningButton setTitle:goodsModel.total_fee forState:UIControlStateNormal];
     
 }
 

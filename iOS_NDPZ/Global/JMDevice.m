@@ -53,7 +53,7 @@
     NSLog(@"oldAgent=%@",oldAgent);
     if(oldAgent != nil) {
         
-        NSRange range = [oldAgent rangeOfString:[NSString stringWithFormat:@"%@%@", @"xlmm/", app_Version]];
+        NSRange range = [oldAgent rangeOfString:[NSString stringWithFormat:@"%@%@", @"ndpz/", app_Version]];
         if(range.length > 0)
         {
             return;
@@ -61,14 +61,14 @@
         
     }
     
-    NSString *newAgent = [oldAgent stringByAppendingString:@"; xlmm/"];
+    NSString *newAgent = [oldAgent stringByAppendingString:@"; ndpz/"];
     newAgent = [NSString stringWithFormat:@"%@%@; uuid/%@",newAgent, app_Version, [IosJsBridge getMobileSNCode]];
     
     //判断老版本1.8.4及以前使用useragent是xlmm；需要去除掉
-    NSRange newrange = [newAgent rangeOfString:@"xlmm;"];
+    NSRange newrange = [newAgent rangeOfString:@"ndpz;"];
     if(newrange.length > 0)
     {
-        newAgent = [newAgent stringByReplacingOccurrencesOfString:@"; xlmm;" withString:@""];
+        newAgent = [newAgent stringByReplacingOccurrencesOfString:@"; ndpz;" withString:@""];
     }
     
     NSLog(@"newAgent=%@",newAgent);
@@ -87,7 +87,7 @@
     NSString* phoneVersion = SSystemVersion;
     NSString *appCurVersion = [infoDict objectForKey:@"CFBundleShortVersionString"];            // 当前应用版本
     NSString* phoneModel = [[JMDevice defaultDecice] getDeviceName];
-    NSString *userAgent =  [NSString stringWithFormat:@"iOS/%@ XLMM/%@ Mobile/(%@)",phoneVersion,appCurVersion,phoneModel];
+    NSString *userAgent =  [NSString stringWithFormat:@"iOS/%@ NDPZ/%@ Mobile/(%@)",phoneVersion,appCurVersion,phoneModel];
     
     return userAgent;
     

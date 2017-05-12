@@ -39,7 +39,7 @@ static NSString * const reuseIdentifier = @"CSNewFeatureCellIdentifier";
     
     
     dataArr = [NSMutableArray array];
-    NSArray *imageStrArr = @[@"newFeature_01"];
+    NSArray *imageStrArr = @[@"cs_newFeature_01"];
     for (int i = 0; i < imageStrArr.count; i++) {
         UIImage *imagev = [UIImage imageNamed:imageStrArr[i]];
         [dataArr addObject:imagev];

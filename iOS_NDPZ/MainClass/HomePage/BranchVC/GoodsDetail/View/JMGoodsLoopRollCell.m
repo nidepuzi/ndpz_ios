@@ -34,7 +34,7 @@
     [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.top.equalTo(weakSelf);
         make.width.mas_equalTo(SCREENWIDTH);
-        make.height.mas_equalTo(@(SCREENWIDTH * 4 / 3));
+        make.height.mas_equalTo(SCREENWIDTH);
     }];
 }
 - (void)setImageString:(NSString *)imageString {

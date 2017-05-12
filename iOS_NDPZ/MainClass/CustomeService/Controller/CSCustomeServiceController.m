@@ -20,7 +20,7 @@
     if (_sessionViewController == nil) {
         QYSource *source = [[QYSource alloc] init];
         source.title =  @"你的铺子";
-        source.urlString = @"http://m.nidepuzi.com";
+        source.urlString = @"https://m.nidepuzi.com";
         _sessionViewController = [[QYSDK sharedSDK] sessionViewController];
         _sessionViewController.sessionTitle = @"你的铺子";
         _sessionViewController.source = source;

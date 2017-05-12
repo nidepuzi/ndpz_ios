@@ -23,6 +23,7 @@
     if (self == [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         self.iconImageView = [UIImageView new];
         [self.contentView addSubview:self.iconImageView];
+        self.iconImageView.contentMode = UIViewContentModeScaleAspectFit;
         
         self.settingTitleLabel = [UILabel new];
         self.settingTitleLabel.textColor = [UIColor buttonTitleColor];

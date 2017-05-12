@@ -19,7 +19,7 @@
 
 
 #define kService [NSBundle mainBundle].bundleIdentifier
-#define kAccount @"so.xiaolu.m.xiaolumeimei"
+#define kAccount @"com.danlai.nidepuzi"
 
 @implementation IosJsBridge
 
@@ -107,7 +107,7 @@
  */
 + (void) universeShare:(UIViewController *)vc para:(NSDictionary *)data {
     JMShareViewController *shareView = [[JMShareViewController alloc] init];
-    shareView.shareType = shareVCTypeGoods;
+//    shareView.shareType = shareVCTypeInvite;
     ((WebViewController *)vc).shareView = shareView;
     JMShareModel *model = [[JMShareModel alloc] init];
     model.share_type = [data objectForKey:@"share_type"];

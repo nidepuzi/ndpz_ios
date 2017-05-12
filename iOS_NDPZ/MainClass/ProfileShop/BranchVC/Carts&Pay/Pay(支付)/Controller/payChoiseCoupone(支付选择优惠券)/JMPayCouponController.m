@@ -9,7 +9,9 @@
 #import "JMPayCouponController.h"
 #import "HMSegmentedControl.h"
 #import "JMUserCouponController.h"
-
+#import "CSPopAnimationViewController.h"
+#import <STPopup/STPopup.h>
+#import "CSPopDescriptionController.h"
 
 @interface JMPayCouponController () <JMUserCouponControllerDelegate> {
     NSMutableArray *_itemArr;
@@ -18,6 +20,7 @@
 
 @property (nonatomic, strong) UIScrollView *baseScrollView;
 @property (nonatomic, strong) HMSegmentedControl *segmentControl;
+@property (nonatomic, strong) UIView *headerView;
 
 @end
 
@@ -31,7 +34,7 @@
 #pragma mark 懒加载
 - (HMSegmentedControl *)segmentControl {
     if (!_segmentControl) {
-        _segmentControl = [[HMSegmentedControl alloc] initWithFrame:CGRectMake(0, 64, SCREENWIDTH, 45)];
+        _segmentControl = [[HMSegmentedControl alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 45)];
         _segmentControl.backgroundColor = [UIColor countLabelColor];
         _segmentControl.sectionTitles = _itemArr;
         _segmentControl.segmentEdgeInset = UIEdgeInsetsMake(0, 10, 0, 10);
@@ -48,7 +51,7 @@
 }
 - (UIScrollView *)baseScrollView {
     if (!_baseScrollView) {
-        _baseScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.segmentControl.frame), SCREENWIDTH, SCREENHEIGHT - CGRectGetMaxY(self.segmentControl.frame))];
+        _baseScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.headerView.frame), SCREENWIDTH, SCREENHEIGHT - CGRectGetMaxY(self.headerView.frame))];
         _baseScrollView.showsHorizontalScrollIndicator = NO;
         _baseScrollView.showsVerticalScrollIndicator = NO;
         _baseScrollView.pagingEnabled = YES;
@@ -72,7 +75,39 @@
     NSString *usableUrlStr = [NSString stringWithFormat:@"%@/rest/v1/usercoupons/coupon_able?cart_ids=%@&type=%@",Root_URL,self.cartID,@"usable"];
     NSString *disableUrlStr = [NSString stringWithFormat:@"%@/rest/v1/usercoupons/coupon_able?cart_ids=%@&type=%@",Root_URL,self.cartID,@"disable"];
     _urlArr = @[usableUrlStr,disableUrlStr];
-    [self.view addSubview:self.segmentControl];
+    
+    
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREENWIDTH, 70)];
+    self.headerView = headerView;
+    [self.view addSubview:headerView];
+    [headerView addSubview:self.segmentControl];
+    UIView *youhuiDescV = [[UIView alloc] initWithFrame:CGRectMake(0, self.segmentControl.cs_max_Y, SCREENWIDTH, 25)];
+    youhuiDescV.backgroundColor = [UIColor whiteColor];
+    [headerView addSubview:youhuiDescV];
+    
+    UIButton *youhuiDescBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [youhuiDescV addSubview:youhuiDescBtn];
+    [youhuiDescBtn setImage:[UIImage imageNamed:@"cs_wenhaoIcon"] forState:UIControlStateNormal];
+    [youhuiDescBtn setTitle:@"优惠说明" forState:UIControlStateNormal];
+    [youhuiDescBtn setTitleColor:[UIColor dingfanxiangqingColor] forState:UIControlStateNormal];
+    youhuiDescBtn.titleLabel.font = CS_UIFontSize(11.);
+    [youhuiDescBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 50, 0, -50)];
+    [youhuiDescBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -15, 0, 15)];
+    [youhuiDescBtn addTarget:self action:@selector(youhuiDescClick) forControlEvents:UIControlEventTouchUpInside];
+    
+    [youhuiDescBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(youhuiDescV);
+        make.centerY.equalTo(youhuiDescV.mas_centerY);
+        make.width.mas_equalTo(@100);
+        make.height.mas_equalTo(@25);
+    }];
+    
+    
+    
+    
+    
+    
+    
     _segmentControl.selectedSegmentIndex = 0;
     [self.view addSubview:self.baseScrollView];
     [self addChildController];
@@ -80,6 +115,18 @@
 
     
 }
+- (void)youhuiDescClick {
+    //    [self cs_presentPopView:self.termsPopView animation:[CSPopViewAnimationSpring new]];
+    CSPopDescriptionController *popDescVC = [[CSPopDescriptionController alloc] init];
+    popDescVC.popDescType = popDescriptionTypeCoupon;
+    STPopupController *popupController = [[STPopupController alloc] initWithRootViewController:popDescVC];
+    popupController.isTouchBackgorundView = NO;
+    popupController.containerView.layer.cornerRadius = 5;
+    [popupController presentInViewController:self];
+}
+
+
+
 - (void)updateYouhuiquanmodel:(NSArray *)modelArr {
     if (_delegate && [_delegate respondsToSelector:@selector(updateYouhuiquanWithmodel:)]) {
         [_delegate updateYouhuiquanWithmodel:modelArr];

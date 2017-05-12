@@ -13,7 +13,7 @@
 #import "MaMaOrderListViewController.h"
 #import "JMEarningListController.h"
 #import "TodayVisitorViewController.h"
-#import "JMMaMaFansController.h"
+#import "JMAboutFansController.h"
 #import "CSDevice.h"
 #import "Account1ViewController.h"
 #import "JMCouponController.h"
@@ -29,7 +29,8 @@
 #import "JMWithdrawCashController.h"
 #import "CSInviteViewController.h"
 #import "CSPersonalInfoController.h"
-
+#import "CSWithDrawPopView.h"
+#import "CSPopAnimationViewController.h"
 
 #define Max_OffsetY  50
 #define  Statur_HEIGHT   [[UIApplication sharedApplication] statusBarFrame].size.height
@@ -53,11 +54,20 @@
 @property (nonatomic, strong) UIView *naviBarView;
 
 @property (nonatomic, strong) JMMaMaCenterModel *mamaCenterModel;
-
+@property (nonatomic, strong) CSWithDrawPopView *popView;
 
 @end
 
 @implementation CSProfileShopController
+
+- (CSWithDrawPopView *)popView {
+    if (_popView == nil) {
+        _popView = [CSWithDrawPopView defaultWithdrawPopView];
+        _popView.typeStatus = popTypeStatusWithdraw;
+        _popView.parentVC = self;
+    }
+    return _popView;
+}
 
 #pragma mark -- 视图生命周期
 - (void)viewWillAppear:(BOOL)animated {
@@ -131,7 +141,7 @@
     NSDictionary *fortuneDic = dic[@"mama_fortune"];
     self.mamaCenterModel = [JMMaMaCenterModel mj_objectWithKeyValues:fortuneDic];
     self.proHeaderView.mamaCenterModel = self.mamaCenterModel;
-    
+    _orderRecord = [NSString stringWithFormat:@"%@", self.mamaCenterModel.order_num];
     
 }
 // 折线图数据请求
@@ -319,8 +329,8 @@
             
             break;
         case 104: {
-            JMMaMaFansController *mamaCenterFansVC = [[JMMaMaFansController alloc] init];
-            mamaCenterFansVC.aboutFansUrl = _fansWebUrl;
+            JMAboutFansController *mamaCenterFansVC = [[JMAboutFansController alloc] init];
+//            mamaCenterFansVC.aboutFansUrl = _fansWebUrl;
             [self.navigationController pushViewController:mamaCenterFansVC animated:YES];
         }
             
@@ -333,7 +343,7 @@
 /**
  *  100 --> 提现
  *  101 --> 累计收益
- *  102 --> 销售管理
+ *  102 --> 业绩管理
  *  103 --> 优惠券
  *  104 --> 收货地址
  *  105 --> 全部订单
@@ -355,6 +365,15 @@
         }
             break;
         case 100: {
+            NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
+            if (![NSString isStringEmpty:vipStatus]) {
+                if ([vipStatus isEqual:@"15"]) { // 试用期 弹出框
+                    [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] dismiss:^{
+                    }];
+                    return;
+                }
+            }
+            
             JMWithdrawCashController *drawCash = [[JMWithdrawCashController alloc] init];
 //            if ([_persinCenterDict isKindOfClass:[NSDictionary class]] && [_persinCenterDict objectForKey:@"user_budget"]) {
 //                NSDictionary *userBudget = _persinCenterDict[@"user_budget"];

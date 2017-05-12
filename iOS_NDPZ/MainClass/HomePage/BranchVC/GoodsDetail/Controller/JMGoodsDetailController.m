@@ -29,7 +29,7 @@
 
 #define BottomHeitht 60.0
 #define RollHeight 20.0
-#define HeaderScrolHeight SCREENHEIGHT * 0.65
+#define HeaderScrolHeight SCREENWIDTH
 //#define POPHeight SCREENHEIGHT * 0.6
 #define NavigationMaskWH 36
 #define kBottomViewTag 200
@@ -150,7 +150,7 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
 - (JMShareViewController *)goodsShareView {
     if (!_goodsShareView) {
         _goodsShareView = [[JMShareViewController alloc] init];
-        _goodsShareView.shareType = shareVCTypeGoods;
+//        _goodsShareView.shareType = shareVCTypeInvite;
     }
     return _goodsShareView;
 }

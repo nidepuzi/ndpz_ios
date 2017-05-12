@@ -16,31 +16,31 @@
     UIColor *color = [UIColor colorWithR:217 G:140 B:13 alpha:1];
     return color;
 }
-//--- 橙色
+//--- 主题色
 + (UIColor *)buttonEnabledBackgroundColor{
-//    return [UIColor colorWithR:245 G:177 B:35 alpha:1];
-    return [UIColor colorWithHex:0xff5000];
+    return [UIColor colorWithR:255 G:80 B:0 alpha:1];
+//    return [UIColor colorWithHex:0xff5000];
 }
 // --- 灰色
 + (UIColor *)buttonDisabledBackgroundColor{
     return [UIColor colorWithR:227 G:227 B:227 alpha:1];
 }
 + (UIColor *)buttonEnabledBorderColor{
-//    return [UIColor colorWithR:217 G:140 B:13 alpha:1];
-    return [UIColor colorWithHex:0xff5000];
+    return [UIColor colorWithR:255 G:80 B:0 alpha:1];
+//    return [UIColor colorWithHex:0xff5000];
 }
 + (UIColor *)buttonDisabledBorderColor{
     return [UIColor colorWithR:216 G:216 B:216 alpha:1];
 }
 
 + (UIColor *)buttonEmptyBorderColor{
-//    return [UIColor colorWithR:245 G:166 B:35 alpha:1];
-    return [UIColor colorWithHex:0xff5000];
+    return [UIColor colorWithR:255 G:80 B:0 alpha:1];
+//    return [UIColor colorWithHex:0xff5000];
 }
 
 + (UIColor *)orangeThemeColor{
-//    return [UIColor colorWithR:245 G:166 B:35 alpha:1];
-    return [UIColor colorWithHex:0xff5000];
+    return [UIColor colorWithR:255 G:80 B:0 alpha:1];
+//    return [UIColor colorWithHex:0xff5000];
 }
 
 + (UIColor *)settingBackgroundColor{

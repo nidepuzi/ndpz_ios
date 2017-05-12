@@ -11,9 +11,7 @@
 #import "JMHomeHourModel.h"
 #import "JMGoodsDetailController.h"
 #import "JumpUtils.h"
-#import "JMPushingDaysController.h"
-#import "JMShareModel.h"
-#import "JMShareViewController.h"
+#import "CSShareManager.h"
 
 
 @interface JMHomeHourController () <UITableViewDelegate,UITableViewDataSource,JMHomeHourCellDelegate> {
@@ -23,20 +21,28 @@
 
 //上拉的标志
 @property (nonatomic) BOOL isLoadMore;
-@property (nonatomic, strong) JMShareViewController *goodsShareView;
 @property (nonatomic, strong) JMShareModel *shareModel;
+@property (nonatomic, strong) STPopupController *popupController;
+@property (nonatomic, strong) CSSharePopController *sharPopVC;
 
 @end
 
 @implementation JMHomeHourController
 #pragma mark 懒加载
-- (JMShareViewController *)goodsShareView {
-    if (!_goodsShareView) {
-        _goodsShareView = [[JMShareViewController alloc] init];
-        _goodsShareView.shareType = shareVCTypeGoods;
+- (CSSharePopController *)sharPopVC {
+    if (!_sharPopVC) {
+        _sharPopVC = [[CSSharePopController alloc] init];
     }
-    return _goodsShareView;
+    return _sharPopVC;
 }
+- (JMShareModel *)shareModel {
+    if (!_shareModel) {
+        _shareModel = [[JMShareModel alloc] init];
+    }
+    return _shareModel;
+}
+
+
 - (UITableView *)tableView {
     if (!_tableView) {
         _tableView  = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT - 64 - 60 - kAppTabBarHeight)];
@@ -62,7 +68,6 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self goodsShareView];
     [self.view addSubview:self.tableView];
 }
 #pragma mark 网络请求,数据处理
@@ -70,10 +75,10 @@
     [MBProgressHUD showLoading:@"正在分享..."];
     [JMHTTPManager requestWithType:RequestTypeGET WithURLString:[urlString JMUrlEncodedString] WithParaments:nil WithSuccess:^(id responseObject) {
         if (!responseObject) return ;
-        JMShareModel *shareModel = [JMShareModel mj_objectWithKeyValues:responseObject];
-        shareModel.share_type = @"link";
-//        self.goodsShareView.isShowEarningValue = YES;
-        self.goodsShareView.model = shareModel;
+        self.shareModel = [JMShareModel mj_objectWithKeyValues:responseObject];
+        self.shareModel.share_type = @"link";
+        self.sharPopVC.popViewHeight = kAppShareEarningViewHeight;
+        self.sharPopVC.model = self.shareModel;
         [MBProgressHUD hideHUD];
         [self popShareView:kAppShareEarningViewHeight];
     } WithFail:^(NSError *error) {
@@ -81,18 +86,19 @@
     } Progress:^(float progress) {
     }];
 }
+
 - (void)loadSharDataWithHour:(NSString *)urlString {
     [MBProgressHUD showLoading:@"正在分享..."];
     [JMHTTPManager requestWithType:RequestTypeGET WithURLString:urlString WithParaments:nil WithSuccess:^(id responseObject) {
         if (!responseObject) return ;
-        JMShareModel *shareModel = [[JMShareModel alloc] init];
-        shareModel.share_type = [responseObject objectForKey:@"share_type"];
-        shareModel.share_img = [responseObject objectForKey:@"share_icon"]; //图片
-        shareModel.desc = [responseObject objectForKey:@"active_dec"]; // 文字详情
-        shareModel.title = [responseObject objectForKey:@"title"]; //标题
-        shareModel.share_link = [responseObject objectForKey:@"share_link"];
-//        self.goodsShareView.isShowEarningValue = NO;
-        self.goodsShareView.model = shareModel;
+        NSDictionary *shopInfo = responseObject[@"shop_info"];
+        self.shareModel.share_type = @"link";
+        self.shareModel.share_img = [shopInfo objectForKey:@"thumbnail"]; //图片
+        self.shareModel.desc = [shopInfo objectForKey:@"desc"]; // 文字详情
+        self.shareModel.title = [shopInfo objectForKey:@"name"]; //标题
+        self.shareModel.share_link = [shopInfo objectForKey:@"shop_link"];
+        self.sharPopVC.popViewHeight = kAppShareViewHeight;
+        self.sharPopVC.model = self.shareModel;
         [MBProgressHUD hideHUD];
         [self popShareView:kAppShareViewHeight];
     } WithFail:^(NSError *error) {
@@ -103,12 +109,8 @@
 }
 #pragma mark 弹出视图 (弹出分享界面)
 - (void)popShareView:(CGFloat)popHeeight {
-    [MobClick event:@"GoodsDetail_share"];
-    [[JMGlobal global] showpopBoxType:popViewTypeShare Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, popHeeight) ViewController:self.goodsShareView WithBlock:^(UIView *maskView) {
-    }];
-    self.goodsShareView.blcok = ^(UIButton *button) {
-        [MobClick event:@"GoodsDetail_share_fail_clickCancelButton"];
-    };
+    [[CSShareManager manager] showSharepopViewController:self.sharPopVC withRootViewController:self];
+    
 }
 #pragma mark UITableView 代理实现
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -144,24 +146,11 @@
         JMGoodsDetailController *detailVC = [[JMGoodsDetailController alloc] init];
         detailVC.goodsID = model.model_id;
         [self.navigationController pushViewController:detailVC animated:YES];
-//        if ([[JMGlobal global] userVerificationLogin]) {
-//            NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/pmt/ninepic/page_list?model_id=%@",Root_URL,model.model_id];
-//            //    urlString = [NSString stringWithFormat:@"%@?model_id=%@",urlString,model.fineCouponModelID];
-//            JMPushingDaysController *pushVC = [[JMPushingDaysController alloc] init];
-//            //        pushVC.isPushingDays = YES;
-//            pushVC.pushungDaysURL = urlString;
-//            pushVC.navTitle = @"文案精选";
-//            [self.navigationController pushViewController:pushVC animated:YES];
-//        }else {
-//            [[JMGlobal global] showLoginViewController];
-//        }
-        
     }else if (button.tag == 101) {
         NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/share/model?model_id=%@",Root_URL,model.model_id];
         [self loadShareData:urlString];
     }else {
-        NSString *activeID = [NSString stringWithFormat:@"%@",model.activity_id];
-        NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/activitys/%@/get_share_params", Root_URL, activeID];
+        NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/pmt/cushop/customer_shop", Root_URL];
         [self loadSharDataWithHour:urlString];
     }
 }

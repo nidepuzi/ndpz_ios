@@ -44,7 +44,7 @@
     [self pressentPopView:popView animation:animation backgroundClickable:YES dismiss:nil];
 }
 - (void)cs_presentPopView:(UIView *)popView animation:(id<CSPopAnimation>)animation dismiss:(void (^)(void))dismiss {
-[self pressentPopView:popView animation:animation backgroundClickable:YES dismiss:dismiss];
+    [self pressentPopView:popView animation:animation backgroundClickable:YES dismiss:dismiss];
 }
 
 - (void)cs_presentPopView:(UIView *)popView animation:(id<CSPopAnimation>)animation backgroundClickable:(BOOL)clickable {

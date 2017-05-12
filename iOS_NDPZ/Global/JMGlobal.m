@@ -215,9 +215,19 @@ static NSString *userCustomerID;
         if (!responseObject) return ;
         BOOL kIsLoginStatus = ([responseObject objectForKey:@"id"] != nil)  && ([[responseObject objectForKey:@"id"] integerValue] != 0);
         BOOL kIsXLMMStatus = [[responseObject objectForKey:@"xiaolumm"] isKindOfClass:[NSDictionary class]];
+        
+        if (kIsXLMMStatus) {
+            NSDictionary *xlmmDict = responseObject[@"xiaolumm"];
+            [JMUserDefaults setValue:xlmmDict[@"renew_time"] forKey:@"huiyuanshijian"];
+            NSString *last = [NSString stringWithFormat:@"%@",xlmmDict[@"last_renew_type"]];
+            [JMUserDefaults setValue:last forKey:kUserVipStatus];
+        }
         [JMUserDefaults setBool:kIsLoginStatus forKey:kIsLogin];
         [JMUserDefaults setBool:kIsXLMMStatus forKey:kISXLMM];
         [JMUserDefaults synchronize];
+        
+        
+        
 //        if (!responseObject){
 //            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kIsLogin];
 //            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kISXLMM];

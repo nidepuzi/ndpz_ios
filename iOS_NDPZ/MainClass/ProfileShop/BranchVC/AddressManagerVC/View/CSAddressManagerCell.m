@@ -79,8 +79,8 @@
     
     UIButton *defaultButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [shezhiView addSubview:defaultButton];
-    [defaultButton setImage:[UIImage imageNamed:@"cs_duihao_nomal"] forState:UIControlStateNormal];
-    [defaultButton setImage:[UIImage imageNamed:@"cs_duihao_selected"] forState:UIControlStateSelected];
+    [defaultButton setImage:[UIImage imageNamed:@"cs_yuanquanduihao_nomal"] forState:UIControlStateNormal];
+    [defaultButton setImage:[UIImage imageNamed:@"cs_yuanquanduihao_selected"] forState:UIControlStateSelected];
     [defaultButton setTitle:@"设为默认" forState:UIControlStateNormal];
     [defaultButton setTitleColor:[UIColor buttonTitleColor] forState:UIControlStateNormal];
     defaultButton.titleLabel.font = CS_UIFontSize(14.);

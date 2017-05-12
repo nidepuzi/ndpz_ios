@@ -145,7 +145,7 @@
 - (JMShareViewController *)shareView {
     if (_shareView == nil) {
         _shareView = [[JMShareViewController alloc] init];
-        _shareView.shareType = shareVCTypeGoods;
+//        _shareView.shareType = shareVCTypeInvite;
     }
     return _shareView;
 }
@@ -613,7 +613,8 @@
                 [[JMGlobal global] showpopBoxType:popViewTypeBox Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, 260) ViewController:self.refundVC WithBlock:^(UIView *maskView) {
                 }];
             }else {
-                [self createClassPopView:@"铺子退款说明" Message:orderDetailReturnMoney Index:1];
+                [self refundEntry];
+//                [self createClassPopView:@"铺子退款说明" Message:orderDetailReturnMoney Index:1];
             }
 //        }
     }else if (button.tag == 101) {
@@ -653,7 +654,8 @@
  */
 - (void)Clickrefund:(JMRefundController *)click OrderGoods:(JMOrderGoodsModel *)goodsModel Refund:(NSDictionary *)refundDic {
     _choiseRefundDict = refundDic;
-    [self createClassPopView:@"铺子退款说明" Message:orderDetailReturnMoney Index:1];
+//    [self createClassPopView:@"铺子退款说明" Message:orderDetailReturnMoney Index:1];
+    [self refundEntry];
 }
 #pragma mark 订单倒计时点击时间
 - (void)composeOutDateView:(JMOrderPayOutdateView *)outDateView Index:(NSInteger)index {
@@ -807,12 +809,12 @@
 //            }else { }
 //        };
     }else if (index == 1) {
-        self.classPopView.block = ^(NSInteger index) {
-            [weakSelf hideClassPopView];
-            if (index == 101) {
-                [weakSelf refundEntry];
-            }
-        };
+//        self.classPopView.block = ^(NSInteger index) {
+//            [weakSelf hideClassPopView];
+//            if (index == 101) {
+//                [weakSelf refundEntry];
+//            }
+//        };
     }else if (index == 2) {
         self.classPopView.block = ^(NSInteger index) {
             [weakSelf hideClassPopView];

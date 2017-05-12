@@ -217,6 +217,7 @@
     if ([NSString isStringEmpty:timeString]) {
         return @"";
     }
+    timeString = [timeString substringWithRange:NSMakeRange(0,19)];
     if ([timeString rangeOfString:@"T"].location == NSNotFound) {
         return timeString;
     }
@@ -340,8 +341,11 @@
 + (NSString *)numberOfDaysWithFromDate:(NSString *)fromDate ToData:(NSString *)toDate {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    NSDate *fromDate1 = [dateFormatter dateFromString:[NSString jm_deleteTimeWithT:fromDate]];
-    NSDate *toDate1 = [dateFormatter dateFromString:[NSString jm_deleteTimeWithT:toDate]];
+    fromDate = [NSString jm_deleteTimeWithT:fromDate];
+    toDate = [NSString jm_deleteTimeWithT:toDate];
+    
+    NSDate *fromDate1 = [dateFormatter dateFromString:fromDate];
+    NSDate *toDate1 = [dateFormatter dateFromString:toDate];
     NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     NSDateComponents *comp = [calendar components:NSCalendarUnitDay
                                              fromDate:fromDate1

@@ -35,6 +35,7 @@
 #import "CSPurchaseTermsPopView.h"
 #import <STPopup/STPopup.h>
 #import "CSPopDescriptionController.h"
+#import "CSWithDrawPopView.h"
 
 
 #define iOS7Later ([UIDevice currentDevice].systemVersion.floatValue >= 7.0f)
@@ -42,6 +43,7 @@
 #define iOS9Later ([UIDevice currentDevice].systemVersion.floatValue >= 9.0f)
 #define iOS9_1Later ([UIDevice currentDevice].systemVersion.floatValue >= 9.1f)
 
+static NSInteger purchasePopIndex = 0;
 
 @interface JMPurchaseController ()<UIAlertViewDelegate,UIActionSheetDelegate,JMOrderPayViewDelegate,JMPayCouponControllerDelegate,CSAddressManagerControllerDelegate,JMChoiseLogisControllerDelegate,UITableViewDataSource,UITableViewDelegate,JMPurchaseHeaderViewDelegate,JMPurchaseFooterViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate> {
     NSDictionary *_couponData;
@@ -147,6 +149,8 @@
 @property (nonatomic, strong) UIButton *tmpBtn;
 @property (nonatomic, strong) UIView *addressDesView;
 @property (nonatomic, strong) CSPurchaseTermsPopView *termsPopView;
+@property (nonatomic, strong) CSWithDrawPopView *popView;
+
 @end
 
 static BOOL isAgreeTerms = YES;
@@ -154,6 +158,14 @@ static BOOL isAgreeTerms = YES;
 @implementation JMPurchaseController
 
 #pragma mark --- 懒加载 ---
+- (CSWithDrawPopView *)popView {
+    if (_popView == nil) {
+        _popView = [CSWithDrawPopView defaultWithdrawPopView];
+        _popView.typeStatus = popTypeStatusPay;
+        _popView.parentVC = self;
+    }
+    return _popView;
+}
 - (NSMutableArray *)purchaseGoodsArr {
     if (!_purchaseGoodsArr) {
         _purchaseGoodsArr = [NSMutableArray array];
@@ -264,6 +276,15 @@ static BOOL isAgreeTerms = YES;
     }else {
         self.purchaseFooterView.termsButton.selected = NO;
     }
+    
+    if (purchasePopIndex == 0) {
+        [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] dismiss:^{
+        }];
+        purchasePopIndex += 1;
+    }
+    
+
+    
 }
 #pragma mark 网络请求 订单支付信息, 地址请求. 数据处理
 - (void)loadDataSource {
@@ -963,6 +984,7 @@ static BOOL isAgreeTerms = YES;
     CSPopDescriptionController *popDescVC = [[CSPopDescriptionController alloc] init];
     popDescVC.popDescType = popDescriptionTypePurchase;
     STPopupController *popupController = [[STPopupController alloc] initWithRootViewController:popDescVC];
+    popupController.isTouchBackgorundView = NO;
     popupController.containerView.layer.cornerRadius = 5;
     [popupController presentInViewController:self];
 //    [self cs_presentPopView:self.termsPopView animation:[CSPopViewAnimationSpring new]];

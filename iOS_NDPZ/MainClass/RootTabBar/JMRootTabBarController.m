@@ -65,7 +65,7 @@
     self.delegate = self;
     NSArray *childItemsArray = @[
                                  @{kClassKey  : @"JMHomePageController",
-                                   kTitleKey  : @"选品",
+                                   kTitleKey  : @"热卖",
                                    kImgKey    : @"tabBar_homeRoot_xuanpin",
                                    kSelImgKey : @"tabBar_homeRoot_xuanpin_selected"},
                                  
@@ -104,7 +104,7 @@
 
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
-    if ([viewController.tabBarItem.title isEqualToString:@"选品"]) {
+    if ([viewController.tabBarItem.title isEqualToString:@"热卖"]) {
         
     }else if ([viewController.tabBarItem.title isEqualToString:@"培训"]) {
     }else if ([viewController.tabBarItem.title isEqualToString:@"客服"]) {
@@ -128,7 +128,7 @@
 //            [[JMGlobal global] showLoginViewController];
 //            return NO;
 //        }
-    }else if ([viewController.tabBarItem.title isEqualToString:@"选品"]) {
+    }else if ([viewController.tabBarItem.title isEqualToString:@"热卖"]) {
         [MobClick event:@"tabBarWithHomeRoot"];
         return YES;
     }else if ([viewController.tabBarItem.title isEqualToString:@"培训"]) {

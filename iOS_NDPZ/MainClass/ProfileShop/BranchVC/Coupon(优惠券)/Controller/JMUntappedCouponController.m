@@ -135,8 +135,7 @@
 }
 
 - (void)createTabelView {
-
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT - 104) style:UITableViewStylePlain];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT - 64 - 70) style:UITableViewStylePlain];
     self.tableView = tableView;
     [self.view addSubview:self.tableView];
     self.tableView.dataSource = self;
@@ -147,8 +146,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//    return self.dataSource.count;
-    return 6;
+    return self.dataSource.count;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *cellID = @"JMCouponController";
@@ -156,9 +154,10 @@
     if (!cell) {
         cell = [[JMCouponRootCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
     }
+    self.couponModel = self.dataSource[indexPath.row];
+    [cell configData:self.couponModel Index:self.couponStatus];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 //    self.couponModel = self.dataSource[indexPath.row];
-//    [cell configData:self.couponModel Index:self.couponStatus];
     return cell;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

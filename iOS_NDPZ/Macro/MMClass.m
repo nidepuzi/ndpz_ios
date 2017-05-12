@@ -10,8 +10,8 @@
 
 
 CGFloat    const kAppTabBarHeight = 49.f;
-CGFloat    const kAppShareViewHeight = 160.f;
-CGFloat    const kAppShareEarningViewHeight = 260.f;
+CGFloat    const kAppShareViewHeight = 260.f;
+CGFloat    const kAppShareEarningViewHeight = 360.f;
 NSInteger  const kAppVisitoryDay = 14;      // 加载访客记录(天数)
 NSInteger  const kAPPshopCartType = 0;
 
@@ -33,7 +33,7 @@ NSString * Root_URL =  @"https://staging.xiaolumm.com";
 
 #else
 
-NSString * Root_URL = @"http://m.nidepuzi.com";
+NSString * Root_URL = @"https://m.nidepuzi.com";
 
 #endif
 

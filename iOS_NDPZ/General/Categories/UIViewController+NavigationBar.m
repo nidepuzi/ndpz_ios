@@ -54,10 +54,6 @@ static const void *kVTReuseIdentifier = &kVTReuseIdentifier;
 
 - (void)createNavigationBarWithTitle:(NSString *)title selecotr:(SEL)aSelector{
     self.navigationController.navigationBar.backgroundColor = [UIColor buttonEnabledBackgroundColor];
-    
-    
-//    UIImage *barImage = [UIImage imageWithColor:[UIColor whiteColor] Frame:CGRectMake(0, 0, SCREENWIDTH, 64)];
-//    [self.navigationController.navigationBar setBackgroundImage:barImage forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.barTintColor = [UIColor buttonEnabledBackgroundColor];
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 120, 44)];
     label.text = title;

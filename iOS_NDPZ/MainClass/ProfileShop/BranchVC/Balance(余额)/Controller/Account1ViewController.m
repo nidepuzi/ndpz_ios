@@ -14,6 +14,9 @@
 #import "JMAccountCell.h"
 #import "CSTableViewPlaceHolderDelegate.h"
 #import "JMReloadEmptyDataView.h"
+#import "CSWithDrawPopView.h"
+#import "CSPopAnimationViewController.h"
+
 
 @interface Account1ViewController () <CSTableViewPlaceHolderDelegate>
 @property (nonatomic, strong)UITableView *tableView;
@@ -41,7 +44,7 @@
 @property (nonatomic, assign) BOOL isLoadMore;
 
 @property (nonatomic, assign) BOOL isPopToRootView;
-
+@property (nonatomic, strong) CSWithDrawPopView *popView;
 
 @end
 
@@ -52,7 +55,14 @@ static NSString *JMAccountCellIdentifier = @"JMAccountCellIdentifier";
     CGFloat accountMoneyValue;
 }
 
-
+- (CSWithDrawPopView *)popView {
+    if (_popView == nil) {
+        _popView = [CSWithDrawPopView defaultWithdrawPopView];
+        _popView.typeStatus = popTypeStatusWithdraw;
+        _popView.parentVC = self;
+    }
+    return _popView;
+}
 - (NSMutableArray *)dataArr {
     if (!_dataArr) {
         self.dataArr = [[NSMutableArray alloc] initWithCapacity:0];
@@ -244,19 +254,28 @@ static NSString *JMAccountCellIdentifier = @"JMAccountCellIdentifier";
 
 //提现
 - (void)rightBarButtonAction {
-    JMWithdrawCashController *drawCash = [[JMWithdrawCashController alloc] init];
-    if ([self.personCenterDict isKindOfClass:[NSDictionary class]] && [self.personCenterDict objectForKey:@"user_budget"]) {
-        NSDictionary *userBudget = self.personCenterDict[@"user_budget"];
-        if ([userBudget isKindOfClass:[NSDictionary class]] && [userBudget objectForKey:@"cash_out_limit"]) {
-            drawCash.personCenterDict = self.personCenterDict;
-            drawCash.isMaMaWithDraw = NO;
-        }else {
-            [MBProgressHUD showError:@"不可提现"];
-            return ;
+    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
+    if (![NSString isStringEmpty:vipStatus]) {
+        if ([vipStatus isEqual:@"15"]) { // 试用期 弹出框
+            [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] dismiss:^{
+            }];
+            return;
         }
-    }else {
         
     }
+    JMWithdrawCashController *drawCash = [[JMWithdrawCashController alloc] init];
+//    if ([self.personCenterDict isKindOfClass:[NSDictionary class]] && [self.personCenterDict objectForKey:@"user_budget"]) {
+//        NSDictionary *userBudget = self.personCenterDict[@"user_budget"];
+//        if ([userBudget isKindOfClass:[NSDictionary class]] && [userBudget objectForKey:@"cash_out_limit"]) {
+            drawCash.personCenterDict = self.personCenterDict;
+            drawCash.isMaMaWithDraw = NO;
+//        }else {
+//            [MBProgressHUD showError:@"不可提现"];
+//            return ;
+//        }
+//    }else {
+//        
+//    }
 //    WithdrawCashViewController *drawCash = [[WithdrawCashViewController alloc] initWithNibName:@"WithdrawCashViewController" bundle:nil];
 //    CGFloat money = [self.moneyLabel.text floatValue];
 //    NSNumber *number = [NSNumber numberWithFloat:money];

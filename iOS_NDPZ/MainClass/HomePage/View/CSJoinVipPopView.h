@@ -23,6 +23,6 @@
 
 + (instancetype)defaultJoinVipPopView;
 @property (nonatomic, weak) UIViewController *parentVC;
-
+@property (nonatomic, copy) NSString *shengyushijian;
 
 @end

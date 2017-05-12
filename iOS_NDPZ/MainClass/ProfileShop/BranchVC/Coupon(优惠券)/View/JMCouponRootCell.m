@@ -37,6 +37,8 @@
 
 @property (nonatomic, strong) UIImageView *rightImage;
 
+@property (nonatomic, strong) UIImageView *statusImageV;
+
 @end
 
 @implementation JMCouponRootCell
@@ -57,33 +59,36 @@
     UILabel *youhuiquan = [UILabel new];
     youhuiquan.font = CS_UIFontBoldSize(16.);
     youhuiquan.textColor = [UIColor whiteColor];
-    youhuiquan.text = @"优惠券";
+    youhuiquan.text = @"满减券";
     youhuiquan.numberOfLines = 0;
     youhuiquan.textAlignment = NSTextAlignmentCenter;
     
-    NSString *allString = @"¥99";
     UILabel *valueLabel = [UILabel new];
+    valueLabel.font = CS_UIFontBoldSize(32);
     valueLabel.textColor = [UIColor buttonEnabledBackgroundColor];
-    valueLabel.font = CS_UIFontBoldSize(44);
-    valueLabel.attributedText = [JMRichTextTool cs_changeFontAndColorWithSubFont:[UIFont boldSystemFontOfSize:22.] AllString:allString SubStringArray:@[@"¥"]];
+    self.couponValueLabel = valueLabel;
     
     UILabel *titleLabel = [UILabel new];
-    titleLabel.font = CS_UIFontSize(16.);
+    titleLabel.font = CS_UIFontSize(14.);
     titleLabel.textColor = [UIColor dingfanxiangqingColor];
-    titleLabel.text = @"你的铺子会员专属券";
+    titleLabel.text = @"新掌柜专属券";
+    self.couponTypeLabel = titleLabel;
     
     UILabel *tiaojianLabel = [UILabel new];
-    tiaojianLabel.font = CS_UIFontSize(16.);
+    tiaojianLabel.font = CS_UIFontSize(14.);
     tiaojianLabel.textColor = [UIColor dingfanxiangqingColor];
     tiaojianLabel.text = @"无门槛使用";
+    self.couponProsdescLabel = tiaojianLabel;
     
     UILabel *timeLabel = [UILabel new];
-    timeLabel.font = CS_UIFontSize(16.);
+    timeLabel.font = CS_UIFontSize(14.);
     timeLabel.textColor = [UIColor dingfanxiangqingColor];
     timeLabel.text = @"有效期至: 2017 - 10 - 01";
+    self.couponDeadLineLabel = timeLabel;
     
     UIImageView *statusImageV = [UIImageView new];
     statusImageV.image = [UIImage imageNamed:@"cs_coupon_enable"];
+    self.statusImageV = statusImageV;
     
     
     [self.contentView addSubview:youhuiquan];
@@ -93,6 +98,16 @@
     [self.contentView addSubview:timeLabel];
     [self.contentView addSubview:statusImageV];
     
+    CGFloat spaceLeft = HomeCategoryRatio * 5;
+    if (SCREENWIDTH > 320 && SCREENWIDTH <= 375) {
+        spaceLeft = HomeCategoryRatio * 6;
+        valueLabel.font = CS_UIFontBoldSize(32);
+    }else if (SCREENWIDTH > 375) {
+        spaceLeft = HomeCategoryRatio * 8;
+        valueLabel.font = CS_UIFontBoldSize(36);
+    }else {
+        
+    }
     
     kWeakSelf
     [self.couponBackImage mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -104,15 +119,15 @@
     [youhuiquan mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(weakSelf.couponBackImage.mas_centerY);
         make.width.mas_equalTo(@20);
-        make.left.equalTo(weakSelf.couponBackImage).offset(8);
+        make.left.equalTo(weakSelf.couponBackImage).offset(spaceLeft);
     }];
     [valueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(weakSelf.couponBackImage.mas_centerY);
-        make.left.equalTo(weakSelf.couponBackImage).offset(40);
+        make.left.equalTo(weakSelf.couponBackImage).offset(HomeCategoryRatio * 32);
     }];
     [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(weakSelf.couponBackImage).offset(130);
-        make.centerY.equalTo(weakSelf.couponBackImage.mas_centerY).offset(-20);
+        make.left.equalTo(weakSelf.couponBackImage).offset(HomeCategoryRatio * 110);
+        make.centerY.equalTo(weakSelf.couponBackImage.mas_centerY).offset(-25);
     }];
     [tiaojianLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(titleLabel);
@@ -120,7 +135,7 @@
     }];
     [timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(titleLabel);
-        make.centerY.equalTo(weakSelf.couponBackImage.mas_centerY).offset(20);
+        make.centerY.equalTo(weakSelf.couponBackImage.mas_centerY).offset(25);
     }];
     [statusImageV mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(weakSelf.couponBackImage).offset(15);
@@ -128,211 +143,115 @@
     }];
     
     
-    
-    
-    
-    
-    
-    
-//    UIImageView *rightImage = [UIImageView new];
-//    [self.couponBackImage addSubview:rightImage];
-//    self.rightImage = rightImage;
-//    self.rightImage.image = [UIImage imageNamed:@"icon-jiantouyou2"];
-//    self.rightImage.hidden = YES;
-//    
-//    UILabel *couponValueLabel = [UILabel new];
-//    [self.couponBackImage addSubview:couponValueLabel];
-//    self.couponValueLabel = couponValueLabel;
-//    self.couponValueLabel.font = [UIFont systemFontOfSize:30.];
-//    
-//    UILabel *couponUsefeeLabel = [UILabel new];
-//    [self.couponBackImage addSubview:couponUsefeeLabel];
-//    self.couponUsefeeLabel = couponUsefeeLabel;
-//    self.couponUsefeeLabel.font = [UIFont systemFontOfSize:12.];
-//    self.couponUsefeeLabel.textColor = [UIColor buttonTitleColor];
-//    
-//    UILabel *couponProsdescLabel = [UILabel new];
-//    [self.couponBackImage addSubview:couponProsdescLabel];
-//    self.couponProsdescLabel = couponProsdescLabel;
-//    self.couponProsdescLabel.font = [UIFont systemFontOfSize:12.];
-//    self.couponProsdescLabel.textColor = [UIColor buttonTitleColor];
-//    
-//    NSString *heightStr = @"优惠券";
-//    CGFloat counpTypeHeight = [heightStr heightWithWidth:SCREENWIDTH andFont:12.].height;
-//    UIView *counpTypeView = [UIView new];
-//    [self.couponBackImage addSubview:counpTypeView];
-//    
-//    UILabel *couponTypeLabel = [UILabel new];
-//    [counpTypeView addSubview:couponTypeLabel];
-//    self.couponTypeLabel = couponTypeLabel;
-//    self.couponTypeLabel.font = [UIFont systemFontOfSize:12.];
-//    self.couponTypeLabel.textColor = [UIColor buttonTitleColor];
-//    self.couponTypeLabel.numberOfLines = 2;
-//    
-//    UILabel *couponCreatedTimeLabel = [UILabel new];
-//    [self.couponBackImage addSubview:couponCreatedTimeLabel];
-//    self.couponCreatedTimeLabel = couponCreatedTimeLabel;
-//    self.couponCreatedTimeLabel.font = [UIFont systemFontOfSize:11.];
-//    self.couponCreatedTimeLabel.textColor = [UIColor titleDarkGrayColor];
-//    
-//    UILabel *couponDeadLineLabel = [UILabel new];
-//    [self.couponBackImage addSubview:couponDeadLineLabel];
-//    self.couponDeadLineLabel = couponDeadLineLabel;
-//    self.couponDeadLineLabel.font = [UIFont systemFontOfSize:11.];
-//    self.couponDeadLineLabel.textColor = [UIColor titleDarkGrayColor];
-//    
-//    // 期限label
-//    UILabel *deadLineLabel = [UILabel new];
-//    [self.couponBackImage addSubview:deadLineLabel];
-//    deadLineLabel.font = [UIFont systemFontOfSize:12.];
-//    deadLineLabel.textColor = [UIColor titleDarkGrayColor];
-//    deadLineLabel.text = @"期限 ";
-//    UILabel *deadOfLabel = [UILabel new];
-//    [self.couponBackImage addSubview:deadOfLabel];
-//    deadOfLabel.font = [UIFont systemFontOfSize:12.];
-//    deadOfLabel.textColor = [UIColor titleDarkGrayColor];
-//    deadOfLabel.text = @" 至 ";
-//    
-//    kWeakSelf
-//    CGFloat spaceLeft = HomeCategoryRatio * 55;
-//    
-//    [self.couponBackImage mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(weakSelf.contentView).offset(10);
-//        make.top.equalTo(weakSelf.contentView).offset(10);
-//        make.width.mas_equalTo(SCREENWIDTH - 20);
-//        make.height.mas_equalTo(@100);
-//    }];
-//    
-//    [self.couponValueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(weakSelf.couponBackImage).offset(spaceLeft);
-//        make.top.equalTo(weakSelf.couponBackImage).offset(5);
-//        make.width.mas_equalTo(@(80));
-//    }];
-//    
-//    [self.couponProsdescLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(weakSelf.couponValueLabel.mas_right).offset(0);
-//        make.top.equalTo(weakSelf.couponBackImage).offset(5);
-//    }];
-//    [self.couponUsefeeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(weakSelf.couponProsdescLabel.mas_bottom).offset(3);
-//        make.left.equalTo(weakSelf.couponProsdescLabel);
-//    }];
-//    [counpTypeView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(weakSelf.couponUsefeeLabel.mas_bottom).offset(3);
-//        make.left.equalTo(weakSelf.couponValueLabel);
-//        make.right.equalTo(weakSelf.couponBackImage).offset(-5);
-//        make.height.mas_equalTo(@(counpTypeHeight * 2));
-//    }];
-//    [self.couponTypeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.centerY.equalTo(counpTypeView.mas_centerY);
-//        make.left.right.equalTo(counpTypeView);
-//    }];
-//    
-//    [self.rightImage mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.right.equalTo(weakSelf.couponBackImage).offset(-20);
-//        make.centerY.equalTo(weakSelf.couponValueLabel.mas_centerY);
-//    }];
-//    
-//    [deadLineLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(weakSelf.couponBackImage).offset(spaceLeft);
-//        make.bottom.equalTo(weakSelf.couponBackImage).offset(-10);
-//    }];
-//    [self.couponCreatedTimeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(deadLineLabel.mas_right);
-//        make.centerY.equalTo(deadLineLabel.mas_centerY);
-//    }];
-//    [deadOfLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(weakSelf.couponCreatedTimeLabel.mas_right);
-//        make.centerY.equalTo(deadLineLabel.mas_centerY);
-//    }];
-//    [self.couponDeadLineLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(deadOfLabel.mas_right);
-//        make.centerY.equalTo(deadLineLabel.mas_centerY);
-//    }];
-    
-    
+    /*
+     (lldb) po [UIScreen mainScreen].bounds
+     (origin = (x = 0, y = 0), size = (width = 375, height = 667))
+     
+     
+     (origin = (x = 0, y = 0), size = (width = 414, height = 736))
+     
+     */
 }
 
 
 
 - (void)configData:(JMCouponModel *)couponModel Index:(NSInteger)index {
     NSString *imageStr = @"";
+    NSString *statusString = @"";
     if (index == 0) {
         //未使用优惠券
         imageStr = @"cs_couponBack_enable";
+        statusString = @"cs_coupon_enable";
         self.couponValueLabel.textColor = [UIColor redColor];
-        self.rightImage.hidden = NO;
     }else if (index == 1) {
         //已使用
         imageStr = @"cs_couponBack_disenable";
+        statusString = @"cs_coupon_yijingused";
         self.couponValueLabel.textColor = [UIColor timeLabelColor];
     }else if (index == 2) {
         //不可使用
         imageStr = @"cs_couponBack_disenable";
+        statusString = @"cs_coupon_enable";
         self.couponValueLabel.textColor = [UIColor redColor];
     }else if (index == 3) {
         //已过期
         imageStr = @"cs_couponBack_disenable";
+        statusString = @"cs_coupon_timeout";
         self.couponValueLabel.textColor = [UIColor timeLabelColor];
     }else if (index == 8) {
         //未使用优惠券
         imageStr = @"cs_couponBack_enable";
+        statusString = @"cs_coupon_enable";
         self.couponValueLabel.textColor = [UIColor redColor];
-        self.rightImage.hidden = NO;
     }else {
         imageStr = @"cs_couponBack_disenable";
+        statusString = @"cs_coupon_enable";
         self.couponValueLabel.textColor = [UIColor redColor];
     }
     self.couponBackImage.image = [UIImage imageNamed:imageStr];
-    self.couponValueLabel.text = [NSString stringWithFormat:@"¥%.2f",[couponModel.coupon_value floatValue]];
-    CGSize sizeToFit = [self.couponValueLabel.text boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, 0) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:32.]} context:nil].size;
-    CGFloat valueWidth = sizeToFit.width + 5;
-    [self.couponValueLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_offset(@(valueWidth));
-    }];
+    self.statusImageV.image = [UIImage imageNamed:statusString];
+    NSString *valueString = [NSString stringWithFormat:@"¥%.1f",[couponModel.coupon_value floatValue]];
+    if (valueString.length > 5) {
+        self.couponValueLabel.font = CS_UIFontSize(26.);
+    }
+    self.couponValueLabel.attributedText = [JMRichTextTool cs_changeFontAndColorWithSubFont:[UIFont boldSystemFontOfSize:20.] AllString:valueString SubStringArray:@[@"¥"]];
+//    CGSize sizeToFit = [self.couponValueLabel.text boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, 0) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:32.]} context:nil].size;
+//    CGFloat valueWidth = sizeToFit.width + 5;
+//    [self.couponValueLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+//        make.width.mas_offset(@(valueWidth));
+//    }];
     
     self.couponUsefeeLabel.text = couponModel.use_fee_des;
     self.couponProsdescLabel.text = couponModel.pros_desc;
     self.couponTypeLabel.text = couponModel.title;
-    self.couponCreatedTimeLabel.text = [self composeString:couponModel.created];
-    self.couponDeadLineLabel.text = [self composeString:couponModel.deadline];
+//    self.couponCreatedTimeLabel.text = [self composeString:couponModel.created];
+    self.couponDeadLineLabel.text = [NSString stringWithFormat:@"有效期至: %@",[NSString yearDeal:couponModel.deadline]];
     
     
 }
 - (void)configUsableData:(JMCouponModel *)couponModel IsSelectedYHQ:(BOOL)isselectedYHQ SelectedID:(NSString *)selectedID Index:(NSInteger)index {
     NSString *imageStr = @"";
+    NSString *statusString = @"";
     if (index == 0) {
-        imageStr = @"noUsed_coupon";
+        imageStr = @"cs_couponBack_enable";
+        statusString = @"cs_coupon_enable";
         if (isselectedYHQ == YES) {
             NSArray *selectedIDArr = [selectedID componentsSeparatedByString:@"/"];
             NSString *selectedFirstID = selectedIDArr[0];
             if ([selectedFirstID isEqualToString:couponModel.couponID]) {
-                imageStr = @"used_nomalcoupon";
+                imageStr = @"cs_couponBack_enable";
+                statusString = @"cs_coupon_enable";
                 self.couponValueLabel.textColor = [UIColor redColor];
             }else {
-                imageStr = @"noUsed_coupon";
+                imageStr = @"cs_couponBack_enable";
+                statusString = @"cs_coupon_enable";
                 self.couponValueLabel.textColor = [UIColor redColor];
             }
         }else {
-            imageStr = @"noUsed_coupon";
+            imageStr = @"cs_couponBack_enable";
+            statusString = @"cs_coupon_enable";
             self.couponValueLabel.textColor = [UIColor redColor];
         }
     }else {
-        imageStr = @"newyouhuiquanbukeyongbg";
+        imageStr = @"cs_couponBack_disenable";
+        statusString = @"cs_coupon_enable";
     }
+    
     self.couponBackImage.image = [UIImage imageNamed:imageStr];
-    self.couponValueLabel.text = [NSString stringWithFormat:@"¥%.2f",[couponModel.coupon_value floatValue]];
-    CGSize sizeToFit = [self.couponValueLabel.text boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, 0) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:32.]} context:nil].size;
-    CGFloat valueWidth = sizeToFit.width + 5;
-    [self.couponValueLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_offset(@(valueWidth));
-    }];
+    self.statusImageV.image = [UIImage imageNamed:statusString];
+    NSString *valueString = [NSString stringWithFormat:@"¥%.1f",[couponModel.coupon_value floatValue]];
+    self.couponValueLabel.attributedText = [JMRichTextTool cs_changeFontAndColorWithSubFont:[UIFont boldSystemFontOfSize:22.] AllString:valueString SubStringArray:@[@"¥"]];
+//    CGSize sizeToFit = [self.couponValueLabel.text boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, 0) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:32.]} context:nil].size;
+//    CGFloat valueWidth = sizeToFit.width + 5;
+//    [self.couponValueLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+//        make.width.mas_offset(@(valueWidth));
+//    }];
 
     self.couponUsefeeLabel.text = couponModel.use_fee_des;
     self.couponProsdescLabel.text = couponModel.pros_desc;
     self.couponTypeLabel.text = couponModel.title;
-    self.couponCreatedTimeLabel.text = [self composeString:couponModel.created];
-    self.couponDeadLineLabel.text = [self composeString:couponModel.deadline];
+    //    self.couponCreatedTimeLabel.text = [self composeString:couponModel.created];
+    self.couponDeadLineLabel.text = [NSString stringWithFormat:@"有效期至: %@",[NSString yearDeal:couponModel.deadline]];
 }
 
 - (NSString *)composeString:(NSString *)str {

@@ -309,8 +309,9 @@ NSString *const JMGoodsExplainCellIdentifier = @"JMGoodsExplainCellIdentifier";
 
     [deletLine mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(oldPriceLabel.mas_centerY);
-        make.left.right.equalTo(oldPriceLabel);
-        make.height.mas_equalTo(@1);
+        make.left.equalTo(oldPriceLabel).offset(-2);
+        make.right.equalTo(oldPriceLabel).offset(3);
+        make.height.mas_equalTo(@1.5);
     }];
     
     [lookWirter mas_makeConstraints:^(MASConstraintMaker *make) {

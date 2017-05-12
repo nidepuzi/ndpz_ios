@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSInteger, shareButtonType) {
-    shareButtonType1,
-    shareButtonType2,
-};
+//typedef NS_ENUM(NSInteger, shareButtonType) {
+//    shareButtonType1,
+//    shareButtonType2,
+//};
 
 @class JMShareButtonView;
 @protocol JMShareButtonViewDelegate <NSObject>
@@ -23,8 +23,8 @@ typedef NS_ENUM(NSInteger, shareButtonType) {
 
 @interface JMShareButtonView : UIView
 
-- (instancetype)initWithFrame:(CGRect)frame shareType:(shareButtonType)shareType;
-@property (nonatomic, assign) shareButtonType buttonType;
+- (instancetype)initWithFrame:(CGRect)frame;
+//@property (nonatomic, assign) shareButtonType buttonType;
 @property (nonatomic,weak) id<JMShareButtonViewDelegate> delegate;
 
 

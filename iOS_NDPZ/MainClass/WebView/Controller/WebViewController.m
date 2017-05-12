@@ -96,7 +96,7 @@
 - (JMShareViewController *)shareView {
     if (!_shareView) {
         _shareView = [[JMShareViewController alloc] init];
-        _shareView.shareType = shareVCTypeInvite;
+//        _shareView.shareType = shareVCTypeInvite;
     }
     return _shareView;
 }
@@ -311,8 +311,8 @@
 #pragma mark ----- 创建导航栏按钮
 - (void)createTabBarButton {
     UIButton *button1 = [[UIButton alloc] initWithFrame:CGRectMake(SCREENWIDTH - 20, 0, 44, 44)];
-    UIImageView *imageView1 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"shareIconImage2"]];
-    imageView1.frame = CGRectMake(25, 13, 20, 20);
+    UIImageView *imageView1 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"goodsDetailShareImage"]];
+    imageView1.frame = CGRectMake(25, 13, 24, 20);
     [button1 addSubview:imageView1];
     [button1 addTarget:self action:@selector(rightBarButtonAction) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:button1];
