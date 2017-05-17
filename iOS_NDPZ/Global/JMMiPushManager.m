@@ -2,8 +2,8 @@
 //  JMMiPushManager.m
 //  XLMM
 //
-//  Created by zhang on 16/11/15.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/15.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMMiPushManager.h"
@@ -181,7 +181,7 @@
             return;
         }
         if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
-            //            [JMNotificationCenter postNotificationName:@"Notification" object:nil userInfo:@{@"target_url":target_url}];
+            //            [JMNotificationCenter postNotificationName:@"Notification" obje ct:nil userInfo:@{@"target_url":target_url}];
             return;
         } else {
             [JMNotificationCenter postNotificationName:@"PresentView" object:nil userInfo:@{@"target_url":target_url}];

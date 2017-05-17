@@ -2,8 +2,8 @@
 //  JMRootTabBarController.m
 //  XLMM
 //
-//  Created by zhang on 16/11/25.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/25.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMRootTabBarController.h"
@@ -108,41 +108,25 @@
         
     }else if ([viewController.tabBarItem.title isEqualToString:@"培训"]) {
     }else if ([viewController.tabBarItem.title isEqualToString:@"客服"]) {
+        
     }else if ([viewController.tabBarItem.title isEqualToString:@"店铺"]) {
-        if ([JMUserDefaults boolForKey:kIsLogin]) {
-        }else {
-        }
+        
     }else { }
 }
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
     if ([viewController.tabBarItem.title isEqualToString:@"店铺"]) {
-//        if ([JMUserDefaults boolForKey:kIsLogin]) {
-//            if (![JMUserDefaults boolForKey:kISXLMM]) {
-//                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"小鹿提醒" message:@"您暂时还不是小鹿妈妈哦~ 请关注 \"小鹿美美\" 公众号,获取更多信息 " delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//                [alert show];
-//                return NO;
-//            }
-//            [MobClick event:@"tabBarWithFine"];
-            return YES;
-//        }else {
-//            [[JMGlobal global] showLoginViewController];
-//            return NO;
-//        }
+        [MobClick event:@"JMRootTabBarController_Shop"];
+        return YES;
     }else if ([viewController.tabBarItem.title isEqualToString:@"热卖"]) {
-        [MobClick event:@"tabBarWithHomeRoot"];
+        [MobClick event:@"JMRootTabBarController_Home"];
         return YES;
     }else if ([viewController.tabBarItem.title isEqualToString:@"培训"]) {
-        [MobClick event:@"tabBarWithMineCategory"];
+        [MobClick event:@"JMRootTabBarController_Peixun"];
         return YES;
     }
     else if ([viewController.tabBarItem.title isEqualToString:@"客服"]) {
-//        if ([JMUserDefaults boolForKey:kIsLogin]) {
-//            [MobClick event:@"tabBarWithMine"];
-            return YES;
-//        }else {
-//            [[JMGlobal global] showLoginViewController];
-//            return NO;
-//        }
+        [MobClick event:@"JMRootTabBarController_Kefu"];
+        return YES;
     }else {
         return YES;
     }

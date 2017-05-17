@@ -2,8 +2,8 @@
 //  JMMaMaCenterModel.h
 //  XLMM
 //
-//  Created by zhang on 16/7/1.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/1.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -49,6 +49,9 @@
  *  邀请数量
  */
 @property (nonatomic, copy) NSString *invite_num;
+@property (nonatomic, copy) NSString *invite_all_num;
+@property (nonatomic, copy) NSString *invite_trial_num;
+
 /**
  *  精品活动链接
  */
@@ -105,7 +108,9 @@
  };
  "fans_num" = 2272;
  "history_last_day" = "<null>";
+ "invite_all_num" = 1;
  "invite_num" = 0;
+ "invite_trial_num" = 1;
  "mama_event_link" = "http://staging.xiaolumeimei.com/static/wap/pages/featuredEvent.html";
  "mama_id" = 44;
  "mama_level" = 0;

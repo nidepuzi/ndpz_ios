@@ -2,17 +2,16 @@
 //  JMPayShareController.m
 //  XLMM
 //
-//  Created by zhang on 16/6/21.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/21.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMPayShareController.h"
 #import "JMPaySucTitleView.h"
 #import "JMSelecterButton.h"
 #import "JMSharePackView.h"
-#import "JMShareViewController.h"
-#import "JMShareModel.h"
 #import "JMOrderListController.h"
+#import "CSShareManager.h"
 
 @interface JMPayShareController ()<UITableViewDelegate,UITableViewDataSource,JMPaySucTitleViewDelegate>
 
@@ -21,15 +20,15 @@
  */
 @property (nonatomic, strong) NSDictionary *shareDic;
 
-@property (nonatomic,strong) JMShareModel *share_model;
-
-@property (nonatomic,strong) JMShareViewController *shareView;
-
 @property (nonatomic,strong) JMPaySucTitleView *paySuccessView;
 
 @property (nonatomic,strong) JMSharePackView *sharePackView;
 
 @property (nonatomic,strong) UITableView *tableView;
+
+@property (nonatomic, strong) JMShareModel *shareModel;
+@property (nonatomic, strong) CSSharePopController *sharPopVC;
+
 
 @end
 
@@ -37,18 +36,18 @@
     NSString *_orderNum;
     NSString *_limitStr;
 }
-- (JMShareViewController *)shareView {
-    if (!_shareView) {
-        _shareView = [[JMShareViewController alloc] init];
-//        _shareView.shareType = shareVCTypeInvite;
+#pragma mark 懒加载
+- (CSSharePopController *)sharPopVC {
+    if (!_sharPopVC) {
+        _sharPopVC = [[CSSharePopController alloc] init];
     }
-    return _shareView;
+    return _sharPopVC;
 }
-- (JMShareModel*)share_model {
-    if (!_share_model) {
-        _share_model = [[JMShareModel alloc] init];
+- (JMShareModel *)shareModel {
+    if (!_shareModel) {
+        _shareModel = [[JMShareModel alloc] init];
     }
-    return _share_model;
+    return _shareModel;
 }
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -107,16 +106,16 @@
     //    NSDictionary *dic = _model.mj_keyValues;
     NSLog(@"Share para=%@",dic);
     
-    self.share_model.share_type = [NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
+    self.shareModel.share_type = [NSString stringWithFormat:@"%@",[dic objectForKey:@"code"]];
     
-    self.share_model.share_img = [dic objectForKey:@"post_img"]; //图片
-    self.share_model.desc = [dic objectForKey:@"description"]; // 文字详情
+    self.shareModel.share_img = [dic objectForKey:@"post_img"]; //图片
+    self.shareModel.desc = [dic objectForKey:@"description"]; // 文字详情
     
-    self.share_model.title = [dic objectForKey:@"title"]; //标题
-    self.share_model.share_link = [dic objectForKey:@"share_link"];
+    self.shareModel.title = [dic objectForKey:@"title"]; //标题
+    self.shareModel.share_link = [dic objectForKey:@"share_link"];
     _limitStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"share_times_limit"]];
     self.sharePackView.limitStr = _limitStr;
-    self.shareView.model = self.share_model;
+    self.sharPopVC.model = self.shareModel;
     
     
 }

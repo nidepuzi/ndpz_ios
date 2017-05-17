@@ -2,8 +2,8 @@
 //  JMHomeHourController.m
 //  XLMM
 //
-//  Created by zhang on 17/2/16.
-//  Copyright © 2017年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/16.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMHomeHourController.h"
@@ -22,7 +22,6 @@
 //上拉的标志
 @property (nonatomic) BOOL isLoadMore;
 @property (nonatomic, strong) JMShareModel *shareModel;
-@property (nonatomic, strong) STPopupController *popupController;
 @property (nonatomic, strong) CSSharePopController *sharPopVC;
 
 @end
@@ -109,7 +108,9 @@
 }
 #pragma mark 弹出视图 (弹出分享界面)
 - (void)popShareView:(CGFloat)popHeeight {
-    [[CSShareManager manager] showSharepopViewController:self.sharPopVC withRootViewController:self];
+    [[CSShareManager manager] showSharepopViewController:self.sharPopVC withRootViewController:self WithBlock:^(BOOL dismiss) {
+        
+    }];
     
 }
 #pragma mark UITableView 代理实现
@@ -131,7 +132,7 @@
     return cell;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [MobClick event:@"checkGoodsDetailClick"];
+    [MobClick event:@"Push_JMGoodsDetailController"];
     if (self.dataSource.count == 0) {
         return ;
     }
@@ -142,6 +143,11 @@
 }
 #pragma mark JMHomeHourCellDelegate 点击事件
 - (void)composeHourCell:(JMHomeHourCell *)cell Model:(JMHomeHourModel *)model ButtonClick:(UIButton *)button {
+    NSInteger mobClickIndex = button.tag - 100;
+    NSArray *itemArr = @[@"分享素材",@"单品分享",@"店铺分享"];
+    NSDictionary *tempDict = @{@"code" : [NSString stringWithFormat:@"%@",itemArr[mobClickIndex]]};
+    [MobClick event:@"JMHomeHourCell_ButtonClickIndex" attributes:tempDict];
+    
     if (button.tag == 100) {
         JMGoodsDetailController *detailVC = [[JMGoodsDetailController alloc] init];
         detailVC.goodsID = model.model_id;

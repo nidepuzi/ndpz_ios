@@ -2,8 +2,8 @@
 //  JMOrderDetailController.m
 //  XLMM
 //
-//  Created by zhang on 16/7/7.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/7.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMOrderDetailController.h"
@@ -25,8 +25,6 @@
 #import "JMModifyAddressController.h"
 #import "JMOrderDetailSectionView.h"
 #import "JMRefundController.h"
-#import "JMShareViewController.h"
-#import "JMShareModel.h"
 #import "JMPayShareController.h"
 #import "WXApi.h"
 #import "JMGoodsDetailController.h"
@@ -37,6 +35,10 @@
 #import "JMGoodsCountTime.h"
 #import "JMOrderListController.h"
 #import "CSLogisticsDetailController.h"
+#import "CSShareManager.h"
+#import "QYSDK.h"
+#import "CSCustomerServiceManager.h"
+#import "JMStoreManager.h"
 
 
 @interface JMOrderDetailController ()<NSURLConnectionDataDelegate,UIAlertViewDelegate,UITableViewDelegate,UITableViewDataSource,JMOrderDetailHeaderViewDelegate,JMBaseGoodsCellDelegate,JMRefundViewDelegate,JMOrderPayOutdateViewDelegate,JMPopLogistcsControllerDelegate,JMOrderDetailSectionViewDelegate,JMRefundControllerDelegate> {
@@ -63,6 +65,8 @@
     NSInteger redPageNumber;                   // 红包数量
     BOOL isChakanWuliu;
 }
+
+@property (nonatomic, strong) QYSessionViewController *sessionViewController;
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *orderGoodsDataSource;
@@ -107,23 +111,32 @@
  *  退款选择弹出框视图
  */
 @property (nonatomic,strong) JMRefundController *refundVC;
-/**
- *  分享弹出视图
- */
-@property (nonatomic,strong) JMShareViewController *shareView;
-/**
- *  分享模型
- */
-@property (nonatomic,strong) JMShareModel *shareModel;
+
 
 @property (nonatomic, assign)BOOL isInstallWX;
 @property (nonatomic, strong) NSMutableArray *logisticsArr;  //包裹分组信息
 @property (nonatomic, strong) NSMutableArray *dataSource;    //商品分组信息
 
+@property (nonatomic, strong) JMShareModel *shareModel;
+@property (nonatomic, strong) CSSharePopController *sharPopVC;
+
 @end
 
 @implementation JMOrderDetailController
 
+#pragma mark 懒加载
+- (CSSharePopController *)sharPopVC {
+    if (!_sharPopVC) {
+        _sharPopVC = [[CSSharePopController alloc] init];
+    }
+    return _sharPopVC;
+}
+- (JMShareModel *)shareModel {
+    if (!_shareModel) {
+        _shareModel = [[JMShareModel alloc] init];
+    }
+    return _shareModel;
+}
 - (JMPackAgeModel *)packageModel {
     if (_packageModel == nil) {
         _packageModel = [[JMPackAgeModel alloc] init];
@@ -141,13 +154,6 @@
         _dataSource = [NSMutableArray array];
     }
     return _dataSource;
-}
-- (JMShareViewController *)shareView {
-    if (_shareView == nil) {
-        _shareView = [[JMShareViewController alloc] init];
-//        _shareView.shareType = shareVCTypeInvite;
-    }
-    return _shareView;
 }
 - (JMPopLogistcsController *)showViewVC {
     if (_showViewVC == nil) {
@@ -280,15 +286,13 @@
     }];
 }
 - (void)shareRedpageData:(NSDictionary *)shareDict {
-    JMShareModel *shareModel = [JMShareModel mj_objectWithKeyValues:shareDict];
-    self.shareModel = shareModel;
     self.shareModel.share_type = [NSString stringWithFormat:@"%@",[shareDict objectForKey:@"code"]];
     self.shareModel.share_img = [shareDict objectForKey:@"post_img"]; //图片
     self.shareModel.desc = [shareDict objectForKey:@"description"]; // 文字详情
     self.shareModel.title = [shareDict objectForKey:@"title"]; //标题
     self.shareModel.share_link = [shareDict objectForKey:@"share_link"];
     redPageNumber = [shareDict[@"share_times_limit"] integerValue];
-    self.shareView.model = self.shareModel;
+    self.sharPopVC.model = self.shareModel;
 }
 #pragma mark 请求数据
 - (void)loadDataSource {
@@ -325,7 +329,7 @@
     _refundDic = dicJson[@"extras"];
     tid = [dicJson objectForKey:@"id"];
     _orderTid = dicJson[@"tid"];
-    [self loadShareRedpage:_orderTid];
+//    [self loadShareRedpage:_orderTid]; // 暂时没有红包数据
     // ===== 订单详情主数据源模型 =======
     self.orderDetailModel = [JMOrderDetailModel mj_objectWithKeyValues:dicJson];
     // ===== 订单详情收货地址数据源模型 =======
@@ -558,10 +562,10 @@
 //    NSInteger section = indexPath.section;
 //    [self queryLogInfo:section];
 }
-//- (void)composeSectionView:(JMOrderDetailSectionView *)sectionView Index:(NSInteger)index {
+- (void)composeSectionView:(JMOrderDetailSectionView *)sectionView Index:(NSInteger)index {
 //    NSInteger section = index - 100;
 //    [self queryLogInfo:section];
-//}
+}
 - (void)queryLogInfo:(NSInteger)section {
     CSLogisticsDetailController *logisDetailVC = [[CSLogisticsDetailController alloc] init];
     logisDetailVC.goodsSource = self.dataSource[section];
@@ -657,6 +661,25 @@
 //    [self createClassPopView:@"铺子退款说明" Message:orderDetailReturnMoney Index:1];
     [self refundEntry];
 }
+
+- (QYSessionViewController *)sessionViewController {
+    if (_sessionViewController == nil) {
+        QYSource *source = [[QYSource alloc] init];
+        source.title =  @"你的铺子";
+        source.urlString = @"https://m.nidepuzi.com";
+        _sessionViewController = [[QYSDK sharedSDK] sessionViewController];
+        _sessionViewController.sessionTitle = @"你的铺子";
+        _sessionViewController.source = source;
+        //    sessionViewController.hidesBottomBarWhenPushed = NO;
+        
+        _sessionViewController.navigationItem.leftBarButtonItem =
+        [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain
+                                        target:self action:@selector(onBack)];
+    }
+    return _sessionViewController;
+}
+
+
 #pragma mark 订单倒计时点击时间
 - (void)composeOutDateView:(JMOrderPayOutdateView *)outDateView Index:(NSInteger)index {
     if (index == 100) { // 取消支付
@@ -667,7 +690,8 @@
         }];
     }else if (index == 102) {
         // 联系客服
-        
+        [[CSCustomerServiceManager defaultManager] registerUserInfo:[JMStoreManager getDataDictionary:@"userProfile"]];
+        [self.navigationController pushViewController:self.sessionViewController animated:YES];
         
         //分享红包
 //        if (redPageNumber > 0) {
@@ -689,6 +713,11 @@
         
     }
 }
+- (void)onBack {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+
 - (void)Clickrefund:(JMRefundController *)click ContinuePay:(NSDictionary *)continueDic {
     [MBProgressHUD showLoading:@"支付处理中....."];
     NSString *urlStr = [NSString stringWithFormat:@"%@/rest/v2/trades/%@",Root_URL,tid];
@@ -739,13 +768,13 @@
 }
 #pragma mark --- 支付成功的弹出框
 - (void)paySuccessful{
-    [MobClick event:@"buy_succ"];
+    [MobClick event:@"JMOrderDetailController_PaySuccess"];
     [self pushShareVC];
     [JMNotificationCenter removeObserver:self name:@"ZhifuSeccessfully" object:nil];
     [JMNotificationCenter removeObserver:self name:@"CancleZhifu" object:nil];
 }
 - (void)popview {
-    [MobClick event:@"buy_cancel"];
+    [MobClick event:@"JMOrderDetailController_PayCancle"];
     JMOrderListController *orderVC = [[JMOrderListController alloc] init];
     orderVC.currentIndex = 1;
     [self.navigationController pushViewController:orderVC animated:YES];

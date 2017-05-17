@@ -37,7 +37,7 @@ static const void *kVTReuseIdentifier = &kVTReuseIdentifier;
     NSString *className = NSStringFromClass([self class]);
     // 我们在这里加一个判断，将系统的UIViewController的对象剔除掉
 //    if([className rangeOfString:@"UI"].location == NSNotFound){
-    if ([className hasPrefix:@"UI"] == NO) {
+    if ([className hasPrefix:@"CS"] || [className hasPrefix:@"JM"]) {
 //        NSLog(@"csviewWillAppear -- > %@",className);
         [MobClick beginLogPageView:className];
     }

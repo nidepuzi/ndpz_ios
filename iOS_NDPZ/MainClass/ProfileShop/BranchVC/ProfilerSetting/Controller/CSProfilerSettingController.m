@@ -62,7 +62,7 @@
     
     [tuichuButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(bottomView.mas_centerX);
-        make.bottom.equalTo(bottomView);
+        make.bottom.equalTo(bottomView).offset(-40);
         make.width.mas_equalTo(@(SCREENWIDTH - 40));
         make.height.mas_equalTo(@(40));
     }];
@@ -113,15 +113,23 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSInteger sectionIndex = indexPath.section;
     NSInteger rowIndex = indexPath.row;
+    
+    NSInteger mobClickIndex = indexPath.section * 3 + indexPath.row;
+    NSArray *itemArr = @[@"个人资料",@"绑定手机",@"修改密码",@"清除缓存",@"关于你的铺子",@"当前版本"];
+    NSDictionary *tempDict = @{@"code" : [NSString stringWithFormat:@"%@",itemArr[mobClickIndex]]};
+    [MobClick event:@"CSProfilerSettingController_ButtonClick" attributes:tempDict];
+    
     if (sectionIndex == 0) {
         if (rowIndex == 0) {
             CSPersonalInfoController *vc = [[CSPersonalInfoController alloc] init];
+            vc.profileInfo = self.profileInfo;
             [self.navigationController pushViewController:vc animated:YES];
         }else if (rowIndex == 1) {
             NSDictionary *weChatInfo = [JMUserDefaults objectForKey:kWxLoginUserInfo];
             JMVerificationCodeController *vc = [[JMVerificationCodeController alloc] init];
             vc.verificationCodeType = SMSVerificationCodeWithBind;
             vc.userInfo = weChatInfo;
+            vc.profileUserInfo = self.profileInfo;
             vc.userLoginMethodWithWechat = YES;
             [self.navigationController pushViewController:vc animated:YES];
         }else {
@@ -162,6 +170,7 @@
     
 }
 - (void)tuichuClick:(UIButton *)button {
+    [MobClick event:@"LoginOutClick"];
     NSLog(@"点击 --> 退出登录");
     [MBProgressHUD showLoading:@""];
     NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/users/customer_logout", Root_URL];
@@ -179,8 +188,8 @@
         [[QYSDK sharedSDK] logout:^{
             NSLog(@"七鱼客服已经退出");
         }];
-        [JMUserDefaults setBool:NO forKey:@"login"];
-        [JMUserDefaults setBool:NO forKey:@"isXLMM"];
+        [JMUserDefaults setBool:NO forKey:kIsLogin];
+//        [JMUserDefaults setBool:NO forKey:kISNDPZVIP];54
         [JMUserDefaults setObject:@"unlogin" forKey:kLoginMethod];
         [JMUserDefaults synchronize];
         [JMNotificationCenter postNotificationName:@"logout" object:nil];

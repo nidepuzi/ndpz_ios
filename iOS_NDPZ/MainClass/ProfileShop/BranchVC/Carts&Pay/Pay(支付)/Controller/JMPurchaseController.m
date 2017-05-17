@@ -2,8 +2,8 @@
 //  JMPurchaseController.m
 //  XLMM
 //
-//  Created by zhang on 16/7/21.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/21.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMPurchaseController.h"
@@ -32,7 +32,6 @@
 #import <Photos/Photos.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "CSPopAnimationViewController.h"
-#import "CSPurchaseTermsPopView.h"
 #import <STPopup/STPopup.h>
 #import "CSPopDescriptionController.h"
 #import "CSWithDrawPopView.h"
@@ -148,7 +147,6 @@ static NSInteger purchasePopIndex = 0;
 
 @property (nonatomic, strong) UIButton *tmpBtn;
 @property (nonatomic, strong) UIView *addressDesView;
-@property (nonatomic, strong) CSPurchaseTermsPopView *termsPopView;
 @property (nonatomic, strong) CSWithDrawPopView *popView;
 
 @end
@@ -185,14 +183,6 @@ static BOOL isAgreeTerms = YES;
     }
     return _showViewVC;
 }
-- (CSPurchaseTermsPopView *)termsPopView {
-    if (!_termsPopView) {
-        _termsPopView = [CSPurchaseTermsPopView defaultPopView];
-        _termsPopView.termsPopType = termsPopViewTypePurchase;
-        _termsPopView.parentVC = self;
-    }
-    return _termsPopView;
-}
 
 #pragma mark --- 视图生命周期 ---
 - (void)viewWillAppear:(BOOL)animated {
@@ -216,6 +206,7 @@ static BOOL isAgreeTerms = YES;
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self hideNaviDesViwe];
+    [self hidePickerView];
     [JMNotificationCenter removeObserver:self name:UIApplicationWillEnterForegroundNotification
                                                   object:nil];
     [JMNotificationCenter removeObserver:self name:UIApplicationDidBecomeActiveNotification
@@ -277,13 +268,15 @@ static BOOL isAgreeTerms = YES;
         self.purchaseFooterView.termsButton.selected = NO;
     }
     
-    if (purchasePopIndex == 0) {
-        [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] dismiss:^{
-        }];
-        purchasePopIndex += 1;
+    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
+    if (![NSString isStringEmpty:vipStatus]) {
+        if (purchasePopIndex == 0 && [vipStatus isEqual:@"15"]) {
+            [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] dismiss:^{
+            }];
+            purchasePopIndex += 1;
+        }
     }
     
-
     
 }
 #pragma mark 网络请求 订单支付信息, 地址请求. 数据处理
@@ -440,7 +433,7 @@ static BOOL isAgreeTerms = YES;
 
     if (_isVirtualCoupone) {
         CGRect frame = self.purchaseHeaderView.frame;
-        frame.size.height = 60;
+        frame.size.height = 15;
         self.purchaseHeaderView.frame = frame;
         self.tableView.tableHeaderView = self.purchaseHeaderView;
     }
@@ -699,6 +692,7 @@ static BOOL isAgreeTerms = YES;
         }else {//未使用
             if (!self.isUseXLW && _payMethod.length == 0) {
                 [MBProgressHUD showError:@"请至少选择一种支付方式"];
+                self.purchaseFooterView.goPayButton.userInteractionEnabled = YES;
                 return;
             }
         }
@@ -843,26 +837,19 @@ static BOOL isAgreeTerms = YES;
 }
 // JMPurchaseHeaderViewDelegate (地址信息 , 物流信息)
 - (void)composeHeaderTapView:(JMPurchaseHeaderView *)headerView TapClick:(NSInteger)index {
-    // 100->地址信息点击  101->物流信息点击
-    if (index == 100) {
-        if (_cartsInfoLevel != 0) { // && _addressInfoLevel != 0
-//            if (_cartsInfoLevel > _addressInfoLevel) {
-//                _isPerfectAddressInfo = YES; // 需要去完善信息
-//            }else {
-//                _isPerfectAddressInfo = NO;
-//            }
-            CSAddressManagerController *addVC = [[CSAddressManagerController alloc] init];
-//            addVC.addressID = _addressID;
-            addVC.isSelected = YES;
-            addVC.cartsPayInfoLevel = _cartsInfoLevel;
-            addVC.delegate = self;
-            [self.navigationController pushViewController:addVC animated:YES];
-        }
-    }else if (index == 101) {
-        NSInteger count = self.logisticsArr.count;
-        [[JMGlobal global] showpopBoxType:popViewTypeBox Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, 60 * (count + 1)) ViewController:self.showViewVC WithBlock:^(UIView *maskView) {
-        }];
-    }else { }
+    if (_cartsInfoLevel != 0) { // && _addressInfoLevel != 0
+        //            if (_cartsInfoLevel > _addressInfoLevel) {
+        //                _isPerfectAddressInfo = YES; // 需要去完善信息
+        //            }else {
+        //                _isPerfectAddressInfo = NO;
+        //            }
+        CSAddressManagerController *addVC = [[CSAddressManagerController alloc] init];
+        //            addVC.addressID = _addressID;
+        addVC.isSelected = YES;
+        addVC.cartsPayInfoLevel = _cartsInfoLevel;
+        addVC.delegate = self;
+        [self.navigationController pushViewController:addVC animated:YES];
+    }
 }
 - (void)composeHeaderSaveIdcard:(JMPurchaseHeaderView *)headerView Button:(UIButton *)button params:(NSDictionary *)params {
     [MBProgressHUD showLoading:@""];
@@ -911,7 +898,6 @@ static BOOL isAgreeTerms = YES;
 }
 // JMChoiseLogisControllerDelegate (选择物流代理回调)
 - (void)ClickLogistics:(JMChoiseLogisController *)click Model:(JMPopLogistcsModel *)model {
-    [MobClick event:@"logistics_choose"];
     self.purchaseHeaderView.logisticsLabel.text = model.name;
     _logisticsID = model.logistcsID;
 }
@@ -995,7 +981,7 @@ static BOOL isAgreeTerms = YES;
 #pragma mark 网络请求 数据处理
 // -> 支付提交请求
 - (void)submitBuyGoods {
-    [MobClick event:@"commit_buy"];
+    [MobClick event:@"JMPurchaseController_SettlementClick"];
     NSMutableString *paramString = [NSMutableString stringWithFormat:@"%@",_parmsStr];
     [paramString appendFormat:[NSString stringWithFormat:@"&logistics_company_id=%@",_logisticsID],nil];
     NSMutableDictionary *params = [self stringChangeDictionary:paramString];
@@ -1013,7 +999,7 @@ static BOOL isAgreeTerms = YES;
         if ([responseObject[@"code"] integerValue] != 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSDictionary *temp_dict = @{@"code" : [NSString stringWithFormat:@"%ld",(unsigned long)[responseObject[@"code"] integerValue]]};
-                [MobClick event:@"buy_fail" attributes:temp_dict];
+                [MobClick event:@"JMPurchaseController_PayFail" attributes:temp_dict];
                 [MBProgressHUD hideHUD];
                 NSString *errorStr = responseObject[@"info"];
                 NSString *messageStr = [NSString stringWithFormat:@"%@",errorStr];
@@ -1026,7 +1012,7 @@ static BOOL isAgreeTerms = YES;
         if ([responseObject[@"channel"] isEqualToString:@"budget"] && [responseObject[@"code"] integerValue] == 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [MBProgressHUD hideHUD];
-                [MobClick event:@"buy_succ"];
+                [MobClick event:@"JMPurchaseController_PaySuccess"];
                 //                [SVProgressHUD showSuccessWithStatus:@"支付成功"];
                 [MBProgressHUD showSuccess:@"支付成功"];
                 if (_isTeamBuyGoods) {
@@ -1150,7 +1136,7 @@ static BOOL isAgreeTerms = YES;
     }else if (alertView.tag == 101) {
         [self backClick];
     }else if (alertView.tag == 102) {
-        [MobClick event:@"buy_cancel"];
+        [MobClick event:@"JMPurchaseController_PayCancle"];
         JMOrderListController *orderVC = [[JMOrderListController alloc] init];
         orderVC.currentIndex = 1;
         [self.navigationController pushViewController:orderVC animated:YES];
@@ -1216,14 +1202,14 @@ static BOOL isAgreeTerms = YES;
 }
 - (void)popview{
     [MBProgressHUD hideHUD];
-    [MobClick event:@"buy_cancel"];
+    [MobClick event:@"JMPurchaseController_PayCancle"];
     JMOrderListController *orderVC = [[JMOrderListController alloc] init];
     orderVC.currentIndex = 1;
     [self.navigationController pushViewController:orderVC animated:YES];
 }
 - (void)paySuccessful{
     [MBProgressHUD hideHUD];
-    [MobClick event:@"buy_succ"];
+    [MobClick event:@"JMPurchaseController_PaySuccess"];
     if (_isTeamBuyGoods) {
         [self getTeam:_orderTidNum]; // == > 团购信息
     }else {

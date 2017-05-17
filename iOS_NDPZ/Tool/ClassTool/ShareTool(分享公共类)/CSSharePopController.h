@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-//typedef void(^touchShareCancleBlock)();
+typedef void(^touchShareCancleBlock)(BOOL dismiss);
 
 @class STPopupController,JMShareModel;
 @interface CSSharePopController : UIViewController
@@ -16,7 +16,7 @@
 @property (nonatomic, strong) UIButton *cancleButton;
 @property (nonatomic, strong) STPopupController *popVC;
 @property (nonatomic, strong) JMShareModel *model;
-//@property (nonatomic, copy) touchShareCancleBlock *cancleBlock;
+@property (nonatomic, copy) touchShareCancleBlock cancleBlock;
 
 @property (nonatomic, assign) CGFloat popViewHeight;
 //- (instancetype)initWithFrame:(CGRect)frame;

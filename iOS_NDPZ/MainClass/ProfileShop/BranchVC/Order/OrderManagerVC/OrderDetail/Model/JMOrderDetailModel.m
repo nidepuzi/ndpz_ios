@@ -2,8 +2,8 @@
 //  JMOrderDetailModel.m
 //  XLMM
 //
-//  Created by zhang on 16/5/28.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/5/28.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMOrderDetailModel.h"

@@ -2,8 +2,8 @@
 //  JMHomeRootCategoryController.m
 //  XLMM
 //
-//  Created by zhang on 16/9/23.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/23.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMHomeRootCategoryController.h"
@@ -14,6 +14,7 @@
 #import "JMSearchViewController.h"
 #import "JMCategoryColSectionReusableView.h"
 #import "JMCategoryPageController.h"
+#import "RootNavigationController.h"
 
 
 #define TabWidth SCREENWIDTH * 0.25
@@ -281,7 +282,7 @@ static NSUInteger selectedIndex = 0;
         searchVC.urlString = [urlString JMUrlEncodedString];
         [searchViewController.navigationController pushViewController:searchVC animated:YES];
     }];
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:searchViewController];
+    RootNavigationController *nav = [[RootNavigationController alloc] initWithRootViewController:searchViewController];
     [self presentViewController:nav animated:NO completion:nil];
 }
 - (void)backClick:(UIButton *)button {

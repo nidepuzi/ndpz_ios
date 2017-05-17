@@ -2,8 +2,8 @@
 //  JMHomePageController.m
 //  XLMM
 //
-//  Created by zhang on 17/2/13.
-//  Copyright © 2017年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/13.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMHomePageController.h"
@@ -32,6 +32,7 @@
 #import "CSMineMessageController.h"
 #import "CSJoinVipPopView.h"
 #import "CSPopAnimationViewController.h"
+
 
 @interface JMHomePageController () <UIScrollViewDelegate, JMHomeFirstControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     NSMutableArray *_categoryNameArray;
@@ -221,7 +222,7 @@
         [_topImageArray addObject:dic];
     }
     NSArray *categorys = categoryDic[@"categorys"];
-    [_categoryNameArray addObjectsFromArray:@[@"精品活动",@"每日焦点"]];
+    [_categoryNameArray addObjectsFromArray:@[@"精品活动"]];
     for (NSDictionary *dic in categorys) {
         [_categoryNameArray addObject:dic[@"name"]];
         [_categoryCidArray addObject:dic[@"id"]];
@@ -234,7 +235,7 @@
 }
 #pragma mark -- 创建UI->自定义 navigationView 自定义悬浮按钮 (个人,精品汇,购物车)
 - (void)createSegmentControl {
-    self.segmentControl = [[HMSegmentedControl alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 0)];
+    self.segmentControl = [[HMSegmentedControl alloc] initWithFrame:CGRectMake(0, kAPPNavigationHeight, SCREENWIDTH, kSegmentControHeight)];
     [self.view addSubview:self.segmentControl];
     self.segmentControl.backgroundColor = [UIColor whiteColor];
     self.segmentControl.selectedSegmentIndex = 0;
@@ -253,13 +254,13 @@
     }];
 }
 - (void)createScrollView {
-    self.baseScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, self.segmentControl.cs_max_Y, SCREENWIDTH, SCREENHEIGHT - self.segmentControl.cs_h - 64)];
+    self.baseScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, self.segmentControl.cs_max_Y, SCREENWIDTH, SCREENHEIGHT - self.segmentControl.cs_max_Y)];
     self.baseScrollView.showsHorizontalScrollIndicator = NO;
     self.baseScrollView.showsVerticalScrollIndicator = NO;
     self.baseScrollView.pagingEnabled = YES;
     self.baseScrollView.delegate = self;
     [self.view addSubview:self.baseScrollView];
-    self.baseScrollView.scrollEnabled = NO;
+//    self.baseScrollView.scrollEnabled = NO;
 }
 - (void)emptyView {
     kWeakSelf
@@ -284,13 +285,15 @@
             [self addChildViewController:homeFirst];
             [homeFirst didMoveToParentViewController:self];
             self.homeFirst = homeFirst;
-        }else if (i == 1){
-            JMFineCounpGoodsController *fineVC = [[JMFineCounpGoodsController alloc] init];
-            [self addChildViewController:fineVC];
-            [fineVC didMoveToParentViewController:self];
-        }else {
+        }
+//        else if (i == 1){
+//            JMFineCounpGoodsController *fineVC = [[JMFineCounpGoodsController alloc] init];
+//            [self addChildViewController:fineVC];
+//            [fineVC didMoveToParentViewController:self];
+//        }
+        else {
             JMFineCounpContentController *childCategoryVC = [[JMFineCounpContentController alloc] init];
-            childCategoryVC.urlString = [NSString stringWithFormat:@"%@/rest/v2/modelproducts?cid=%@", Root_URL,_categoryCidArray[i - 2]];
+            childCategoryVC.urlString = [NSString stringWithFormat:@"%@/rest/v2/modelproducts?cid=%@", Root_URL,_categoryCidArray[i - 1]];
 //            childCategoryVC.categoryCid = _categoryCidArray[i - 2];
             [self addChildViewController:childCategoryVC];
             [childCategoryVC didMoveToParentViewController:self];
@@ -307,26 +310,28 @@
 //    naviLeftButton.frame = CGRectMake(0, 0, 40, 40);
 //    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:naviLeftButton];
     
-//    UIButton *naviRightButton1 = [UIButton buttonWithType:UIButtonTypeCustom];
-//    [naviRightButton1 setImage:[UIImage imageNamed:@"navigation_search_image"] forState:UIControlStateNormal];
-//    [naviRightButton1 setImage:[UIImage imageNamed:@"navigation_search_image"] forState:UIControlStateHighlighted];
-//    naviRightButton1.frame = CGRectMake(0, 0, 40, 40);
+    UIButton *naviRightButton1 = [UIButton buttonWithType:UIButtonTypeCustom];
+    [naviRightButton1 setImage:[UIImage imageNamed:@"navigation_search_image"] forState:UIControlStateNormal];
+    [naviRightButton1 setImage:[UIImage imageNamed:@"navigation_search_image"] forState:UIControlStateHighlighted];
+    naviRightButton1.frame = CGRectMake(0, 0, 40, 40);
+    
     UIButton *naviRightButton2 = [UIButton buttonWithType:UIButtonTypeCustom];
     [naviRightButton2 setImage:[UIImage imageNamed:@"navigation_yaoqing_image"] forState:UIControlStateNormal];
     [naviRightButton2 setImage:[UIImage imageNamed:@"navigation_yaoqing_image"] forState:UIControlStateHighlighted];
-    naviRightButton2.frame = CGRectMake(0, 0, 40, 40);
-    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithCustomView:naviRightButton2]];
+    naviRightButton2.frame = CGRectMake(0, 0, 30, 40);
+    
+    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithCustomView:naviRightButton1],[[UIBarButtonItem alloc] initWithCustomView:naviRightButton2]];
     
 //    naviLeftButton.tag = 100;
-//    naviRightButton1.tag = 101;
+    naviRightButton1.tag = 101;
     naviRightButton2.tag = 102;
     
 //    naviLeftButton.imageEdgeInsets = UIEdgeInsetsMake(0, -25, 0, 0);
-//    naviRightButton1.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, -5);
+    naviRightButton1.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, -5);
     naviRightButton2.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, -10);
     
 //    [naviLeftButton addTarget:self action:@selector(homeNaviButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-//    [naviRightButton1 addTarget:self action:@selector(homeNaviButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [naviRightButton1 addTarget:self action:@selector(homeNaviButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [naviRightButton2 addTarget:self action:@selector(homeNaviButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     
 }
@@ -338,11 +343,11 @@
 //            [self.navigationController pushViewController:mineMessageVC animated:YES];
 //        }
 //            break;
-//        case 101:{
-//            JMHomeRootCategoryController *searchVC = [[JMHomeRootCategoryController alloc] init];
-//            [self.navigationController pushViewController:searchVC animated:YES];
-//        }
-//            break;
+        case 101:{
+            JMHomeRootCategoryController *searchVC = [[JMHomeRootCategoryController alloc] init];
+            [self.navigationController pushViewController:searchVC animated:YES];
+        }
+            break;
         case 102:{
             CSInviteViewController *inviteVC = [[CSInviteViewController alloc] init];
             [self.navigationController pushViewController:inviteVC animated:YES];
@@ -372,12 +377,14 @@
         homeFirst.view.frame = self.baseScrollView.bounds;
         [self.baseScrollView addSubview:homeFirst.view];
 //        [fineVC didMoveToParentViewController:self];
-    }else if (index == 1) {
-        JMFineCounpGoodsController *fineVC = self.childViewControllers[index];
-        fineVC.view.frame = self.baseScrollView.bounds;
-        [self.baseScrollView addSubview:fineVC.view];
+    }
+//    else if (index == 1) {
+//        JMFineCounpGoodsController *fineVC = self.childViewControllers[index];
+//        fineVC.view.frame = self.baseScrollView.bounds;
+//        [self.baseScrollView addSubview:fineVC.view];
 //        [homeFirst didMoveToParentViewController:self];
-    }else {
+//    }
+    else {
         JMFineCounpContentController *childCategoryVC = self.childViewControllers[index];
         childCategoryVC.view.frame = self.baseScrollView.bounds;
         [self.baseScrollView addSubview:childCategoryVC.view];
@@ -426,7 +433,11 @@
     self.trackViewUrl1 = [infoDic objectForKey:@"trackViewUrl"];//地址trackViewUrl
     self.trackName = [infoDic objectForKey:@"trackName"];//trackName
     _releaseNotes = [infoDic objectForKey:@"releaseNotes"];
-    _releaseNotes = [NSString stringWithFormat:@"新版本升级信息：\n%@",_releaseNotes];
+    if ([NSString isStringEmpty:_releaseNotes]) {
+        _releaseNotes = @"新版本升级信息：";
+    }else {
+        _releaseNotes = [NSString stringWithFormat:@"新版本升级信息：\n%@",_releaseNotes];
+    }
     NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
     NSString *app_Version = [infoDict objectForKey:@"CFBundleShortVersionString"];
     double doubleCurrentVersion = [app_Version doubleValue];

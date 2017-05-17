@@ -17,7 +17,8 @@
 + (CSShareManager *)manager;
 
 // withBlock:(void (^)(UIViewController *popViewController))clickBlock;
-- (void)showSharepopViewController:(CSSharePopController *)viewController withRootViewController:(UIViewController *)rootVC;
+- (void)showSharepopViewController:(CSSharePopController *)viewController withRootViewController:(UIViewController *)rootVC WithBlock:(void (^)(BOOL dismiss))ClickBlock;
+
 
 
 @end

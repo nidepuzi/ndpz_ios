@@ -24,13 +24,15 @@
     self.view.backgroundColor = [UIColor whiteColor];
     [self createNavigationBarWithTitle:@"个人资料" selecotr:@selector(backClick)];
     
-    
-    dataArr = [self getData:[JMUserDefaults objectForKey:kWxLoginUserInfo]];
     [self createTableView];
     
     
 }
-
+- (void)setProfileInfo:(NSDictionary *)profileInfo {
+    _profileInfo = profileInfo;
+    dataArr = [self getData:profileInfo];
+    [self.tableView reloadData];
+}
 - (void)createTableView {
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT) style:UITableViewStylePlain];
     self.tableView.delegate = self;
@@ -110,9 +112,9 @@
     if (dic.count == 0) {
         
     }else {
-        sexStr = [dic[@"sex"] boolValue] == 1 ? @"男" : @"女";
-        nikeName = dic[@"nickname"];
-        imageUrl = dic[@"headimgurl"];
+//        sexStr = [dic[@"sex"] boolValue] == 1 ? @"男" : @"女";
+        nikeName = dic[@"nick"];
+        imageUrl = dic[@"thumbnail"];
     }
     
     NSArray *arr = @[@[

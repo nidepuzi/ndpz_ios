@@ -2,8 +2,8 @@
 //  JMFineCounpGoodsController.m
 //  XLMM
 //
-//  Created by zhang on 16/12/2.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/2.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMFineCounpGoodsController.h"
@@ -124,7 +124,7 @@
     self.tableView.rowHeight = SCREENWIDTH * 0.5 + 10;
     [self.view addSubview:self.tableView];
     [self.tableView registerClass:[JMHomeActiveCell class] forCellReuseIdentifier:JMHomeActiveCellIdentifier];
-    self.pageView = [[JMAutoLoopPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENWIDTH * 0.45)];
+    self.pageView = [[JMAutoLoopPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, kHomePageBannerHeight)];
     self.pageView.dataSource = self;
     self.pageView.delegate = self;
     self.pageView.isCreatePageControl = YES;

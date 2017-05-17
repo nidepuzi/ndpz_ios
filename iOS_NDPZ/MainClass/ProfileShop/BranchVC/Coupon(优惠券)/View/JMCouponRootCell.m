@@ -2,8 +2,8 @@
 //  JMCouponRootCell.m
 //  XLMM
 //
-//  Created by zhang on 16/7/12.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/12.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMCouponRootCell.h"
@@ -38,6 +38,7 @@
 @property (nonatomic, strong) UIImageView *rightImage;
 
 @property (nonatomic, strong) UIImageView *statusImageV;
+@property (nonatomic, strong) UILabel *youhuiquan;
 
 @end
 
@@ -62,6 +63,7 @@
     youhuiquan.text = @"满减券";
     youhuiquan.numberOfLines = 0;
     youhuiquan.textAlignment = NSTextAlignmentCenter;
+    self.youhuiquan = youhuiquan;
     
     UILabel *valueLabel = [UILabel new];
     valueLabel.font = CS_UIFontBoldSize(32);
@@ -168,16 +170,19 @@
         imageStr = @"cs_couponBack_disenable";
         statusString = @"cs_coupon_yijingused";
         self.couponValueLabel.textColor = [UIColor timeLabelColor];
+        self.youhuiquan.textColor = [UIColor buttonEnabledBackgroundColor];
     }else if (index == 2) {
         //不可使用
         imageStr = @"cs_couponBack_disenable";
-        statusString = @"cs_coupon_enable";
-        self.couponValueLabel.textColor = [UIColor redColor];
+        statusString = @"cs_coupon_disenable";
+        self.couponValueLabel.textColor = [UIColor dingfanxiangqingColor];
+        self.youhuiquan.textColor = [UIColor dingfanxiangqingColor];
     }else if (index == 3) {
         //已过期
         imageStr = @"cs_couponBack_disenable";
         statusString = @"cs_coupon_timeout";
         self.couponValueLabel.textColor = [UIColor timeLabelColor];
+        self.youhuiquan.textColor = [UIColor buttonEnabledBackgroundColor];
     }else if (index == 8) {
         //未使用优惠券
         imageStr = @"cs_couponBack_enable";
@@ -187,6 +192,7 @@
         imageStr = @"cs_couponBack_disenable";
         statusString = @"cs_coupon_enable";
         self.couponValueLabel.textColor = [UIColor redColor];
+        self.youhuiquan.textColor = [UIColor buttonEnabledBackgroundColor];
     }
     self.couponBackImage.image = [UIImage imageNamed:imageStr];
     self.statusImageV.image = [UIImage imageNamed:statusString];

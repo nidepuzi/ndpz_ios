@@ -2,8 +2,8 @@
 //  JMVerificationCodeController.m
 //  XLMM
 //
-//  Created by zhang on 17/3/20.
-//  Copyright © 2017年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/20.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMVerificationCodeController.h"
@@ -132,9 +132,13 @@
             make.top.equalTo(nameLabel.mas_bottom).offset(10);
             make.centerX.equalTo(weakSelf.maskScrollView.mas_centerX);
         }];
-        
-        [iconImageView sd_setImageWithURL:[NSURL URLWithString:[self.userInfo objectForKey:@"headimgurl"]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"]];
-        nameLabel.text = [NSString stringWithFormat:@"微信号:%@", [self.userInfo objectForKey:@"nickname"]];
+        if (self.userInfo) {
+            [iconImageView sd_setImageWithURL:[NSURL URLWithString:[self.userInfo objectForKey:@"headimgurl"]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"]];
+            nameLabel.text = [NSString stringWithFormat:@"微信号:%@", [self.userInfo objectForKey:@"nickname"]];
+        }else {
+            [iconImageView sd_setImageWithURL:[NSURL URLWithString:[self.profileUserInfo objectForKey:@"thumbnail"]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"]];
+            nameLabel.text = [NSString stringWithFormat:@"微信号:%@", [self.profileUserInfo objectForKey:@"nick"]];
+        }
         titleLabel.text = @"为了更好的为您服务,请绑定手机号哦~!";
     }
     
@@ -228,7 +232,7 @@
         case SMSVerificationCodeWithLogin:      // 验证码登录
             [self.sureButton setTitle:@"登录" forState:UIControlStateNormal];
             self.verificationCodeField.placeholder = @"请输入验证码";
-            self.title = @"登录登录";
+            self.title = @"手机登录";
             break;
         case SMSVerificationCodeWithRegistered: // 注册新用户
             [self.sureButton setTitle:@"确定" forState:UIControlStateNormal];
@@ -257,9 +261,8 @@
         [self.skipButton setSelecterBorderColor:[UIColor buttonEnabledBackgroundColor] TitleColor:[UIColor buttonEnabledBackgroundColor] Title:@"跳过" TitleFont:14. CornerRadius:20.];
         self.skipButton.frame = CGRectMake(spaceing, self.sureButton.cs_max_Y + 10, SCREENWIDTH - spaceing * 2, 40);
         [self.skipButton addTarget:self action:@selector(skipClick) forControlEvents:UIControlEventTouchUpInside];
-        self.maskScrollView.contentSize = CGSizeMake(SCREENWIDTH, self.skipButton.cs_max_Y + 20);
     }else {
-        self.maskScrollView.contentSize = CGSizeMake(SCREENWIDTH, self.sureButton.cs_max_Y + 20);
+        
     }
     
     UILabel *registDescLabel = [UILabel new];
@@ -267,20 +270,21 @@
     registDescLabel.font = CS_UIFontSize(12.);
     registDescLabel.textAlignment = NSTextAlignmentCenter;
     registDescLabel.numberOfLines = 0;
-    [self.view addSubview:registDescLabel];
+    [self.maskScrollView addSubview:registDescLabel];
     
     NSString *allString = @"登录代表您以阅读并同意《你的铺子微店用户服务协议》内容";
     registDescLabel.attributedText = [JMRichTextTool cs_changeColorWithColor:[UIColor buttonTitleColor] AllString:allString SubStringArray:@[@"《你的铺子微店用户服务协议》"]];
     registDescLabel.userInteractionEnabled = YES;
     UITapGestureRecognizer *termsTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(termsTapClick)];
     [registDescLabel addGestureRecognizer:termsTap];
-    kWeakSelf
-    [registDescLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(weakSelf.view).offset(10);
-        make.right.equalTo(weakSelf.view).offset(-10);
-        make.bottom.equalTo(weakSelf.view).offset(-20);
-        make.centerX.equalTo(weakSelf.view.mas_centerX);
-    }];
+    if (self.verificationCodeType == SMSVerificationCodeWithBind) {
+        registDescLabel.frame = CGRectMake(10, self.skipButton.cs_max_Y + 20, SCREENWIDTH - 20, 40);
+    }else {
+        registDescLabel.frame = CGRectMake(10, self.sureButton.cs_max_Y + 20, SCREENWIDTH - 20, 40);
+    }
+    self.maskScrollView.contentSize = CGSizeMake(SCREENWIDTH, registDescLabel.cs_max_Y + 20);
+    
+    
     
 }
 - (void)termsTapClick {
@@ -306,7 +310,8 @@
     [self.phoneNumberField resignFirstResponder];
     [self.verificationCodeField resignFirstResponder];
     if (self.userNotXLMM) {
-        [MBProgressHUD showMessage:@"您还不是你的铺子会员~!"];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"新掌柜首次登录请用微信登录哦!" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+        [alert show];
         return;
     }
 //    isClickGetCode = YES;
@@ -510,28 +515,19 @@
      3. 用户没用绑定手机, 但是是精英妈妈. ---> 跳转到绑定手机.
      4. 用户没有绑定手机, 且不是精英妈妈. ---> 提示用户需要注册成为会员
      */
-    NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/users/profile", Root_URL];
-    [JMHTTPManager requestWithType:RequestTypeGET WithURLString:urlString WithParaments:nil WithSuccess:^(id responseObject) {
-        if (!responseObject) return ;
-        BOOL kIsLoginStatus = ([responseObject objectForKey:@"id"] != nil)  && ([[responseObject objectForKey:@"id"] integerValue] != 0);
-        BOOL kIsXLMMStatus = [[responseObject objectForKey:@"xiaolumm"] isKindOfClass:[NSDictionary class]];
+    [[JMGlobal global] upDataLoginStatusSuccess:^(id responseObject) {
         BOOL kIsBindPhone = [NSString isStringEmpty:[responseObject objectForKey:@"mobile"]];
-        BOOL kIsVIP = NO;
-        if (kIsXLMMStatus) {
-            NSDictionary *xlmmDict = responseObject[@"xiaolumm"];
-            kIsVIP = [xlmmDict[@"status"] isEqual:@"effect"] ? YES : NO;
-        }
-        [JMUserDefaults setBool:kIsLoginStatus forKey:kIsLogin];
-        [JMUserDefaults setBool:kIsXLMMStatus forKey:kISXLMM];
-        [JMUserDefaults synchronize];
+        BOOL kIsVIP = [JMUserDefaults boolForKey:kISNDPZVIP];
         
         if (kIsVIP) {
             if (!kIsBindPhone) {
                 [self dismissViewControllerAnimated:YES completion:nil];
                 [JMNotificationCenter postNotificationName:@"WeChatLoginSuccess" object:nil];
             }else {
+                NSDictionary *weChatInfo = [JMUserDefaults objectForKey:kWxLoginUserInfo];
                 JMVerificationCodeController *vc = [[JMVerificationCodeController alloc] init];
                 vc.verificationCodeType = SMSVerificationCodeWithBind;
+                vc.userInfo = weChatInfo;
                 vc.userLoginMethodWithWechat = YES;
                 [self.navigationController pushViewController:vc animated:YES];
             }
@@ -544,22 +540,8 @@
         }
         
         [MBProgressHUD hideHUD];
-    } WithFail:^(NSError *error) {
-        NSHTTPURLResponse *response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey];
-        if (response) {
-            if (response.statusCode) {
-                NSInteger statusCode = response.statusCode;
-                if (statusCode == 403) {
-                    NSLog(@"%ld",statusCode);
-                    [JMUserDefaults removeObjectForKey:kIsLogin];
-                    [JMUserDefaults removeObjectForKey:kISXLMM];
-                }
-            }
-        }
-        [JMUserDefaults synchronize];
-        [MBProgressHUD hideHUD];
-        [MBProgressHUD showError:@"登录失败，请重试"];
-    } Progress:^(float progress) {
+    } failure:^(NSInteger errorCode) {
+        [MBProgressHUD showMessage:@"登录失败"];
     }];
 }
 - (void)setDevice{
@@ -820,7 +802,7 @@
     self.navigationItem.rightBarButtonItem = rightItem;
 }
 - (void)serViceButtonClick:(UIButton *)button {
-    [MobClick event:@"MaMa_service"];
+    [MobClick event:@"JMRootTabBarController_Kefu"];
     button.enabled = NO;
     [self performSelector:@selector(changeButtonStatus:) withObject:button afterDelay:1.0f];
     UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];

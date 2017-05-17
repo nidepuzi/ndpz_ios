@@ -2,8 +2,8 @@
 //  JMPageContentView.m
 //  XLMM
 //
-//  Created by zhang on 17/2/24.
-//  Copyright © 2017年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/24.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMPageContentView.h"
@@ -13,6 +13,7 @@
 
 @interface JMPageContentView () <UIScrollViewDelegate>{
     NSArray *_controllersArray;
+    NSArray *_titleArray;
 }
 
 
@@ -27,6 +28,7 @@
     if (self == [super initWithFrame:frame]) {
         
         _controllersArray = controller;
+        _titleArray = titleArray;
         self.segmentedControl = [[HMSegmentedControl alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 60)];
         self.segmentedControl.sectionTitles = titleArray;
         self.segmentedControl.sectionDescTitles = descTitleArray;
@@ -41,7 +43,7 @@
         [self.segmentedControl addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
         [self addSubview:self.segmentedControl];
         
-        self.segmentScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 60, SCREENWIDTH, frame.size.height - 60 - 45)];
+        self.segmentScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 60, SCREENWIDTH, frame.size.height - 60 - kAppTabBarHeight)];
         self.segmentScrollView.pagingEnabled = YES;
         self.segmentScrollView.showsHorizontalScrollIndicator = NO;
         self.segmentScrollView.contentSize = CGSizeMake(SCREENWIDTH * controller.count, frame.size.height - 60);
@@ -69,6 +71,12 @@
 - (void)segmentedControlChangedValue:(HMSegmentedControl *)segmentedControl {
     NSLog(@"Selected index %ld (via UIControlEventValueChanged)", (long)segmentedControl.selectedSegmentIndex);
     NSInteger page = segmentedControl.selectedSegmentIndex;
+    if (_titleArray.count != 0) {
+        NSDictionary *tempDict = @{@"code" : [NSString stringWithFormat:@"%@",_titleArray[page]]};
+        [MobClick event:@"JMHomeHourController_segmentedControlClick" attributes:tempDict];
+    }
+    
+    
     self.segmentScrollView.contentOffset = CGPointMake(page * SCREENWIDTH, 0);
     _lastSelectedIndex = (int)page;
 //    JMHomeHourController *pageVC = _controllersArray[page];

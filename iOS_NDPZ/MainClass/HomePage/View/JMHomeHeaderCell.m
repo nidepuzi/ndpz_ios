@@ -2,8 +2,8 @@
 //  JMHomeHeaderCell.m
 //  XLMM
 //
-//  Created by zhang on 16/9/22.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/22.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMHomeHeaderCell.h"
@@ -14,7 +14,6 @@
 @property (strong, nonatomic) UIImageView *imageView;
 
 
-// gaidong /// 
 @end
 
 @implementation JMHomeHeaderCell
@@ -37,7 +36,7 @@
     [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.top.equalTo(weakSelf);
         make.width.mas_equalTo(SCREENWIDTH);
-        make.height.mas_equalTo(SCREENWIDTH * 0.45);
+        make.height.mas_equalTo(kHomePageBannerHeight);
     }];
     
     
@@ -59,3 +58,24 @@
 
 
 @end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

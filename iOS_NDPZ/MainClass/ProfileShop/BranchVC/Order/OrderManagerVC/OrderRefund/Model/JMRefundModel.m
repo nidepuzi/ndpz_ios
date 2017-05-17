@@ -2,8 +2,8 @@
 //  JMRefundModel.m
 //  XLMM
 //
-//  Created by zhang on 16/7/8.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/8.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMRefundModel.h"
@@ -11,9 +11,9 @@
 
 @implementation JMRefundModel
 
-+ (NSDictionary *)mj_objectClassInArray {
-    return @{@"status_shaft":[JMRefundStatusModel class]};
-}
+//+ (NSDictionary *)mj_objectClassInArray {
+//    return @{@"status_shaft":[JMRefundStatusModel class]};
+//}
 
 + (NSDictionary *)mj_replacedKeyFromPropertyName {
     

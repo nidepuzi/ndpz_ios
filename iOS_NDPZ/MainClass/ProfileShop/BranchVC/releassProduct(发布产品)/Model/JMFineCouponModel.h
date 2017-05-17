@@ -2,8 +2,8 @@
 //  JMFineCouponModel.h
 //  XLMM
 //
-//  Created by zhang on 16/11/24.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/24.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -24,7 +24,9 @@
 @property (nonatomic, copy) NSString *sale_state;
 @property (nonatomic, copy) NSString *watermark_op;
 @property (nonatomic, copy) NSString *web_url;
-
+@property (nonatomic, copy) NSString *elite_score;
+@property (nonatomic, copy) NSString *stock;
+@property (nonatomic, copy) NSString *selling_num;
 
 
 
@@ -38,20 +40,24 @@
 
 
 /*
+ 
  {
- "category_id" = 94;
- "head_img" = "http://img.xiaolumeimei.com/MG_1454554636904taobaosns.jpg";
- id = 8148;
- "is_saleout" = 1;
- "lowest_agent_price" = "9.9";
- "lowest_std_sale_price" = "149.5";
- name = "\U8212\U9002\U67d4\U8f6f\U6447\U7c92\U7ed2\U6bdb\U6bef";
- "offshelf_time" = "2016-12-31T06:00:00";
- "onshelf_time" = "2016-11-24T22:00:00";
- "sale_state" = off;
+ "category_id" = 136;
+ "elite_score" = 0;
+ "head_img" = "http://img.nidepuzi.com/img_1494297534158.jpg";
+ id = 188;
+ "is_saleout" = 0;
+ "lowest_agent_price" = 78;
+ "lowest_std_sale_price" = 99;
+ name = "\U610f\U5927\U5229\U5c1a\U62a4\U5065\U9999\U718f\U8d3412\U7247\U88c5";
+ "offshelf_time" = "2021-06-30T23:59:59";
+ "onshelf_time" = "2017-05-15T14:34:40";
+ "sale_state" = on;
+ "selling_num" = 164;
+ stock = 100;
  "watermark_op" = "";
- "web_url" = "https://m.xiaolumeimei.com/mall/product/details/8148";
- },
+ "web_url" = "https://m.nidepuzi.com/mall/product/details/188";
+ }
 
  
  */

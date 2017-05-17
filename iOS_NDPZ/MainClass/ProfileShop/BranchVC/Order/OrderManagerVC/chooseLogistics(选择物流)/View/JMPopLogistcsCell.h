@@ -3,7 +3,7 @@
 //  XLMM
 //
 //  Created by 崔人帅 on 16/6/1.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

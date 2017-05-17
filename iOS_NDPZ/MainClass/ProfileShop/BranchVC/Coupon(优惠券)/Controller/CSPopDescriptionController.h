@@ -11,7 +11,8 @@
 typedef NS_ENUM(NSUInteger, popDescriptionType) {
     popDescriptionTypeCoupon,
     popDescriptionTypePurchase,
-    popDescriptionTypeRegist
+    popDescriptionTypeRegist,
+    popDescriptionTypeWithdraw
 };
 
 @interface CSPopDescriptionController : UIViewController

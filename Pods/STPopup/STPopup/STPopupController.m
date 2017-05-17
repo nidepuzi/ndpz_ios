@@ -276,9 +276,9 @@ static NSMutableSet *_retainedPopupControllers;
     [self setupObservers];
     
     [_retainedPopupControllers addObject:self];
-    
     viewController = viewController.tabBarController ? : viewController;
     [viewController presentViewController:_containerViewController animated:YES completion:completion];
+    
 }
 
 - (void)dismiss
@@ -300,6 +300,7 @@ static NSMutableSet *_retainedPopupControllers;
             completion();
         }
     }];
+    
 }
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
@@ -617,7 +618,10 @@ static NSMutableSet *_retainedPopupControllers;
 - (void)bgViewDidTap
 {
     if (_isTouchBackgorundView) {
-        [self leftBarItemDidTap];
+        [self dismiss];
+        if (self.popupBlock) {
+            self.popupBlock(YES);
+        }
     }else {
         [_containerView endEditing:YES];
     }

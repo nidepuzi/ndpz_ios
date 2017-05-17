@@ -9,13 +9,14 @@
 #import "CSInviteViewController.h"
 #import "CSShareManager.h"
 #import "JMRichTextTool.h"
+#import "CSInviteRecordsController.h"
+
 
 @interface CSInviteViewController () {
     BOOL isloadSuccess;
 }
 
 @property (nonatomic, strong) JMShareModel *shareModel;
-@property (nonatomic, strong) STPopupController *popupController;
 @property (nonatomic, strong) CSSharePopController *sharPopVC;
 
 @end
@@ -26,6 +27,7 @@
 - (CSSharePopController *)sharPopVC {
     if (!_sharPopVC) {
         _sharPopVC = [[CSSharePopController alloc] init];
+        _sharPopVC.popViewHeight = kAppShareViewHeight;
     }
     return _sharPopVC;
 }
@@ -35,7 +37,12 @@
     }
     return _shareModel;
 }
-
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+}
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -118,11 +125,22 @@
         make.centerX.equalTo(weakSelf.view.mas_centerX);
     }];
     
+//    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 80, 44)];
+//    [button setTitle:@"邀请记录" forState:UIControlStateNormal];
+//    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//    button.titleLabel.font = CS_UIFontSize(14.);
+//    [button addTarget:self action:@selector(inviteHistoryClick:) forControlEvents:UIControlEventTouchUpInside];
+//    [button sizeToFit];
+//    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+//    self.navigationItem.rightBarButtonItem = rightItem;
+    
+    
     [self loadData];
 
 
 
 }
+
 - (void)loadData {
     NSString *string = [NSString stringWithFormat:@"%@/rest/v1/activitys/%@/get_share_params", Root_URL, @"8"];
     [JMHTTPManager requestWithType:RequestTypeGET WithURLString:string WithParaments:nil WithSuccess:^(id responseObject) {
@@ -155,20 +173,25 @@
 
 
 - (void)inviteClick {
+    [MobClick event:@"CSInviteViewController_inviteButtonClick"];
     if ([NSString isStringEmpty:self.shareModel.share_link]) {
         isloadSuccess = NO;
         [MBProgressHUD showLoading:@""];
         [self loadData];
     }
     if (isloadSuccess) {
-        self.sharPopVC.popViewHeight = kAppShareViewHeight;
-        [[CSShareManager manager] showSharepopViewController:self.sharPopVC withRootViewController:self];
+        [[CSShareManager manager] showSharepopViewController:self.sharPopVC withRootViewController:self WithBlock:^(BOOL dismiss) {
+            
+        }];
     }
     
 }
 
 
-
+- (void)inviteHistoryClick:(UIButton *)button {
+    CSInviteRecordsController *vc = [[CSInviteRecordsController alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
+}
 - (void)backCkick {
     [self.navigationController popViewControllerAnimated:YES];
 }

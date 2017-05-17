@@ -2,8 +2,8 @@
 //  JMGlobal.h
 //  XLMM
 //
-//  Created by zhang on 16/11/8.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/8.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -55,7 +55,6 @@ typedef void(^clearCacheBlock)(NSString *sdImageCacheString);
 /*
     弹出视图
  */
-- (void)showpopForReceiveCouponFrame:(CGRect)frame WithBlock:(void (^)(UIView *maskView))clickBlock ActivePopBlock:(void (^)(UIButton *button))activeBlock;
 - (void)showpopBoxType:(popType)type Frame:(CGRect)frame ViewController:(UIViewController *)viewController WithBlock:(void (^)(UIView *maskView))clickBlock;
 
 /*

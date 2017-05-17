@@ -2,8 +2,8 @@
 //  JMRefundDetailController.m
 //  XLMM
 //
-//  Created by zhang on 16/12/21.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/21.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMRefundDetailController.h"
@@ -13,23 +13,48 @@
 #import "JMSelecterButton.h"
 #import "JMReturnProgressController.h"
 #import "JMReturnedGoodsController.h"
+#import "JMPhotoBrowesView.h"
+#import "CSRefundsTimeLineCell.h"
+#import "JMRefundStatusModel.h"
 
 
-@interface JMRefundDetailController () <UITableViewDataSource,UITableViewDelegate> {
+@interface JMRefundDetailController () <UITableViewDataSource,UITableViewDelegate, JMPhotoBrowesViewDelegate, JMPhotoBrowesViewDatasource> {
     NSArray *generalArr;
 //    BOOL _isChoiseLogistics;
     UIView *backView;
     BOOL _isjihuishangpin;
     BOOL _tianxiekuandidan;
+    NSArray *picArray;
 }
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIScrollView *timeLineView;
 @property (nonatomic, strong) JMSelecterButton *refundOperateButton;
+@property (nonatomic, strong) NSMutableDictionary *imageDict;
+@property (nonatomic, strong) NSMutableArray *images;
+@property (nonatomic, strong) NSMutableArray *sectionThreeArr;
 
 @end
 
 @implementation JMRefundDetailController
+- (NSMutableDictionary *)imageDict {
+    if (!_imageDict) {
+        _imageDict = [NSMutableDictionary dictionary];
+    }
+    return _imageDict;
+}
+- (NSMutableArray *)images {
+    if (!_images) {
+        _images = [NSMutableArray arrayWithCapacity:0];
+    }
+    return _images;
+}
+- (NSMutableArray *)sectionThreeArr {
+    if (!_sectionThreeArr) {
+        _sectionThreeArr = [NSMutableArray arrayWithCapacity:0];
+    }
+    return _sectionThreeArr;
+}
 
 - (void)setRefundModelr:(JMRefundModel *)refundModelr {
     _refundModelr = refundModelr;
@@ -57,6 +82,17 @@
     generalArr = @[@{@"title":@"申请数量",@"descTitle":refundModelr.refund_num},
                    @{@"title":@"可退金额",@"descTitle":refundPrice},
                    @{@"title":@"退款原因",@"descTitle":refundModelr.reason}];
+    picArray = refundModelr.proof_pic;
+    
+    if (refundModelr.status_shaft.count != 0) {
+        NSArray *arr = refundModelr.status_shaft;
+        for (NSDictionary *dic in arr) {
+            [self.sectionThreeArr addObject:dic];
+        }
+    }
+    
+    
+    
     
 }
 - (void)viewWillAppear:(BOOL)animated{
@@ -74,7 +110,7 @@
     
     
     [self createTabelView];
-    [self createFootView];
+//    [self createFootView];
     [self timeLine];
     
     backView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT)];
@@ -95,6 +131,7 @@
     [self.view addSubview:self.tableView];
     [self.tableView registerClass:[JMRefundBaseCell class] forCellReuseIdentifier:JMRefundBaseCellIdentifier];
     [self.tableView registerClass:[JMGeneralCell class] forCellReuseIdentifier:JMGeneralCellIdentifier];
+    [self.tableView registerClass:[CSRefundsTimeLineCell class] forCellReuseIdentifier:CSRefundsTimeLineCellIdentifier];
     
     self.timeLineView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 60)];
     self.tableView.tableHeaderView = self.timeLineView;
@@ -197,7 +234,7 @@
     }else if (section == 1) {
         return 3;
     }else {
-        return 0;
+        return self.sectionThreeArr.count;
     }
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -206,7 +243,7 @@
     }else if (indexPath.section == 1) {
         return 45;
     }else {
-        return 0;
+        return 60;
     }
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -232,7 +269,14 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
     }else {
-        return nil;
+        CSRefundsTimeLineCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        if (!cell) {
+            cell = [[CSRefundsTimeLineCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CSRefundsTimeLineCellIdentifier];
+        }
+        NSDictionary *dic = self.sectionThreeArr[indexPath.row];
+        [cell configWithDic:dic Index:indexPath.row AllCount:self.sectionThreeArr.count];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        return cell;
     }
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -245,7 +289,10 @@
             return 0;
         }
     }else {
-        return 15;
+        if (picArray.count == 0) {
+            return 15;
+        }
+        return 105;
     }
 }
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -386,11 +433,68 @@
             return sectionTwo;
         }
     }else {
-        UIView *sectionThree = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 15)];
-        sectionThree.backgroundColor = [UIColor lineGrayColor];
+        if (picArray.count == 0) {
+            UIView *sectionThree = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 15)];
+            sectionThree.backgroundColor = [UIColor lineGrayColor];
+            return sectionThree;
+        }
+        UIView *sectionThree = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 105)];
+        sectionThree.backgroundColor = [UIColor whiteColor];
+        
+        for (int i = 0; i < picArray.count; i++) {
+            UIImageView *imageV = [UIImageView new];
+            imageV.frame = CGRectMake(10 + (i % 3) * 90, 5, 80, 80);
+            [sectionThree addSubview:imageV];
+            imageV.userInteractionEnabled = YES;
+            NSString *imageS = [NSString stringWithFormat:@"%@",[[picArray[i] imageGoodsOrderCompression] JMUrlEncodedString]];
+//            [imageV sd_setImageWithURL:[NSURL URLWithString:imageS] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"]];
+            
+
+            [imageV sd_setImageWithURL:[NSURL URLWithString:imageS] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                if (image) {
+                    [self.imageDict setObject:image forKey:@(i)];
+                }
+            }];
+            
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageTapAction:)];
+            [imageV addGestureRecognizer:tap];
+            tap.view.tag = 100 + i;
+        }
+        
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 90, SCREENWIDTH, 15)];
+        lineView.backgroundColor = [UIColor lineGrayColor];
+        [sectionThree addSubview:lineView];
+        
         return sectionThree;
+
     }
 }
+-(void)imageTapAction:(UITapGestureRecognizer *)tap {
+    for (int i = 0; i < picArray.count; i++) {
+        UIImage *image = self.imageDict[@(i)];
+        if (image == nil) {
+            image = [UIImage imageNamed:@"icon_placeholderEmpty"];
+        }
+        [self.images addObject:image];
+    }
+    NSInteger index = tap.view.tag - 100;
+    [JMPhotoBrowesView showPhotoBrowesWihtCurrentImageIndex:index ImageCount:picArray.count DataSource:self];
+    
+    
+}
+- (UIImage *)photoBrowser:(JMPhotoBrowesView *)browser placeholderImageForIndex:(NSInteger)index {
+    return self.images[index];
+}
+- (NSURL *)photoBrowser:(JMPhotoBrowesView *)browser highQualityImageURLForIndex:(NSInteger)index {
+    NSString *picUrlString = picArray[index];
+    if ([NSString isStringEmpty:picUrlString]) {
+        return nil;
+    }
+    NSString *picString = [picUrlString imageNormalCompression];
+    return [NSURL URLWithString:picString];
+}
+
+
 
 - (void)refundOperateClick:(UIButton *)button {
     if (_tianxiekuandidan) {
@@ -401,13 +505,7 @@
         JMReturnProgressController *progressVC = [[JMReturnProgressController alloc] init];
         progressVC.refundModelr = self.refundModelr;
         [self.navigationController pushViewController:progressVC animated:YES];
-
     }
-    
-    
-    
-
-    
 }
 - (void)addressInfoTap:(UITapGestureRecognizer *)tap {
     NSLog(@"退货地址信息");

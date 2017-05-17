@@ -2,8 +2,8 @@
 //  JMCategoryPageController.m
 //  XLMM
 //
-//  Created by zhang on 17/3/17.
-//  Copyright © 2017年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/17.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMCategoryPageController.h"
@@ -95,7 +95,6 @@
         
 //        _buttomImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 20)];
 //        _buttomImageView.image = [UIImage imageNamed:@"icon_chose_bottom"];
-        
         
     }
     return _categoryButton;

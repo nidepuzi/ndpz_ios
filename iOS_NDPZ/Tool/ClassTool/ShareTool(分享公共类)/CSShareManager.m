@@ -9,6 +9,12 @@
 #import "CSShareManager.h"
 //#import "CSSharePopController.h"
 
+@interface CSShareManager ()
+
+@property (nonatomic, strong) STPopupController *popupController;
+
+@end
+
 @implementation CSShareManager
 
 + (CSShareManager *)manager {
@@ -21,15 +27,23 @@
 }
 
 
-- (void)showSharepopViewController:(CSSharePopController *)viewController withRootViewController:(UIViewController *)rootVC {
+- (void)showSharepopViewController:(CSSharePopController *)viewController withRootViewController:(UIViewController *)rootVC WithBlock:(void (^)(BOOL dismiss))ClickBlock {
     
-    STPopupController *popupController = [[STPopupController alloc] initWithRootViewController:viewController];
-    popupController.navigationBarHidden = YES;
-    popupController.isTouchBackgorundView = YES;
-    popupController.style = STPopupStyleBottomSheet;
-    [popupController presentInViewController:rootVC];
+//    if (self.popupController) {
+//        NSLog(@"%@",self.popupController);
+//        [self.popupController presentInViewController:rootVC];
+//        return;
+//    }
     
-    viewController.popVC = popupController;
+    self.popupController = [[STPopupController alloc] initWithRootViewController:viewController];
+    self.popupController.navigationBarHidden = YES;
+    self.popupController.isTouchBackgorundView = YES;
+    self.popupController.style = STPopupStyleBottomSheet;
+    [self.popupController presentInViewController:rootVC];
+    self.popupController.popupBlock = ClickBlock;
+    viewController.cancleBlock = ClickBlock;
+    viewController.popVC = self.popupController;
+    
     
 }
 

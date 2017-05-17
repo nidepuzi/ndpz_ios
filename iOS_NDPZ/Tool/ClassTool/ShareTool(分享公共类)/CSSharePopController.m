@@ -192,6 +192,11 @@
     _titleUrlString = [NSString stringWithFormat:@"%@",_content];
 }
 - (void)composeShareBtn:(JMShareButtonView *)shareBtn didClickBtn:(NSInteger)index {
+    NSInteger mobClickIndex = index - 10;
+    NSArray *itemArr = @[@"分享到微信",@"分享到QQ",@"分享到微博",@"分享到朋友圈",@"分享到QQ空间",@"复制链接"];
+    NSDictionary *tempDict = @{@"code" : [NSString stringWithFormat:@"%@",itemArr[mobClickIndex]]};
+    [MobClick event:@"sharePopViewController_ButtonClickIndex" attributes:tempDict];
+    
     NSLog(@"composeShareBtn Index=%ld", index);
     if (index == 10) {
         //微信分享
@@ -312,10 +317,10 @@
 
 
 - (void)cancelBtnClick:(UIButton *)button {
-//    if (self.cancleBlock) {
-//        self.cancleBlock;
-//    }
     [self.popVC dismiss];
+    if (self.cancleBlock) {
+        self.cancleBlock(YES);
+    }
 }
 
 //提示分享失败

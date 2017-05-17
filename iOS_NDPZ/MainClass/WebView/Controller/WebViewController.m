@@ -3,7 +3,7 @@
 //  XLMM
 //
 //  Created by younishijie on 16/2/3.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "WebViewController.h"
@@ -24,6 +24,8 @@
 #import "NJKWebViewProgressView.h"
 #import "JMPayShareController.h"
 #import "JMRegisterJS.h"
+#import "CSShareManager.h"
+
 
 
 #define USERAGENT @"Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13E238"
@@ -32,7 +34,7 @@
     NSString *_fineCouponTid;
 }
 
-@property (nonatomic, strong)WebViewJavascriptBridge* bridge;
+@property (nonatomic, strong) WebViewJavascriptBridge* bridge;
 @property (nonatomic, strong) NJKWebViewProgressView *progressView;
 //分享参数
 @property (nonatomic, copy)NSString *titleStr;
@@ -84,6 +86,10 @@
 //@property (nonatomic,assign) BOOL isLogin;
 @property (nonatomic, strong) UIImage *webViewImage;
 
+@property (nonatomic, strong) JMShareModel *shareModel;
+@property (nonatomic, strong) CSSharePopController *sharPopVC;
+
+
 @end
 
 @implementation WebViewController{
@@ -93,13 +99,21 @@
     NSString *shareUrllink;
     BOOL isTeamBuy;
 }
-- (JMShareViewController *)shareView {
-    if (!_shareView) {
-        _shareView = [[JMShareViewController alloc] init];
-//        _shareView.shareType = shareVCTypeInvite;
+#pragma mark 懒加载
+- (CSSharePopController *)sharPopVC {
+    if (!_sharPopVC) {
+        _sharPopVC = [[CSSharePopController alloc] init];
+        _sharPopVC.popViewHeight = kAppShareViewHeight;
     }
-    return _shareView;
+    return _sharPopVC;
 }
+- (JMShareModel *)shareModel {
+    if (!_shareModel) {
+        _shareModel = [[JMShareModel alloc] init];
+    }
+    return _shareModel;
+}
+
 - (void)setWebDiction:(NSMutableDictionary *)webDiction {
     _webDiction = webDiction;
     if ([webDiction isKindOfClass:[NSMutableDictionary class]] && [webDiction objectForKey:@"titleName"]) {
@@ -107,13 +121,6 @@
     }else {
     }
 }
-- (JMShareModel*)share_model {
-    if (!_share_model) {
-        _share_model = [[JMShareModel alloc] init];
-    }
-    return _share_model;
-}
-
 - (BOOL)isShowNavBar {
     _isShowNavBar = NO;
     return _isShowNavBar;
@@ -144,6 +151,7 @@
 }
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
+    self.navigationController.navigationBarHidden = NO;
     [self.progressView removeFromSuperview];
     [MBProgressHUD hideHUDForView:self.view];
     
@@ -161,14 +169,14 @@
 
 - (void)paySuccessful {
     NSLog(@"支付成功");
-    [MobClick event:@"fineCoupon_buySuccess"];
+    [MobClick event:@"Web_PaySuccess"];
     JMPayShareController *payShareVC = [[JMPayShareController alloc] init];
     payShareVC.ordNum = _fineCouponTid;
     [self.navigationController pushViewController:payShareVC animated:YES];
 }
 - (void)popview {
     NSLog(@"支付取消/支付失败");
-    [MobClick event:@"fineCoupon_buyCancel_buyFail"];
+    [MobClick event:@"Web_PayFailOrCancle"];
     JMOrderListController *orderVC = [[JMOrderListController alloc] init];
     orderVC.currentIndex = 1;
     [self.navigationController pushViewController:orderVC animated:YES];
@@ -182,7 +190,6 @@
     [super viewDidLoad];
     self.automaticallyAdjustsScrollViewInsets = NO;
     [MBProgressHUD showLoading:@"加载中~" ToView:self.view];
-    [MobClick event:@"activity"];
     [self createNavigationBarWithTitle:self.titleName selecotr:@selector(backClicked:)];
     
     CGFloat progressBarHeight = 2.f;
@@ -292,21 +299,21 @@
 - (void)fetchMaMaShopShare:(NSDictionary *)dic {
     NSDictionary *shopInfo = dic[@"shop_info"];
     [self createNavigationBarWithTitle:shopInfo[@"name"] selecotr:@selector(backClicked:)];
-    self.share_model.share_type = @"link";
-    self.share_model.share_img = [shopInfo objectForKey:@"thumbnail"]; //图片
-    self.share_model.desc = [shopInfo objectForKey:@"desc"]; // 文字详情
-    self.share_model.title = [shopInfo objectForKey:@"name"]; //标题
-    self.share_model.share_link = [shopInfo objectForKey:@"shop_link"];
-    self.shareView.model = self.share_model;
+    self.shareModel.share_type = @"link";
+    self.shareModel.share_img = [shopInfo objectForKey:@"thumbnail"]; //图片
+    self.shareModel.desc = [shopInfo objectForKey:@"desc"]; // 文字详情
+    self.shareModel.title = [shopInfo objectForKey:@"name"]; //标题
+    self.shareModel.share_link = [shopInfo objectForKey:@"shop_link"];
+    self.sharPopVC.model = self.shareModel;
 }
 
 - (void)resolveActivityShareParam:(NSDictionary *)dic {
-    self.share_model.share_type = [dic objectForKey:@"share_type"];
-    self.share_model.share_img = [dic objectForKey:@"share_icon"]; //图片
-    self.share_model.desc = [dic objectForKey:@"active_dec"]; // 文字详情
-    self.share_model.title = [dic objectForKey:@"title"]; //标题
-    self.share_model.share_link = [dic objectForKey:@"share_link"];
-    self.shareView.model = self.share_model;
+    self.shareModel.share_type = [dic objectForKey:@"share_type"];
+    self.shareModel.share_img = [dic objectForKey:@"share_icon"]; //图片
+    self.shareModel.desc = [dic objectForKey:@"active_dec"]; // 文字详情
+    self.shareModel.title = [dic objectForKey:@"title"]; //标题
+    self.shareModel.share_link = [dic objectForKey:@"share_link"];
+    self.sharPopVC.model = self.shareModel;
 }
 #pragma mark ----- 创建导航栏按钮
 - (void)createTabBarButton {
@@ -324,7 +331,6 @@
 }
 #pragma mark ----- 点击分享
 - (void)rightBarButtonAction {
-    [MobClick event:@"webViewController_allShare"];
     if ([_webDiction[@"type_title"] isEqual:@"active"]) {
         NSDictionary *temp_dict = @{@"code" : [NSString stringWithFormat:@"%@",self.activityId]};
         [MobClick event:@"Active_share" attributes:temp_dict];
@@ -336,11 +342,9 @@
     }else if ([_webDiction[@"type_title"] isEqual:@"mamaShop"]) {
         [MobClick event:@"mamaShop_share"];
     }else { }
-    [[JMGlobal global] showpopBoxType:popViewTypeShare Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, kAppShareViewHeight) ViewController:self.shareView WithBlock:^(UIView *maskView) {
+    [[CSShareManager manager] showSharepopViewController:self.sharPopVC withRootViewController:self WithBlock:^(BOOL dismiss) {
+        
     }];
-    self.shareView.blcok = ^(UIButton *button) {
-        [MobClick event:@"WebViewController_shareFail_cancel"];
-    };
     
 }
 

@@ -67,19 +67,20 @@
     
     
     [yueButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.bottom.equalTo(sectionView1);
-        make.width.mas_equalTo(@60);
+        make.left.equalTo(sectionView1).offset(10);
+        make.top.bottom.equalTo(sectionView1);
+        make.width.mas_equalTo(@80);
     }];
     [ableBlanceValueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(sectionView1).offset(15);
+        make.left.equalTo(yueButton).offset(5);
 //        make.centerY.equalTo(sectionView1.mas_centerY).offset(-10);
-        make.centerX.equalTo(yueButton.mas_centerX);
+//        make.centerX.equalTo(yueButton.mas_centerX);
         make.centerY.equalTo(yueButton.mas_centerY).offset(-10);
     }];
     [ableBlanceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
 //        make.centerX.equalTo(ableBlanceValueLabel.mas_centerX);
 //        make.centerY.equalTo(sectionView1.mas_centerY).offset(10);
-        make.centerX.equalTo(yueButton.mas_centerX);
+        make.centerX.equalTo(ableBlanceValueLabel.mas_centerX);
         make.centerY.equalTo(yueButton.mas_centerY).offset(10);
     }];
     [outBlancePushInButton mas_makeConstraints:^(MASConstraintMaker *make) {

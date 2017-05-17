@@ -31,13 +31,13 @@
     [JMPayment createPaymentWithType:thirdPartyPayMentTypeForWechat Parame:data URLScheme:kUrlScheme ErrorCodeBlock:^(JMPayError *error) {
 //        NSLog(@"%ld",error.errorStatus);
         if (error.errorStatus == payMentErrorStatusSuccess) {
-            [MobClick event:@"fineCoupon_buySuccess"];
+            [MobClick event:@"Web_PaySuccess"];
             [MBProgressHUD showError:@"支付成功~"];
             JMPayShareController *payShareVC = [[JMPayShareController alloc] init];
             payShareVC.ordNum = tid;
             [vc.navigationController pushViewController:payShareVC animated:YES];
         }else if(error.errorStatus == payMentErrorStatusFail) { // 取消
-            [MobClick event:@"fineCoupon_buyCancel_buyFail"];
+            [MobClick event:@"Web_PayFailOrCancle"];
             [MBProgressHUD showError:@"支付失败~"];
             JMOrderListController *orderVC = [[JMOrderListController alloc] init];
             orderVC.currentIndex = 1;
@@ -114,7 +114,7 @@
         [JMNotificationCenter postNotificationName:@"notificationJump" object:self userInfo:@{@"selectedIndex":@"0"}];
     } else if ([target_url isEqualToString:@"com.danlai.ndpz://app/v1/vip_home"]){
         //  跳转到小鹿妈妈界面
-        [JMNotificationCenter postNotificationName:@"notificationJump" object:self userInfo:@{@"selectedIndex":@"4"}];
+        [JMNotificationCenter postNotificationName:@"notificationJump" object:self userInfo:@{@"selectedIndex":@"2"}];
     }else if ([target_url isEqualToString:@"com.danlai.ndpz://app/v1/vip_0day"]){
         //跳转到小鹿妈妈每日上新
         JMPushingDaysController *publish = [[JMPushingDaysController alloc] init];

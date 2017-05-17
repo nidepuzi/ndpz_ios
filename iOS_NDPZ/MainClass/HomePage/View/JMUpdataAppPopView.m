@@ -2,8 +2,8 @@
 //  JMUpdataAppPopView.m
 //  XLMM
 //
-//  Created by zhang on 16/7/23.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/23.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMUpdataAppPopView.h"
@@ -38,6 +38,7 @@
     return [[JMUpdataAppPopView alloc]initWithFrame:CGRectMake(0, 0, SCREENWIDTH *0.8 , (SCREENWIDTH * 0.8) * 1.2)];
 }
 - (void)setReleaseNotes:(NSString *)releaseNotes {
+    _releaseNotes = releaseNotes;
     self.textView.text = releaseNotes;
 }
 - (void)createUI {

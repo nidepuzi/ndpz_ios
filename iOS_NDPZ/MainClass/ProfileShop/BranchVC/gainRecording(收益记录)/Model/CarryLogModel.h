@@ -3,7 +3,7 @@
 //  XLMM
 //
 //  Created by 张迎 on 16/1/19.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

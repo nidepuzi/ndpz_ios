@@ -2,8 +2,8 @@
 //  JMHomeHourCell.m
 //  XLMM
 //
-//  Created by zhang on 17/2/16.
-//  Copyright © 2017年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/16.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMHomeHourCell.h"
@@ -16,6 +16,7 @@
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *PriceLabel;
 @property (nonatomic, strong) UILabel *profitLabel;
+@property (nonatomic, strong) UILabel *skuNumLabel;
 
 @end
 
@@ -60,10 +61,15 @@
     self.profitLabel.font = [UIFont systemFontOfSize:14.];
     self.profitLabel.textColor = [UIColor buttonEnabledBackgroundColor];
     
+    UILabel *skuNumLabel = [UILabel new];
+    [self.contentView addSubview:skuNumLabel];
+    self.skuNumLabel = skuNumLabel;
+    self.skuNumLabel.font = [UIFont systemFontOfSize:12.];
+    self.skuNumLabel.textColor = [UIColor dingfanxiangqingColor];
     
     UIButton *lookWirter = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.contentView addSubview:lookWirter];
-    [lookWirter setTitle:@"文案分享" forState:UIControlStateNormal];
+    [lookWirter setTitle:@"分享素材" forState:UIControlStateNormal];
     [lookWirter setTitleColor:[UIColor timeLabelColor] forState:UIControlStateNormal];
     lookWirter.titleLabel.font = [UIFont systemFontOfSize:14.];
     [lookWirter setImage:[UIImage imageNamed:@"copyWenan"] forState:UIControlStateNormal];
@@ -124,13 +130,17 @@
     
     [self.PriceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(weakSelf.titleLabel);
-        make.bottom.equalTo(weakSelf.profitLabel.mas_top).offset(-10);
+        make.bottom.equalTo(weakSelf.skuNumLabel.mas_top).offset(-10);
     }];
     [self.profitLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(weakSelf.titleLabel);
-        make.bottom.equalTo(weakSelf.iconImage.mas_bottom).offset(-2);
+        make.right.equalTo(weakSelf.contentView).offset(-10);
+        make.centerY.equalTo(weakSelf.PriceLabel.mas_centerY);
     }];
-
+    [self.skuNumLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(weakSelf.titleLabel);
+        make.bottom.equalTo(weakSelf.iconImage).offset(-2);
+    }];
+    
     [lookWirter mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(weakSelf.contentView);
         make.bottom.equalTo(weakSelf.contentView).offset(-15);
@@ -178,6 +188,12 @@
     NSDictionary *profitDic = model.profit;
     self.profitLabel.text = [NSString stringWithFormat:@"利润:¥%.1f",[profitDic[@"min"] floatValue]];
     
+    NSInteger kucunNum = [model.stock integerValue];
+    if (kucunNum < 0) {
+        kucunNum = 0;
+    }
+    NSInteger zaishouNum = [model.selling_num integerValue];
+    self.skuNumLabel.text = [NSString stringWithFormat:@"库存%ld件 / 在售人数%ld",kucunNum,zaishouNum];
     
 }
 - (void)buttonClick:(UIButton *)button {

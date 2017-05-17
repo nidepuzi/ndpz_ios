@@ -2,8 +2,8 @@
 //  JMHomeHourModel.h
 //  XLMM
 //
-//  Created by zhang on 17/2/16.
-//  Copyright © 2017年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/16.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -18,6 +18,8 @@
 @property (nonatomic, copy) NSDictionary *profit;
 @property (nonatomic, copy) NSString *start_time;
 @property (nonatomic, copy) NSString *activity_id;
+@property (nonatomic, copy) NSString *selling_num;
+@property (nonatomic, copy) NSString *stock;
 
 
 @end
@@ -37,7 +39,9 @@
  max = 60;
  min = 20;
  };
- "start_time" = "2017-02-16T13:00:00";
+ "selling_num" = 87;
+ "start_time" = "2017-05-17T21:00:00";
+ stock = 0;
  }
  );
  }

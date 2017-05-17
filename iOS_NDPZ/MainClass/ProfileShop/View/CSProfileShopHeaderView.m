@@ -156,7 +156,7 @@
 //    UILabel *dingdanLabel = (UILabel *)[self viewWithTag:10];
     UILabel *leijixiaoliangLabel = (UILabel *)[self viewWithTag:11];
     
-    NSString *fansNum = mamaCenterModel.fans_num == nil ? @"0" : mamaCenterModel.fans_num;
+    NSString *fansNum = mamaCenterModel.invite_all_num == nil ? @"0" : mamaCenterModel.invite_all_num;
 //    NSString *orderNum = mamaCenterModel.order_num == nil ? @"0" : mamaCenterModel.order_num;
     NSString *leijixiaoliang = [NSString stringWithFormat:@"%.2f", [self.mamaCenterModel.carry_value floatValue]];   // 累计收益
     fensiLabel.text = [NSString stringWithFormat:@"%@",fansNum];                                                     // 我的粉丝

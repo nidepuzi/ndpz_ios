@@ -55,16 +55,16 @@
     naviRightButton1.titleLabel.font = CS_UIFontSize(14.);
     naviRightButton1.frame = CGRectMake(0, 0, 40, 40);
     self.navigationItem.leftBarButtonItems = @[[[UIBarButtonItem alloc] initWithCustomView:naviRightButton1]];
-    [naviRightButton1 addTarget:self action:@selector(dismissPop) forControlEvents:UIControlEventTouchUpInside];
+//    [naviRightButton1 addTarget:self action:@selector(dismissPop) forControlEvents:UIControlEventTouchUpInside];
     
     
     UIButton *naviRightButton2 = [UIButton buttonWithType:UIButtonTypeCustom];
-    [naviRightButton2 setTitle:@"确定" forState:UIControlStateNormal];
+    [naviRightButton2 setTitle:@"" forState:UIControlStateNormal];
     [naviRightButton2 setTitleColor:[UIColor buttonEnabledBackgroundColor] forState:UIControlStateNormal];
     naviRightButton2.titleLabel.font = CS_UIFontSize(14.);
     naviRightButton2.frame = CGRectMake(0, 0, 40, 40);
     self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithCustomView:naviRightButton2]];
-    [naviRightButton2 addTarget:self action:@selector(dismissPop) forControlEvents:UIControlEventTouchUpInside];
+//    [naviRightButton2 addTarget:self action:@selector(dismissPop) forControlEvents:UIControlEventTouchUpInside];
     
     NSArray *sectionArr = [NSArray array];
     NSArray *rowArr = [NSArray array];
@@ -78,6 +78,9 @@
     }else if (self.popDescType == popDescriptionTypePurchase) {
         sectionArr = [CSPopDescModel getPurchaseSectionDescData];
         rowArr = [CSPopDescModel getPurchaseRowDescData];
+    }else if (self.popDescType == popDescriptionTypeWithdraw) {
+        sectionArr = [CSPopDescModel getWithdrawSectionDescData];
+        rowArr = [CSPopDescModel getWithdrawRowDescData];
     }else { }
     
     
@@ -109,11 +112,13 @@
         self.title = @"注册必读";
     }else if (popDescType == popDescriptionTypePurchase) {
         self.title = @"购买须知";
+    }else if (popDescType == popDescriptionTypeWithdraw) {
+        self.title = @"提现小知识";
     }else { }
 }
 
 - (void)createTableView {
-    UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH * 0.7, SCREENWIDTH * 0.9 - 40) style:UITableViewStyleGrouped];
     [self.view addSubview:tableView];
     tableView.backgroundColor = [UIColor whiteColor];
     tableView.dataSource = self;
@@ -123,6 +128,24 @@
     [tableView registerClass:[CSPopDescCell class] forCellReuseIdentifier:@"CSPopDescCellIdentifier"];
     
     self.tableView = tableView;
+    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setTitle:@"我知道了" forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor buttonEnabledBackgroundColor] forState:UIControlStateNormal];
+    button.titleLabel.font = CS_UIFontSize(14.);
+    [button addTarget:self action:@selector(dismissPop) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:button];
+    button.layer.borderColor = [UIColor lineGrayColor].CGColor;
+    button.layer.borderWidth = 1.f;
+    
+    kWeakSelf
+    [button mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(weakSelf.view);
+        make.centerX.equalTo(weakSelf.view);
+        make.width.mas_equalTo(@(SCREENWIDTH * 0.7));
+        make.height.mas_equalTo(@40);
+    }];
+    
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return self.sectionArr.count;

@@ -2,17 +2,18 @@
 //  JMWithdrawCashController.m
 //  XLMM
 //
-//  Created by zhang on 16/7/6.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/6.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMWithdrawCashController.h"
-#import "TixianSucceedViewController.h"
 #import "JMSelecterButton.h"
 #import "JMRichTextTool.h"
 #import "CSWithDrawPopView.h"
 #import "CSPopAnimationViewController.h"
-
+#import "TixianSucceedViewController.h"
+#import "CSPopDescriptionController.h"
+#import "STPopupController.h"
 
 #define COUNTING_LIMIT 60
 
@@ -76,6 +77,28 @@
             [self performSelector:@selector(popWithdrawView) withObject:nil afterDelay:0.5];
         }
     }
+    
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cs_wenhao_alpha"]];
+    imageView.frame = CGRectMake(23, 11, 21, 21);
+    [button addSubview:imageView];
+    [button addTarget:self action:@selector(wenhaodianji) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    self.navigationItem.rightBarButtonItem = rightItem;
+    
+    
+    
+    
+    
+    
+}
+- (void)wenhaodianji {
+    CSPopDescriptionController *popDescVC = [[CSPopDescriptionController alloc] init];
+    popDescVC.popDescType = popDescriptionTypeWithdraw;
+    STPopupController *popupController = [[STPopupController alloc] initWithRootViewController:popDescVC];
+    popupController.isTouchBackgorundView = NO;
+    popupController.containerView.layer.cornerRadius = 5;
+    [popupController presentInViewController:self];
     
 }
 - (void)popWithdrawView {
@@ -581,13 +604,11 @@
 }
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.navigationController.navigationBarHidden = NO;
-    
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    self.navigationController.navigationBarHidden = YES;
+    
 }
 
 

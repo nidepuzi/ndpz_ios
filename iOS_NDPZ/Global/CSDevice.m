@@ -124,7 +124,7 @@
     return [JMUserDefaults boolForKey:kIsLogin];
 }
 - (BOOL)userIsSuperVIP {
-    return [JMUserDefaults boolForKey:kISXLMM];
+    return [JMUserDefaults boolForKey:kISNDPZVIP];
 }
 
 

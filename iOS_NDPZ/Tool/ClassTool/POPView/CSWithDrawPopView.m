@@ -90,7 +90,7 @@
     
     
 }
-- (void)setTypeStatus:(popTypeStatus *)typeStatus {
+- (void)setTypeStatus:(popTypeStatus)typeStatus {
     _typeStatus = typeStatus;
     if (typeStatus == popTypeStatusPay) {
         NSString *allString = @"您还有200元购物礼券哦!";

@@ -2,8 +2,8 @@
 //  JMSearchViewController.m
 //  XLMM
 //
-//  Created by zhang on 17/1/9.
-//  Copyright © 2017年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/9.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMSearchViewController.h"
@@ -67,7 +67,7 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //    [self setup];
+    
 }
 + (JMSearchViewController *)searchViewControllerWithHistorySearchs:(NSArray<NSString *> *)historySearchs searchBarPlaceHolder:(NSString *)placeHolder didSearchBlock:(JMDidSearchBlock)block {
     JMSearchViewController *searchVC = [self searchViewControllerWithHistorySearchs:historySearchs searchBarPlaceholder:placeHolder];
@@ -160,8 +160,6 @@
 /** 初始化 */
 - (void)setup {
     [JMNotificationCenter addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-
-    
     UIButton *navRightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
     [navRightButton addTarget:self action:@selector(cancelDidClick) forControlEvents:UIControlEventTouchUpInside];
     [navRightButton setTitle:@"取消" forState:UIControlStateNormal];
@@ -305,7 +303,7 @@
 /** 点击取消 */
 - (void)cancelDidClick {
     [self.searchBar resignFirstResponder];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:NO completion:nil];
 }
 
 

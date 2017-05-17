@@ -18,7 +18,6 @@
 }
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) JMShareModel *shareModel;
-@property (nonatomic, strong) STPopupController *popupController;
 @property (nonatomic, strong) CSSharePopController *sharPopVC;
 
 
@@ -127,7 +126,9 @@
 
 - (void)inviteClick {
     self.sharPopVC.popViewHeight = kAppShareViewHeight;
-    [[CSShareManager manager] showSharepopViewController:self.sharPopVC withRootViewController:self];
+    [[CSShareManager manager] showSharepopViewController:self.sharPopVC withRootViewController:self WithBlock:^(BOOL dismiss) {
+        
+    }];
 }
 
 
@@ -175,26 +176,12 @@
         case 0: {
             [self inviteClick];
         }
-            
             break;
         case 1: {
-            [MBProgressHUD showMessage:@"暂无粉丝"];
-//            CSFansTotalRevenueController *fansTotalReve = [[CSFansTotalRevenueController alloc] init];
-//            [self.navigationController pushViewController:fansTotalReve animated:YES];
-        }
-            
-            break;
-        case 2: {
             [self pushOrderIndexVC:0];
         }
             
             break;
-        case 3: {
-            [self pushOrderIndexVC:0];
-        }
-            
-            break;
-            
         default:
             break;
     }
@@ -213,21 +200,21 @@
                          @"descTitle":@"铺子微信免费送",
                          @"cellImage":@"cs_pushInImage"
                          },
-                     @{
-                         @"title":@"粉丝总收入",
-                         @"descTitle":@"¥0.00",
-                         @"cellImage":@"cs_pushInImage"
-                         },
+//                     @{
+//                         @"title":@"客户总收入",
+//                         @"descTitle":@"¥0.00",
+//                         @"cellImage":@"cs_pushInImage"
+//                         },
                      @{
                          @"title":@"自购成交订单",
                          @"descTitle":@"",
                          @"cellImage":@"cs_pushInImage"
                          },
-                     @{
-                         @"title":@"分享成交订单",
-                         @"descTitle":@"",
-                         @"cellImage":@"cs_pushInImage"
-                         },
+//                     @{
+//                         @"title":@"分享成交订单",
+//                         @"descTitle":@"",
+//                         @"cellImage":@"cs_pushInImage"
+//                         },
                      ];
     
     return arr;

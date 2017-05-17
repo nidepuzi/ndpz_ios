@@ -52,7 +52,7 @@
 #define kWxLoginUserInfo @"userInfo"
 #define kWeiXinauthorize @"kWeiXinauthorize"
 #define kIsReceivePushTZ @"isReceivePush"
-#define kISXLMM @"isXLMM"
+#define kISNDPZVIP @"isNDPZvip"
 #define kUserAgent @"userAgent"
 #define LOGINDEVTYPE @"ios"
 #define kUserVipStatus @"UserVipStatus"
@@ -67,6 +67,10 @@ UIKIT_EXTERN CGFloat    const kAppTabBarHeight;
 UIKIT_EXTERN CGFloat    const kAppShareViewHeight;
 UIKIT_EXTERN CGFloat    const kAppShareEarningViewHeight;
 UIKIT_EXTERN NSInteger  const kAPPshopCartType;
+UIKIT_EXTERN CGFloat    const kAPPNavigationHeight;
+UIKIT_EXTERN CGFloat    const kSegmentControHeight;
+
+
 
 @protocol MenuVCPushSideDelegate <NSObject>
 

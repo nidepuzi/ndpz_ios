@@ -2,8 +2,8 @@
 //  JMToolTimeLineView.m
 //  XLMM
 //
-//  Created by zhang on 16/9/20.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/20.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMToolTimeLineView.h"
@@ -31,6 +31,7 @@
 
 - (id)initWithTimeArray:(NSArray *)time andTimeDesArray:(NSArray *)timeDes ImageArray:(NSArray *)imageArr andCurrentStatus:(NSInteger)status andFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
+
         
         imageNomal = imageArr[0];
         imageSelected = imageArr[1];
@@ -168,7 +169,7 @@
         if (i == (countNum - 1)) {
             lineLabel.hidden = YES;
         }
-        CGFloat lineW = (SCREENWIDTH - 60 - countNum * 20) / (countNum - 1);
+        CGFloat lineW = (SCREENWIDTH - 60 - countNum * 30) / (countNum - 1);
         [lineLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(iconImage.mas_centerY);
             make.left.equalTo(iconImage.mas_right);

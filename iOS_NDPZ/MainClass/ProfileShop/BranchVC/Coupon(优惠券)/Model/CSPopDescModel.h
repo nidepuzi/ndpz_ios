@@ -24,4 +24,11 @@
 + (NSArray *)getPurchaseSectionDescData;
 + (NSArray *)getPurchaseRowDescData;
 
+
++ (NSArray *)getWithdrawSectionDescData;
++ (NSArray *)getWithdrawRowDescData;
+
+
+
+
 @end

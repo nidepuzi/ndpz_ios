@@ -165,7 +165,7 @@
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="¥49.00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MNp-EV-Y8f">
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                    <color key="textColor" red="0.96078431372549022" green="0.69411764705882351" blue="0.13725490196078433" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                             </subviews>
@@ -340,8 +340,8 @@
     </objects>
     <resources>
         <image name="downArrow1.png" width="16" height="16"/>
-        <image name="shopping_cart_add.png" width="22" height="22"/>
-        <image name="shopping_cart_jian.png" width="22" height="22"/>
+        <image name="shopping_cart_add.png" width="20" height="20"/>
+        <image name="shopping_cart_jian.png" width="20" height="20"/>
         <image name="zhan'wei.png" width="44" height="44"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

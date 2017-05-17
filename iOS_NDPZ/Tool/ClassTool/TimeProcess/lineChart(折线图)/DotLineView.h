@@ -3,7 +3,7 @@
 //  DotLineDemo
 //
 //  Created by younishijie on 16/3/23.
-//  Copyright © 2016年 上海己美网络科技有限公司. All rights reserved.
+//  Copyright © 2017年 上海但来网络科技有限公司. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

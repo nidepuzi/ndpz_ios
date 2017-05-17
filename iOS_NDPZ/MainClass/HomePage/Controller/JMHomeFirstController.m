@@ -2,8 +2,8 @@
 //  JMHomeFirstController.m
 //  XLMM
 //
-//  Created by zhang on 17/2/13.
-//  Copyright © 2017年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/13.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMHomeFirstController.h"
@@ -18,8 +18,6 @@
 #import "UIImage+UIImageExt.h"
 #import "JMRichTextTool.h"
 #import "JMPageContentView.h"
-
-#define contentOffsetY SCREENWIDTH * 0.45
 
 NSString *const JMPageScrollControllerLeaveTopNotifition = @"JMPageScrollControllerLeaveTopNotifition";
 
@@ -87,7 +85,7 @@ NSString *const JMPageScrollControllerLeaveTopNotifition = @"JMPageScrollControl
 }
 - (JMAutoLoopPageView *)pageView {
     if (!_pageView) {
-        _pageView = [[JMAutoLoopPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, contentOffsetY)];
+        _pageView = [[JMAutoLoopPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, kHomePageBannerHeight)];
         _pageView.dataSource = self;
         _pageView.delegate = self;
         _pageView.isCreatePageControl = YES;
@@ -140,12 +138,13 @@ NSString *const JMPageScrollControllerLeaveTopNotifition = @"JMPageScrollControl
     [JMNotificationCenter addObserver:self selector:@selector(loginOut) name:@"logout" object:nil];
     [JMNotificationCenter addObserver:self selector:@selector(updataAfterLogin) name:@"weixinlogin" object:nil];
     [JMNotificationCenter addObserver:self selector:@selector(phoneNumberLogin) name:@"phoneNumberLogin" object:nil];
-
+    
     self.pageController.baseScrollView.delegate = self;
     [self.view addSubview:self.tableView];
     [self createPullHeaderRefresh];
     [self.tableView.mj_header beginRefreshing];
-
+    
+    
 }
 #pragma mrak 刷新界面
 - (void)refresh {
@@ -258,11 +257,12 @@ NSString *const JMPageScrollControllerLeaveTopNotifition = @"JMPageScrollControl
 #pragma mark- JMPageScrollControllerDelegate
 - (void)scrollViewIscanScroll:(UIScrollView *)scrollView { //    CGFloat tabOffsetY = [self.tableView rectForSection:0].origin.y;
     _childScrollView = scrollView;
-    if (self.tableView.contentOffset.y < contentOffsetY) {
+//    NSLog(@"scrollViewIscanScroll   %.2f",scrollView.contentOffset.y);
+    if (self.tableView.contentOffset.y < kHomePageBannerHeight) {
         scrollView.contentOffset = CGPointZero;
         scrollView.showsVerticalScrollIndicator = NO;
     }else {
-        self.tableView.contentOffset = CGPointMake(0.0f, contentOffsetY);
+        self.tableView.contentOffset = CGPointMake(0.0f, kHomePageBannerHeight);
         scrollView.showsVerticalScrollIndicator = YES;
     }
 }
@@ -271,20 +271,21 @@ NSString *const JMPageScrollControllerLeaveTopNotifition = @"JMPageScrollControl
     if (scrollView == self.pageController.baseScrollView) {
     }else {
         if (self.childScrollView && _childScrollView.contentOffset.y > 0) {
-            self.tableView.contentOffset = CGPointMake(0.0f, contentOffsetY);
+            self.tableView.contentOffset = CGPointMake(0.0f, kHomePageBannerHeight);
         }else {
         }
         CGFloat scrollOffsetY = scrollView.contentOffset.y;
-        if(scrollOffsetY < contentOffsetY) {
+//        NSLog(@"scrollViewDidScroll  %.2f",scrollOffsetY);
+        if(scrollOffsetY < kHomePageBannerHeight) {
             [UIView animateWithDuration:0.3 animations:^{
-                self.pageController.segmentControl.mj_y = 64;
-                self.pageController.baseScrollView.frame = CGRectMake(0, 64 + 0, SCREENWIDTH, SCREENHEIGHT - 64 - 0);
+                self.pageController.segmentControl.mj_y = kAPPNavigationHeight;
+                self.pageController.baseScrollView.frame = CGRectMake(0, kAPPNavigationHeight + kSegmentControHeight, SCREENWIDTH, SCREENHEIGHT - kAPPNavigationHeight - kSegmentControHeight);
             }];
             [JMNotificationCenter postNotificationName:JMPageScrollControllerLeaveTopNotifition object:nil];
         }else {
             [UIView animateWithDuration:0.3 animations:^{
-                self.pageController.segmentControl.mj_y = 64 - 0;
-                self.pageController.baseScrollView.frame = CGRectMake(0, 64, SCREENWIDTH, SCREENHEIGHT - 64);
+                self.pageController.segmentControl.mj_y = kAPPNavigationHeight - kSegmentControHeight;
+                self.pageController.baseScrollView.frame = CGRectMake(0, kAPPNavigationHeight, SCREENWIDTH, SCREENHEIGHT - kAPPNavigationHeight);
             }];
         }
     }
@@ -344,7 +345,9 @@ NSString *const JMPageScrollControllerLeaveTopNotifition = @"JMPageScrollControl
     //    NSLog(@"JMHomeRootController ---> pageView滚动");
 }
 - (void)JMAutoLoopPageView:(JMAutoLoopPageView *)pageView DidSelectedIndex:(NSUInteger)index {
-    [MobClick event:@"banner_click"];
+    NSDictionary *tempDict = @{@"code" : [NSString stringWithFormat:@"%ld",index]};
+    [MobClick event:@"JMHomeFirstController_BannerClick" attributes:tempDict];
+    
     NSDictionary *topDic = _topImageArray[index];
     [JumpUtils jumpToLocation:topDic[@"app_link"] viewController:self];
 }

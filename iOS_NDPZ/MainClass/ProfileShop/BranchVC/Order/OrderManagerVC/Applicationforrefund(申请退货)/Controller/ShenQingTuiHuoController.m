@@ -247,10 +247,12 @@
         NSDictionary *userInfo = [[diction objectForKey:@"results"] objectAtIndex:0];
         userID = [userInfo objectForKey:@"id"];
     }
+    
+    
     for (int i = 0; i < 3; i++) {
        NSString *key = [self keysWithTime:([[NSDate date] timeIntervalSince1970] + 100 * i) AndUserID:userID];
         [self.keysArray addObject:key];
-        NSString *link = [NSString stringWithFormat:@"http://7xkyoy.com2.z0.glb.qiniucdn.com/%@", key];
+        NSString *link = [NSString stringWithFormat:@"http://oon0iwvsw.bkt.clouddn.com/%@", key]; // http://7xkyoy.com2.z0.glb.qiniucdn.com
         [self.linksArray addObject:link];
         
     }
@@ -260,10 +262,14 @@
 
 - (void)uploadImages:(NSData *)imagedata andKeys:(NSString *)key{
     NSString *token = [self getQiNiuToken];
-   
         QNUploadManager *upManager = [[QNUploadManager alloc] init];
         [upManager putData:imagedata key:key token:token
                   complete: ^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
+                      if (info.error) {
+                          NSLog(@"成功");
+                      }else {
+                          NSLog(@"失败");
+                      }
                       NSLog(@"%@", info);
                       NSLog(@"%@", resp);
                   } option:nil];
@@ -271,11 +277,9 @@
 
 - (NSString *)getQiNiuToken{
    // http://192.168.1.31:9000/rest/v1/refunds/qiniu_token
-    
     NSString *qiniuUrl = [NSString stringWithFormat:@"%@/rest/v1/refunds/qiniu_token", Root_URL];
     //NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:qiniuUrl]];
     NSError *error = nil;
-    
     NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:qiniuUrl] options:NSDataReadingMappedIfSafe error:&error];                                                                                                                                                                                                                                                                
     if (error != nil) {
         NSLog(@"error = %@", error);
@@ -285,20 +289,13 @@
         return nil;
     }
     NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-    
     NSString *token = [dic objectForKey:@"uptoken"];
     NSLog(@"dic = %@", dic);
     NSLog(@"token = %@", token);
-    
-    
     return token;
-    
-    
 }
 
 - (NSString *)keysWithTime:(NSTimeInterval )time AndUserID:(NSString *)userID{
-   
-    
     NSString *string = [NSString stringWithFormat:@"ios_%ld_%@_%c%c%c%c%c%c%c%c", (long)[[NSDate date] timeIntervalSince1970], userID, arc4random()%26 + 65, arc4random()%26 + 65, arc4random()%26 + 65, arc4random()%26 + 65, arc4random()%26 + 65, arc4random()%26 + 65, arc4random()%26 + 65, arc4random()%26 + 65];
     //NSLog(@"%@", string);
     return string;

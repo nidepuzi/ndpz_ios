@@ -291,6 +291,9 @@
  *  104 --> 粉丝人数
  */
 - (void)composeProfileShopHeaderTap:(CSProfileShopHeaderView *)headerView { // 邀请好友
+    NSDictionary *tempDict = @{@"code" : [NSString stringWithFormat:@"%@",@"邀请好友"]};
+    [MobClick event:@"CSProfileShopController_ButtonClick" attributes:tempDict];
+    
     CSInviteViewController *inviteVC = [[CSInviteViewController alloc] init];
     [self.navigationController pushViewController:inviteVC animated:YES];
 }
@@ -300,9 +303,14 @@
         return;
     }
     NSInteger currentIndex = button.tag;
+    NSArray *itemArr = @[@"头像",@"今日订单",@"累计销量",@"累计访问",@"粉丝"];
+    NSDictionary *tempDict = @{@"code" : [NSString stringWithFormat:@"%@",itemArr[currentIndex - 100]]};
+    [MobClick event:@"CSProfileShopController_ButtonClick" attributes:tempDict];
+    
     switch (currentIndex) {
         case 100: {
             CSPersonalInfoController *vc = [[CSPersonalInfoController alloc] init];
+            vc.profileInfo = _persinCenterDict;
             [self.navigationController pushViewController:vc animated:YES];
         }
             
@@ -341,6 +349,7 @@
     }
 }
 /**
+ *  99  --> 提现记录
  *  100 --> 提现
  *  101 --> 累计收益
  *  102 --> 业绩管理
@@ -352,10 +361,14 @@
  *  108 --> 已完成
  */
 - (void)composeProfileShopFooter:(CSProfileShopFooterView *)headerView ButtonActionClick:(UIButton *)button {
-//    if (![[CSDevice defaultDevice] userIsLogin]) {
-//        [[JMGlobal global] showLoginViewController];
-//        return;
-//    }
+    if (![[CSDevice defaultDevice] userIsLogin]) {
+        [[JMGlobal global] showLoginViewController];
+        return;
+    }
+    NSArray *itemArr = @[@"提现记录",@"提现",@"累计收益",@"业绩管理",@"优惠券",@"收货地址",@"全部订单",@"待付款",@"待发货",@"已完成"];
+    NSDictionary *tempDict = @{@"code" : [NSString stringWithFormat:@"%@",itemArr[button.tag - 99]]};
+    [MobClick event:@"CSProfileShopController_ButtonClick" attributes:tempDict];
+    
     switch (button.tag) {
         case 99: {
             Account1ViewController *account = [[Account1ViewController alloc] init];
@@ -461,6 +474,10 @@
         [[JMGlobal global] showLoginViewController];
         return;
     }
+    NSArray *itemArr = @[@"购物车",@"设置"];
+    NSDictionary *tempDict = @{@"code" : [NSString stringWithFormat:@"%@",itemArr[button.tag - 11]]};
+    [MobClick event:@"CSProfileShopController_ButtonClick" attributes:tempDict];
+    
     switch (button.tag) {
 //        case 10: {
 //            CSMineMessageController *messageVC = [[CSMineMessageController alloc] init];
@@ -475,6 +492,7 @@
             break;
         case 12: {
             CSProfilerSettingController *settingVC = [[CSProfilerSettingController alloc] init];
+            settingVC.profileInfo = _persinCenterDict;
             [self.navigationController pushViewController:settingVC animated:YES];
         }
             break;

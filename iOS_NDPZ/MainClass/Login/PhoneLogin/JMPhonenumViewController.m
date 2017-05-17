@@ -2,8 +2,8 @@
 //  JMPhonenumViewController.m
 //  XLMM
 //
-//  Created by zhang on 16/5/14.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/5/14.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMPhonenumViewController.h"
@@ -356,30 +356,19 @@
      3. 用户没用绑定手机, 但是是精英妈妈. ---> 跳转到绑定手机.
      4. 用户没有绑定手机, 且不是精英妈妈. ---> 提示用户需要注册成为会员
      */
-    NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/users/profile", Root_URL];
-    [JMHTTPManager requestWithType:RequestTypeGET WithURLString:urlString WithParaments:nil WithSuccess:^(id responseObject) {
-        if (!responseObject) return ;
-        BOOL kIsLoginStatus = ([responseObject objectForKey:@"id"] != nil)  && ([[responseObject objectForKey:@"id"] integerValue] != 0);
-        BOOL kIsXLMMStatus = [[responseObject objectForKey:@"xiaolumm"] isKindOfClass:[NSDictionary class]];
+    [[JMGlobal global] upDataLoginStatusSuccess:^(id responseObject) {
         BOOL kIsBindPhone = [NSString isStringEmpty:[responseObject objectForKey:@"mobile"]];
-        BOOL kIsVIP = NO;
-        if (kIsXLMMStatus) {
-            NSDictionary *xlmmDict = responseObject[@"xiaolumm"];
-            kIsVIP = [xlmmDict[@"status"] isEqual:@"effect"] ? YES : NO;
-        }
-        [JMUserDefaults setBool:kIsLoginStatus forKey:kIsLogin];
-        [JMUserDefaults setBool:kIsXLMMStatus forKey:kISXLMM];
-        [JMUserDefaults synchronize];
-        
-        self.loginBtn.enabled = YES;
+        BOOL kIsVIP = [JMUserDefaults boolForKey:kISNDPZVIP];
         
         if (kIsVIP) {
             if (!kIsBindPhone) {
                 [self dismissViewControllerAnimated:YES completion:nil];
                 [JMNotificationCenter postNotificationName:@"WeChatLoginSuccess" object:nil];
             }else {
+                NSDictionary *weChatInfo = [JMUserDefaults objectForKey:kWxLoginUserInfo];
                 JMVerificationCodeController *vc = [[JMVerificationCodeController alloc] init];
                 vc.verificationCodeType = SMSVerificationCodeWithBind;
+                vc.userInfo = weChatInfo;
                 vc.userLoginMethodWithWechat = YES;
                 [self.navigationController pushViewController:vc animated:YES];
             }
@@ -392,23 +381,8 @@
         }
         
         [MBProgressHUD hideHUD];
-    } WithFail:^(NSError *error) {
-        NSHTTPURLResponse *response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey];
-        if (response) {
-            if (response.statusCode) {
-                NSInteger statusCode = response.statusCode;
-                if (statusCode == 403) {
-                    NSLog(@"%ld",statusCode);
-                    [JMUserDefaults removeObjectForKey:kIsLogin];
-                    [JMUserDefaults removeObjectForKey:kISXLMM];
-                }
-            }
-        }
-        [JMUserDefaults synchronize];
-        self.loginBtn.enabled = YES;
-        [MBProgressHUD hideHUD];
-        [MBProgressHUD showError:@"登录失败，请重试"];
-    } Progress:^(float progress) {
+    } failure:^(NSInteger errorCode) {
+        [MBProgressHUD showMessage:@"登录失败"];
     }];
 }
 - (void)setDevice{
@@ -501,7 +475,6 @@
 }
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.loginBtn.enabled = YES;
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];

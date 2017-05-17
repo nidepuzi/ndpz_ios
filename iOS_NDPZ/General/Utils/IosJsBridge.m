@@ -9,14 +9,15 @@
 #import "IosJsBridge.h"
 #import <UIKit/UIKit.h>
 #import "JumpUtils.h"
-#import "JMShareViewController.h"
 #import "WebViewController.h"
 #import "UMSocial.h"
 #import "SendMessageToWeibo.h"
 #import "WXApi.h"
 #import "UUID.h"
 #import "SSKeychain.h"
-
+#import "CSShareManager.h"
+#import "JMLogInViewController.h"
+#import "RootNavigationController.h"
 
 #define kService [NSBundle mainBundle].bundleIdentifier
 #define kAccount @"com.danlai.nidepuzi"
@@ -106,9 +107,9 @@
 
  */
 + (void) universeShare:(UIViewController *)vc para:(NSDictionary *)data {
-    JMShareViewController *shareView = [[JMShareViewController alloc] init];
-//    shareView.shareType = shareVCTypeInvite;
-    ((WebViewController *)vc).shareView = shareView;
+    CSSharePopController *shareView = [[CSSharePopController alloc] init];
+    shareView.popViewHeight = kAppShareViewHeight;
+    
     JMShareModel *model = [[JMShareModel alloc] init];
     model.share_type = [data objectForKey:@"share_type"];
     model.share_img = [data objectForKey:@"share_icon"]; //图片
@@ -117,12 +118,9 @@
     model.share_link = [data objectForKey:@"link"];
     shareView.model = model;
     
-    [[JMGlobal global] showpopBoxType:popViewTypeShare Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, kAppShareViewHeight) ViewController:shareView WithBlock:^(UIView *maskView) {
+    [[CSShareManager manager] showSharepopViewController:shareView withRootViewController:vc WithBlock:^(BOOL dismiss) {
+        
     }];
-    shareView.blcok = ^(UIButton *button) {
-        [MobClick event:@"WebViewController_shareFail_cancel"];
-    };
-
     
 }
 
@@ -172,6 +170,7 @@
 
 }
 
+
 + (void)getNativeMobileSNCode{
 
     NSString *device = [self getMobileSNCode];
@@ -219,11 +218,11 @@
         NSString *sharelink = [responseObject objectForKey:@"share_link"];
         if ([platform isEqualToString:@""]) {
             ((WebViewController *)vc).activityId = [responseObject objectForKey:@"id"];
-            ((WebViewController *)vc).share_model.share_type = [responseObject objectForKey:@"share_type"];
-            ((WebViewController *)vc).share_model.share_img = [responseObject objectForKey:@"share_icon"]; //图片
-            ((WebViewController *)vc).share_model.desc = [responseObject objectForKey:@"active_dec"]; // 文字详情
-            ((WebViewController *)vc).share_model.title = [responseObject objectForKey:@"title"]; //标题
-            ((WebViewController *)vc).share_model.share_link = [responseObject objectForKey:@"share_link"];
+//            ((WebViewController *)vc).share_model.share_type = [responseObject objectForKey:@"share_type"];
+//            ((WebViewController *)vc).share_model.share_img = [responseObject objectForKey:@"share_icon"]; //图片
+//            ((WebViewController *)vc).share_model.desc = [responseObject objectForKey:@"active_dec"]; // 文字详情
+//            ((WebViewController *)vc).share_model.title = [responseObject objectForKey:@"title"]; //标题
+//            ((WebViewController *)vc).share_model.share_link = [responseObject objectForKey:@"share_link"];
             [self universeShare:vc para:responseObject];
         }else if ([platform isEqualToString:@"wx"]) {
             [UMSocialData defaultData].extConfig.wechatSessionData.url = sharelink;

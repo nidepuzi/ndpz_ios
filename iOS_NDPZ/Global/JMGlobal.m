@@ -2,8 +2,8 @@
 //  JMGlobal.m
 //  XLMM
 //
-//  Created by zhang on 16/11/8.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/8.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMGlobal.h"
@@ -59,8 +59,25 @@ static NSString *userCustomerID;
 - (void)showLoginViewController {
     JMLogInViewController *loginVC = [[JMLogInViewController alloc] init];
     RootNavigationController *rootNav = [[RootNavigationController alloc] initWithRootViewController:loginVC];
-    [XLMM_APP.window.rootViewController presentViewController:rootNav animated:YES completion:^{
-    }];
+    
+    UIViewController *viewController = XLMM_APP.window.rootViewController;
+    if ([viewController.presentedViewController isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *navigation = (id)viewController.presentedViewController;
+        if ([navigation.topViewController isKindOfClass:[JMLogInViewController class]]) {
+            return;
+        }
+    }
+    if (viewController.presentedViewController) {
+        //要先dismiss结束后才能重新present否则会出现Warning: Attempt to present <UINavigationController: 0x7fdd22262800> on <UITabBarController: 0x7fdd21c33a60> whose view is not in the window hierarchy!就会present不出来登录页面
+        [viewController.presentedViewController dismissViewControllerAnimated:NO completion:^{
+            [viewController presentViewController:rootNav animated:YES completion:nil];
+        }];
+    }else {
+        [viewController presentViewController:rootNav animated:YES completion:nil];
+    }
+    
+//    [XLMM_APP.window.rootViewController presentViewController:rootNav animated:YES completion:^{
+//    }];
 }
 
 #pragma mark ---------- 弹出视图 (分享,选择框等) ----------
@@ -75,25 +92,6 @@ static NSString *userCustomerID;
     };
     
 //    cover.blcok = clickBlock;
-}
-#pragma mark ---------- 弹出视图 (活动信息) ----------
-- (void)showpopForReceiveCouponFrame:(CGRect)frame WithBlock:(void (^)(UIView *maskView))clickBlock ActivePopBlock:(void (^)(UIButton *button))activeBlock {
-    JMShareView *cover = [JMShareView show];
-    JMRepopView *popView = [JMRepopView showInRect:frame];
-    cover.blcok = ^(JMShareView *coverView) {
-        // 这里点击蒙版没有效果
-    };
-    popView.activeBlock = activeBlock;
-//    popView.activeBlock = ^(UIButton *button) {
-//        if (button.tag == 100) {
-//            
-//        }else {
-//            [JMShareView hide];
-//            [JMRepopView hide];
-//        }
-//    };
-    
-    [JMPopViewAnimationSpring showView:popView overlayView:cover];
 }
 
 #pragma mark ==== 显示空页面
@@ -216,16 +214,20 @@ static NSString *userCustomerID;
         BOOL kIsLoginStatus = ([responseObject objectForKey:@"id"] != nil)  && ([[responseObject objectForKey:@"id"] integerValue] != 0);
         BOOL kIsXLMMStatus = [[responseObject objectForKey:@"xiaolumm"] isKindOfClass:[NSDictionary class]];
         
+        BOOL kIsVIP = NO;
         if (kIsXLMMStatus) {
             NSDictionary *xlmmDict = responseObject[@"xiaolumm"];
             [JMUserDefaults setValue:xlmmDict[@"renew_time"] forKey:@"huiyuanshijian"];
             NSString *last = [NSString stringWithFormat:@"%@",xlmmDict[@"last_renew_type"]];
             [JMUserDefaults setValue:last forKey:kUserVipStatus];
+            kIsVIP = [xlmmDict[@"status"] isEqual:@"effect"] ? YES : NO;
         }
+        [JMUserDefaults setBool:kIsVIP forKey:kISNDPZVIP];
         [JMUserDefaults setBool:kIsLoginStatus forKey:kIsLogin];
-        [JMUserDefaults setBool:kIsXLMMStatus forKey:kISXLMM];
         [JMUserDefaults synchronize];
         
+        [JMStoreManager saveDataFromDictionary:@"userProfile" WithData:responseObject];
+        NSLog(@"%@",[JMStoreManager getDataDictionary:@"userProfile"]);
         
         
 //        if (!responseObject){
@@ -267,7 +269,7 @@ static NSString *userCustomerID;
                 if (statusCode == 403) {
                     NSLog(@"%ld",statusCode);
                     [JMUserDefaults removeObjectForKey:kIsLogin];
-                    [JMUserDefaults removeObjectForKey:kISXLMM];
+//                    [JMUserDefaults removeObjectForKey:kISNDPZVIP];
                 }
             }
         }
@@ -356,7 +358,7 @@ static NSString *userCustomerID;
     return time;
 }
 - (BOOL)userVerificationXLMM {
-    return [JMUserDefaults boolForKey:kISXLMM];
+    return [JMUserDefaults boolForKey:kISNDPZVIP];
 }
 - (BOOL)userVerificationLogin {
     return [JMUserDefaults boolForKey:kIsLogin];

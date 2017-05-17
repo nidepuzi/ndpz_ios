@@ -2,8 +2,8 @@
 //  JMLogInViewController.m
 //  XLMM
 //
-//  Created by zhang on 16/5/14.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/5/14.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMLogInViewController.h"
@@ -307,6 +307,8 @@
         [alterView show];
         return;
     }
+    [MobClick event:@"JMLogInViewController_Wechat"];
+    
     [JMUserDefaults setObject:@"wxlogin" forKey:kWeiXinauthorize];
     [JMUserDefaults synchronize];
     
@@ -317,24 +319,20 @@
     [WXApi sendReq:req];
     
 }
+#pragma mark ---- 选择使用手机号登录 或者 验证码 或者 注册新的账号
+//跳转到手机号登陆
 - (void)zhanghaoClick:(UIButton *)button {
+    [MobClick event:@"JMLogInViewController_PhoneLogin"];
     JMPhonenumViewController *phoneVC = [[JMPhonenumViewController alloc] init];
     [self.navigationController pushViewController:phoneVC animated:YES];
 }
-- (void)buttonEnable:(UIButton *)button {
-    button.enabled = YES;
-}
-#pragma mark ---- 选择使用手机号登录 或者 验证码 或者 注册新的账号
-//跳转到手机号登陆
-- (void)jumpToPhoneLoginVC:(UIButton *)btn {
-    JMPhonenumViewController *phoneL = [[JMPhonenumViewController alloc] init];
-    [self.navigationController pushViewController:phoneL animated:YES];
-}
 //跳转到验证码登录
 - (void)jumpToAuthcodeLoginVC:(UIButton *)btn {
+    [MobClick event:@"JMLogInViewController_VerificationCode"];
     JMVerificationCodeController *verfyCodeVC = [[JMVerificationCodeController alloc] init];
     verfyCodeVC.verificationCodeType = SMSVerificationCodeWithLogin;
     verfyCodeVC.userLoginMethodWithWechat = YES;
+    verfyCodeVC.userNotXLMM = ![JMUserDefaults boolForKey:kISNDPZVIP];
     [self.navigationController pushViewController:verfyCodeVC animated:YES];
 }
 //跳转到注册界面
@@ -343,6 +341,9 @@
 //    verfyCodeVC.verificationCodeType = SMSVerificationCodeWithRegistered;
 //    [self.navigationController pushViewController:verfyCodeVC animated:YES];
 //}
+- (void)buttonEnable:(UIButton *)button {
+    button.enabled = YES;
+}
 
 #pragma mark ---- 登录成功后获取用户信息
 - (void)loadUserInfo {
@@ -352,19 +353,11 @@
      3. 用户没用绑定手机, 但是是精英妈妈. ---> 跳转到绑定手机.
      4. 用户没有绑定手机, 且不是精英妈妈. ---> 提示用户需要注册成为会员
      */
-    NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/users/profile", Root_URL];
-    [JMHTTPManager requestWithType:RequestTypeGET WithURLString:urlString WithParaments:nil WithSuccess:^(id responseObject) {
-        if (!responseObject) return ;
-        BOOL kIsLoginStatus = ([responseObject objectForKey:@"id"] != nil)  && ([[responseObject objectForKey:@"id"] integerValue] != 0);
-        BOOL kIsXLMMStatus = [[responseObject objectForKey:@"xiaolumm"] isKindOfClass:[NSDictionary class]];
+
+    [[JMGlobal global] upDataLoginStatusSuccess:^(id responseObject) {
         BOOL kIsBindPhone = [NSString isStringEmpty:[responseObject objectForKey:@"mobile"]];
-        BOOL kIsVIP = NO;
-        if (kIsXLMMStatus) {
-            NSDictionary *xlmmDict = responseObject[@"xiaolumm"];
-            kIsVIP = [xlmmDict[@"status"] isEqual:@"effect"] ? YES : NO;
-        }
-        [JMUserDefaults setBool:kIsLoginStatus forKey:kIsLogin];
-        [JMUserDefaults setBool:kIsXLMMStatus forKey:kISXLMM];
+        BOOL kIsVIP = [JMUserDefaults boolForKey:kISNDPZVIP];
+        
         [JMUserDefaults setObject:kWeiXinLogin forKey:kLoginMethod];
         [JMUserDefaults synchronize];
         
@@ -388,24 +381,9 @@
             [self.navigationController pushViewController:verfyCodeVC animated:YES];
         }
         
-        
         [MBProgressHUD hideHUD];
-    } WithFail:^(NSError *error) {
-        NSHTTPURLResponse *response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey];
-        if (response) {
-            if (response.statusCode) {
-                NSInteger statusCode = response.statusCode;
-                if (statusCode == 403) {
-                    NSLog(@"%ld",statusCode);
-                    [JMUserDefaults removeObjectForKey:kIsLogin];
-                    [JMUserDefaults removeObjectForKey:kISXLMM];
-                }
-            }
-        }
-        [JMUserDefaults synchronize];
-        [MBProgressHUD showError:@"登录失败，请重试"];
-        [MBProgressHUD hideHUD];
-    } Progress:^(float progress) {
+    } failure:^(NSInteger errorCode) {
+        [MBProgressHUD showMessage:@"登录失败"];
     }];
 }
 #pragma mark ---- 登录成功后获取Device

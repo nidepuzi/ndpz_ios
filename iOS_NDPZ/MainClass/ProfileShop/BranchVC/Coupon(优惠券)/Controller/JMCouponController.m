@@ -2,14 +2,13 @@
 //  JMCouponController.m
 //  XLMM
 //
-//  Created by zhang on 16/7/11.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Created by zhang on 17/4/11.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "JMCouponController.h"
 #import "HMSegmentedControl.h"
 #import "JMUntappedCouponController.h"
-#import "CSPurchaseTermsPopView.h"
 #import "CSPopAnimationViewController.h"
 #import <STPopup/STPopup.h>
 #import "CSPopDescriptionController.h"
@@ -29,7 +28,6 @@
 
 
 @property (nonatomic, strong) JMUntappedCouponController *untappedCouponVC;
-@property (nonatomic, strong) CSPurchaseTermsPopView *termsPopView;
 
 @end
 
@@ -39,14 +37,6 @@
     self.segmentControl.sectionTitles = segmentSectionTitle;
 }
 #pragma mark 懒加载
-- (CSPurchaseTermsPopView *)termsPopView {
-    if (!_termsPopView) {
-        _termsPopView = [CSPurchaseTermsPopView defaultPopView];
-        _termsPopView.termsPopType = termsPopViewTypeCoupon;
-        _termsPopView.parentVC = self;
-    }
-    return _termsPopView;
-}
 - (HMSegmentedControl *)segmentControl {
     if (!_segmentControl) {
         _segmentControl = [[HMSegmentedControl alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 45)];
@@ -84,13 +74,13 @@
     [super viewDidLoad];
     [self createNavigationBarWithTitle:@"优惠券" selecotr:@selector(backClick)];
     self.view.backgroundColor = [UIColor countLabelColor];
-    _itemArr = [NSMutableArray arrayWithObjects:@"未使用",@"已过期",@"已使用", nil];
+    _itemArr = [NSMutableArray arrayWithObjects:@"未使用",@"已冻结",@"已过期",@"已使用", nil];
     NSString *string1 = [NSString stringWithFormat:@"%@/rest/v1/usercoupons/get_user_coupons?status=%@&paging=1",Root_URL,@"0"];
-//    NSString *string2 = [NSString stringWithFormat:@"%@/rest/v1/usercoupons/get_user_coupons?status=%@&paging=1",Root_URL,@"0"];
+    NSString *string2 = [NSString stringWithFormat:@"%@/rest/v1/usercoupons/get_user_coupons?status=%@&paging=1",Root_URL,@"2"];
     NSString *string3 = [NSString stringWithFormat:@"%@/rest/v1/usercoupons/get_user_coupons?status=%@&paging=1",Root_URL,@"3"];
     NSString *string4 = [NSString stringWithFormat:@"%@/rest/v1/usercoupons/get_user_coupons?status=%@&paging=1",Root_URL,@"1"];
-    _urlArr = @[string1,string3,string4];
-    _typeArr = @[@"0",@"3",@"1"];
+    _urlArr = @[string1,string2,string3,string4];
+    _typeArr = @[@"0",@"2",@"3",@"1"];
     
     
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREENWIDTH, 70)];

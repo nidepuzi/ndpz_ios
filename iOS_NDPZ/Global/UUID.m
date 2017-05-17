@@ -3,7 +3,7 @@
 //  XLMM
 //
 //  Created by apple on 16/3/26.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "UUID.h"

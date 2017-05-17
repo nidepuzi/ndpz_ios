@@ -24,7 +24,6 @@
 
 @interface AppDelegate () <XHLaunchAdDelegate> {
     NSString *_imageUrl;
-    BOOL isSureLogin;
 }
 
 @end
@@ -51,7 +50,7 @@
 - (void)umengShareInit{  // weibo App Key： 1433464940   App Secret： f53fea3cee88a57a19578cdeff0e239d
     @try {
         [UMSocialData setAppKey:@"58e1a333e88bad47760008dc"]; // 5665541ee0f55aedfc0034f4
-        //qq分享
+        //qq分享 
         [UMSocialQQHandler setQQWithAppId:@"1106160060" appKey:@"aQjYEJmGje73bBGW" url:@"https://www.umeng.com/social"]; // QQ41dd19a6 // 1105009062 // V5H2L8ij9BNx6qQw
         //微信分享
         [UMSocialWechatHandler setWXAppId:@"3c7b4e3eb5ae4cfb132b2ac060a872ee" appSecret:@"wxa6e8010fa0b31eb3" url:@"https://www.umeng.com/social"]; // wx25fcb32689872499
@@ -130,18 +129,13 @@
 //    }
 }
 - (void)lodaUserInfo {
-    isSureLogin = YES;
     [[JMGlobal global] upDataLoginStatusSuccess:^(id responseObject) {
         [self cancleWaitTimerAndReuestLaunchImage];
-        BOOL kIsXLMMStatus = [[responseObject objectForKey:@"xiaolumm"] isKindOfClass:[NSDictionary class]];
-        BOOL kIsBindPhone = ![NSString isStringEmpty:[responseObject objectForKey:@"mobile"]];
-        BOOL kIsVIP = NO;
-        if (kIsXLMMStatus) {
-            NSDictionary *xlmmDict = responseObject[@"xiaolumm"];
-            kIsVIP = [xlmmDict[@"status"] isEqual:@"effect"] ? YES : NO;
-        }
+//        BOOL kIsXLMMStatus = [[responseObject objectForKey:@"xiaolumm"] isKindOfClass:[NSDictionary class]];
+        BOOL kIsBindPhone = [NSString isStringEmpty:[responseObject objectForKey:@"mobile"]];
+        BOOL kIsVIP = [JMUserDefaults boolForKey:kISNDPZVIP];
         if (kIsVIP) {
-            if (kIsBindPhone) {
+            if (!kIsBindPhone) {
                 return ;
             }else {
                 [[JMGlobal global] showLoginViewController];
@@ -149,10 +143,8 @@
         }else {
             [[JMGlobal global] showLoginViewController];
         }
-        isSureLogin = YES;
 //        [self showNewFeatureView];
     } failure:^(NSInteger errorCode) {
-        isSureLogin = NO;
         [self cancleWaitTimerAndReuestLaunchImage];
 //        [self showNewFeatureView];
         [[JMGlobal global] showLoginViewController];

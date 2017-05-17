@@ -205,7 +205,33 @@
 }
 
 
-
++ (NSArray *)getWithdrawSectionDescData {
+    NSArray *sectionArr = @[@{@"sectionTitle":@"1.我什么时候可以提现？"},
+                            @{@"sectionTitle":@"2.提现有什么要求？"},
+                            @{@"sectionTitle":@"3.提现什么时候可以到账？"},
+                            @{@"sectionTitle":@"4.审核日是什么时候？对应审核的时间规范是什么？"},
+                            @{@"sectionTitle":@"5.如果我不知道出什么问题了，怎么办？"},
+                            ];
+    return sectionArr;
+}
++ (NSArray *)getWithdrawRowDescData {
+    NSArray *rowArr = @[
+                        @[@{@"rowTitle":@"(1) 随时都可以"},],
+                        
+                        @[
+                            @{@"rowTitle":@"(1) 需要您个人信息与银行卡保持一致，并且银行卡信息完整无误"},
+                            @{@"rowTitle":@"(2) 提现金额最低10元"},
+                            ],
+                        @[@{@"rowTitle":@"(1) 通常你的铺子审核日后3个工作日（具体视银行结算）"},
+                          ],
+                        @[@{@"rowTitle":@"(1) 审核日是每个月的9号和24号。"},
+                          @{@"rowTitle":@"(2) 9号审核时间范围：上月24号17:01至本月9号10:00"}
+                          ],
+                        @[@{@"rowTitle":@"(1) 请联系你的铺子服务号nidepuzi"}
+                          ],
+                        ];
+    return rowArr;
+}
 
 
 

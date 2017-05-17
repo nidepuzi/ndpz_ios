@@ -3,13 +3,12 @@
 //  XLMM
 //
 //  Created by apple on 16/2/26.
-//  Copyright © 2016年 上海己美. All rights reserved.
+//  Copyright © 2017年 上海但来. All rights reserved.
 //
 
 #import "Account1ViewController.h"
 #import "AccountModel.h"
 #import "JMWithdrawCashController.h"
-#import "JMBillDetailController.h"
 #import "JMWithDrawDetailController.h"
 #import "JMAccountCell.h"
 #import "CSTableViewPlaceHolderDelegate.h"
@@ -343,7 +342,6 @@ static NSString *JMAccountCellIdentifier = @"JMAccountCellIdentifier";
 //    detailVC.accountDic = [accountM mj_keyValues];
     
     JMWithDrawDetailController *detailVC = [[JMWithDrawDetailController alloc] init];
-    detailVC.isActiveValue = NO;
     detailVC.drawDict = [accountM mj_keyValues];
     [self.navigationController pushViewController:detailVC animated:YES];
 }
