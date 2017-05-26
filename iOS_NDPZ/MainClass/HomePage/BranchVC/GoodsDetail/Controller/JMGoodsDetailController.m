@@ -24,6 +24,7 @@
 #import "JumpUtils.h"
 #import "JMPushingDaysController.h"
 #import "CSShareManager.h"
+#import "WebViewController.h"
 
 
 #define BottomHeitht 60.0
@@ -533,7 +534,7 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
         
         return 150;
     }else if (indexPath.section == 1) {
-        return 110;
+        return 150;
     }else if (indexPath.section == 2) {
         JMDescLabelModel *model = self.attributeArray[indexPath.row];
         return model.cellHeight;
@@ -571,6 +572,17 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
         return cell;
     }else if (indexPath.section == 1) {
         JMGoodsSafeGuardCell *cell = [tableView dequeueReusableCellWithIdentifier:JMGoodsSafeGuardCellIdentifier];
+        cell.block = ^(UIButton *button) {
+            WebViewController *webVC = [[WebViewController alloc] init];
+            NSString *string = [NSString stringWithFormat:@"%@",detailContentDic[@"refund_tips_url"]];
+            NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+            [dict setValue:string forKey:@"web_url"];
+            [dict setValue:@"退换货规则" forKey:@"titleName"];
+            webVC.webDiction = dict;
+            webVC.isShowNavBar = true;
+            webVC.isShowRightShareBtn = false;
+            [self.navigationController pushViewController:webVC animated:YES];
+        };
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
     }else if (indexPath.section == 2){

@@ -195,6 +195,7 @@
 //    self.tableView.tableFooterView = nil;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.rowHeight = 110.;
+    [self.tableView registerClass:[JMBaseGoodsCell class] forCellReuseIdentifier:JMBaseGoodsCellIdentifier];
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return self.dataSource.count;
@@ -204,10 +205,9 @@
     return allModel.orders.count;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *JMPersonAllOrderControllerIdentifier = @"JMPersonAllOrderControllerIdentifier";
-    JMBaseGoodsCell *cell = [tableView dequeueReusableCellWithIdentifier:JMPersonAllOrderControllerIdentifier];
+    JMBaseGoodsCell *cell = [tableView dequeueReusableCellWithIdentifier:JMBaseGoodsCellIdentifier];
     if (!cell) {
-        cell = [[JMBaseGoodsCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:JMPersonAllOrderControllerIdentifier];
+        cell = [[JMBaseGoodsCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:JMBaseGoodsCellIdentifier];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     JMAllOrderModel *allModel = self.dataSource[indexPath.section];

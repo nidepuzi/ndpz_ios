@@ -39,11 +39,11 @@
 //    [self.contentView addSubview:iconImageView];
 //    self.iconImageView = iconImageView;
     
-//    UILabel *statusLabel = [UILabel new];
-//    statusLabel.font = [UIFont systemFontOfSize:13.];
-//    statusLabel.textColor = [UIColor orangeColor];
-//    [self.contentView addSubview:statusLabel];
-//    self.statusLabel = statusLabel;
+    UILabel *statusLabel = [UILabel new];
+    statusLabel.font = [UIFont systemFontOfSize:13.];
+    statusLabel.textColor = [UIColor buttonEnabledBackgroundColor];
+    [self.contentView addSubview:statusLabel];
+    self.statusLabel = statusLabel;
     
     UILabel *nameLabel = [UILabel new];
     nameLabel.font = [UIFont systemFontOfSize:13.];
@@ -75,16 +75,16 @@
 //        make.centerY.equalTo(weakSelf.contentView.mas_centerY);
 //        make.width.height.mas_equalTo(@(44));
 //    }];
-//    [self.statusLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(weakSelf.iconImageView.mas_right).offset(10);
-//        make.top.equalTo(weakSelf.iconImageView);
-//    }];
-    [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.statusLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(weakSelf.contentView).offset(10);
         make.top.equalTo(weakSelf.contentView).offset(15);
     }];
+    [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(weakSelf.statusLabel.mas_right).offset(10);
+        make.centerY.equalTo(weakSelf.statusLabel.mas_centerY);
+    }];
     [self.descLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(weakSelf.nameLabel);
+        make.left.equalTo(weakSelf.statusLabel);
         make.bottom.equalTo(weakSelf.contentView).offset(-15);
         make.width.mas_equalTo(@(SCREENWIDTH - 120));
     }];
@@ -100,10 +100,15 @@
     
     
 }
-- (void)configEarningModel:(JMEarningModel *)model {
+- (void)configEarningModel:(CarryLogModel *)model {
     self.nameLabel.text = [NSString jm_subWithHourMinuteSe:model.created];
-    self.descLabel.text = model.type;
-    self.earningLabel.text = [NSString stringWithFormat:@"+%.2f", ([model.amount floatValue] / 100.f)];
+    self.statusLabel.text = model.status_display;
+    self.descLabel.text = model.carry_description;
+    self.earningLabel.text = [NSString stringWithFormat:@"+%.2f", [model.carry_value floatValue]];
+    
+    
+    
+    
 }
 
 - (void)configModel:(CarryLogModel *)model Index:(NSInteger)index {
@@ -132,12 +137,12 @@
             self.nameLabel.text = model.contributor_nick;
             self.timeLabel.text = [NSString jm_subWithHourAndMinute:model.created];
             break;
+//        case 2:
+//            self.iconImageView.image = [UIImage imageNamed:@"mamafan"];
+//            self.nameLabel.text = [NSString jm_subWithHourAndMinute:model.created];
+//            self.timeLabel.hidden = YES;
+//            break;
         case 2:
-            self.iconImageView.image = [UIImage imageNamed:@"mamafan"];
-            self.nameLabel.text = [NSString jm_subWithHourAndMinute:model.created];
-            self.timeLabel.hidden = YES;
-            break;
-        case 3:
             self.timeLabel.hidden = NO;
             [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:[model.contributor_img JMUrlEncodedString]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"]];
             self.nameLabel.text = model.contributor_nick;

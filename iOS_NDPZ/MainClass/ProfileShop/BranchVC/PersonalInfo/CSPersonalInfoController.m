@@ -38,9 +38,12 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.showsVerticalScrollIndicator = NO;
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.tableFooterView = [UIView new];
+    self.tableView.separatorColor = [UIColor lineGrayColor];
+    self.tableView.separatorInset = UIEdgeInsetsMake(0, 15, 0, 0);
+    self.tableView.layoutMargins = UIEdgeInsetsZero;
     [self.view addSubview:self.tableView];
-    
+    [self.tableView registerClass:[CSPersonalInfoCell class] forCellReuseIdentifier:CSPersonalInfoCellIdentifier];
     
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -75,7 +78,6 @@
     return sectionView;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *identifier = @"CSPersonalInfoCellIdentifier";
 //    if (indexPath.section == 0) {
 //        if (indexPath.row !=0 ) {
 //            identifier = @"CSPersonalInfoCell1";
@@ -85,9 +87,9 @@
 //    }else {
 //        identifier = @"CSPersonalInfoCell0";
 //    }
-    CSPersonalInfoCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    CSPersonalInfoCell *cell = [tableView dequeueReusableCellWithIdentifier:CSPersonalInfoCellIdentifier];
     if (!cell) {
-        cell = [[CSPersonalInfoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+        cell = [[CSPersonalInfoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CSPersonalInfoCellIdentifier];
     }
     NSDictionary *itemDic = dataArr[indexPath.section][indexPath.row];
     //    if (indexPath.section == 1) {
@@ -96,6 +98,7 @@
     //        }
     //    }
     [cell configWithItem:itemDic Section:indexPath.section Row:indexPath.row];
+    cell.layoutMargins = UIEdgeInsetsZero;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
@@ -151,7 +154,7 @@
                          ],
                      @[
                          @{
-                             @"title":@"昵称",
+                             @"title":@"姓名",
                              @"descTitle":nikeName,
                              @"iconImage":@"",
                              @"cellImage":@"cs_pushInImage"

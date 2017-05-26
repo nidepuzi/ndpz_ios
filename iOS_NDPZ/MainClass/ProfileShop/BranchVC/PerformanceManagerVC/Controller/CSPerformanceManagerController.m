@@ -10,33 +10,22 @@
 #import "CSAccountSecurityCell.h"
 #import "JMOrderListController.h"
 #import "CSFansTotalRevenueController.h"
-#import "CSShareManager.h"
+#import "CSInviteViewController.h"
+#import "CSInviteRecordingController.h"
 
 
 @interface CSPerformanceManagerController () <UITableViewDelegate, UITableViewDataSource> {
     NSArray *dataArr;
 }
 @property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) JMShareModel *shareModel;
-@property (nonatomic, strong) CSSharePopController *sharPopVC;
 
 
 @end
 
 @implementation CSPerformanceManagerController
+
 #pragma mark 懒加载
-- (CSSharePopController *)sharPopVC {
-    if (!_sharPopVC) {
-        _sharPopVC = [[CSSharePopController alloc] init];
-    }
-    return _sharPopVC;
-}
-- (JMShareModel *)shareModel {
-    if (!_shareModel) {
-        _shareModel = [[JMShareModel alloc] init];
-    }
-    return _shareModel;
-}
+
 
 
 - (void)viewDidLoad {
@@ -45,7 +34,6 @@
     [self createNavigationBarWithTitle:@"业绩管理" selecotr:@selector(backClick)];
     dataArr = [self getData:self.profileInfo];
     [self createTableView];
-    [self loadData];
     
 }
 - (void)createTableView {
@@ -100,35 +88,17 @@
     
 }
 
-- (void)loadData {
-    NSString *string = [NSString stringWithFormat:@"%@/rest/v1/activitys/%@/get_share_params", Root_URL, @"8"];
-    [JMHTTPManager requestWithType:RequestTypeGET WithURLString:string WithParaments:nil WithSuccess:^(id responseObject) {
-        if (!responseObject) {
-            [MBProgressHUD hideHUDForView:self.view];
-            return;
-        }
-        [self resolveActivityShareParam:responseObject];
-    } WithFail:^(NSError *error) {
-        [MBProgressHUD hideHUDForView:self.view];
-    } Progress:^(float progress) {
-        
-    }];
-}
-- (void)resolveActivityShareParam:(NSDictionary *)dic {
-    self.shareModel.share_type = [dic objectForKey:@"share_type"];
-    self.shareModel.share_img = [dic objectForKey:@"share_icon"]; //图片
-    self.shareModel.desc = [dic objectForKey:@"active_dec"]; // 文字详情
-    self.shareModel.title = [dic objectForKey:@"title"]; //标题
-    self.shareModel.share_link = [dic objectForKey:@"share_link"];
-    self.sharPopVC.model = self.shareModel;
-}
-
-
 - (void)inviteClick {
-    self.sharPopVC.popViewHeight = kAppShareViewHeight;
-    [[CSShareManager manager] showSharepopViewController:self.sharPopVC withRootViewController:self WithBlock:^(BOOL dismiss) {
-        
-    }];
+//    self.sharPopVC.popViewHeight = kAppShareViewHeight;
+//    [[CSShareManager manager] showSharepopViewController:self.sharPopVC withRootViewController:self WithBlock:^(BOOL dismiss) {
+//        
+//    }];
+    NSDictionary *tempDict = @{@"code" : [NSString stringWithFormat:@"%@",@"邀请好友"]};
+    [MobClick event:@"CSProfileShopController_ButtonClick" attributes:tempDict];
+    
+    CSInviteViewController *inviteVC = [[CSInviteViewController alloc] init];
+    [self.navigationController pushViewController:inviteVC animated:YES];
+    
 }
 
 
@@ -178,7 +148,8 @@
         }
             break;
         case 1: {
-            [self pushOrderIndexVC:0];
+            CSInviteRecordingController *vc = [[CSInviteRecordingController alloc] init];
+            [self.navigationController pushViewController:vc animated:YES];
         }
             
             break;
@@ -200,21 +171,21 @@
                          @"descTitle":@"铺子微信免费送",
                          @"cellImage":@"cs_pushInImage"
                          },
-//                     @{
-//                         @"title":@"客户总收入",
-//                         @"descTitle":@"¥0.00",
-//                         @"cellImage":@"cs_pushInImage"
-//                         },
                      @{
-                         @"title":@"自购成交订单",
+                         @"title":@"邀请记录",
                          @"descTitle":@"",
                          @"cellImage":@"cs_pushInImage"
                          },
-//                     @{
-//                         @"title":@"分享成交订单",
-//                         @"descTitle":@"",
-//                         @"cellImage":@"cs_pushInImage"
-//                         },
+                     @{
+                         @"title":@"自购佣金",
+                         @"descTitle":@"",
+                         @"cellImage":@"cs_pushInImage"
+                         },
+                     @{
+                         @"title":@"分享佣金",
+                         @"descTitle":@"",
+                         @"cellImage":@"cs_pushInImage"
+                         },
                      ];
     
     return arr;

@@ -50,7 +50,7 @@ static NSString *const JMEarningRecordCellIdentifier = @"JMEarningRecordCellIden
     if (self = [super initWithFrame:frame style:style]) {
         self.delegate = self;
         self.dataSource = self;
-//        self.contentInset = UIEdgeInsetsMake(120, 0, 0, 0);
+        
         [self registerClass:[JMEarningRecordCell class] forCellReuseIdentifier:JMEarningRecordCellIdentifier];
         
     }
@@ -60,14 +60,11 @@ static NSString *const JMEarningRecordCellIdentifier = @"JMEarningRecordCellIden
 - (void)refreshWithData:(id)numberOfRows atIndex:(NSInteger)index {
     self.itemDataSource = numberOfRows[index];
     self.currentIndex = index;
-    [self reloadData];
+    [self cs_reloadData];
 }
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.itemDataSource.count;
-}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSArray *sectionArr = self.itemDataSource[section];
-    return sectionArr.count;
+    return self.itemDataSource.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -75,7 +72,7 @@ static NSString *const JMEarningRecordCellIdentifier = @"JMEarningRecordCellIden
     if (!cell) {
         cell = [[JMEarningRecordCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:JMEarningRecordCellIdentifier];
     }
-    CarryLogModel *model = self.itemDataSource[indexPath.section][indexPath.row];
+    CarryLogModel *model = self.itemDataSource[indexPath.row];
     [cell configModel:model Index:self.currentIndex];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -87,42 +84,7 @@ static NSString *const JMEarningRecordCellIdentifier = @"JMEarningRecordCellIden
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     return 0.01;
 }
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 30;
-}
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    UIView *sectionView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 30)];
-    sectionView.backgroundColor = [UIColor lineGrayColor];
-    UILabel *timeLabel = [UILabel new];
-    timeLabel.font = [UIFont systemFontOfSize:14.];
-    timeLabel.textColor = [UIColor buttonTitleColor];
-    [sectionView addSubview:timeLabel];
-    
-    UILabel *totalEarningLabel = [UILabel new];
-    totalEarningLabel.font = [UIFont systemFontOfSize:14.];
-    totalEarningLabel.textColor = [UIColor buttonTitleColor];
-    [sectionView addSubview:totalEarningLabel];
-    
-    [timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(sectionView).offset(10);
-        make.centerY.equalTo(sectionView.mas_centerY);
-    }];
-    [totalEarningLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(sectionView).offset(-10);
-        make.centerY.equalTo(sectionView.mas_centerY);
-    }];
-    CGFloat totalValue;
-    NSArray *rowArr = self.itemDataSource[section];
-    for (CarryLogModel *model in rowArr) {
-        totalValue += [model.carry_value floatValue];
-        if ([NSString isStringEmpty:timeLabel.text]) {
-            timeLabel.text = model.date_field;
-        }
-    }
-    totalEarningLabel.text = [NSString stringWithFormat:@"总收益 : %.2f",totalValue];
-    
-    return sectionView;
-}
+
 
 @end
 

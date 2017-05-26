@@ -70,19 +70,21 @@
                                    kSelImgKey : @"tabBar_homeRoot_xuanpin_selected"},
                                  
                                  @{kClassKey  : @"CSTrainingController",
-                                   kTitleKey  : @"培训",
+                                   kTitleKey  : @"攻略",
                                    kImgKey    : @"tabBar_homeRoot_share",
                                    kSelImgKey : @"tabBar_homeRoot_share_selected"},
-                                 
-                                 @{kClassKey  : @"CSProfileShopController",
-                                   kTitleKey  : @"店铺",
-                                   kImgKey    : @"tabBar_homeRoot_shop",
-                                   kSelImgKey : @"tabBar_homeRoot_shop_selected"},
                                  
                                  @{kClassKey  : @"CSCustomeServiceController",
                                    kTitleKey  : @"客服",
                                    kImgKey    : @"tabBar_homeRoot_kefu",
-                                   kSelImgKey : @"tabBar_homeRoot_kefu_selected"} ];
+                                   kSelImgKey : @"tabBar_homeRoot_kefu_selected"},
+                                 
+                                 @{kClassKey  : @"CSProfileShopController",
+                                   kTitleKey  : @"店铺",
+                                   kImgKey    : @"tabBar_homeRoot_shop",
+                                   kSelImgKey : @"tabBar_homeRoot_shop_selected"}
+                                 
+                                 ];
     
     [childItemsArray enumerateObjectsUsingBlock:^(NSDictionary *dict, NSUInteger idx, BOOL *stop) {
         UIViewController *vc = [NSClassFromString(dict[kClassKey]) new];
@@ -106,7 +108,7 @@
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
     if ([viewController.tabBarItem.title isEqualToString:@"热卖"]) {
         
-    }else if ([viewController.tabBarItem.title isEqualToString:@"培训"]) {
+    }else if ([viewController.tabBarItem.title isEqualToString:@"攻略"]) {
     }else if ([viewController.tabBarItem.title isEqualToString:@"客服"]) {
         
     }else if ([viewController.tabBarItem.title isEqualToString:@"店铺"]) {
@@ -120,7 +122,7 @@
     }else if ([viewController.tabBarItem.title isEqualToString:@"热卖"]) {
         [MobClick event:@"JMRootTabBarController_Home"];
         return YES;
-    }else if ([viewController.tabBarItem.title isEqualToString:@"培训"]) {
+    }else if ([viewController.tabBarItem.title isEqualToString:@"攻略"]) {
         [MobClick event:@"JMRootTabBarController_Peixun"];
         return YES;
     }

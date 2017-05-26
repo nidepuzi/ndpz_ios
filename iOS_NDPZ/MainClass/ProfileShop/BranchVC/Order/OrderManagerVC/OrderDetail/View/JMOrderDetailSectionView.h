@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class JMOrderDetailSectionView;
+@class JMOrderDetailSectionView,JMPackAgeModel;
 @protocol JMOrderDetailSectionViewDelegate <NSObject>
 
 - (void)composeSectionView:(JMOrderDetailSectionView *)sectionView Index:(NSInteger)index;
@@ -17,9 +17,10 @@
 
 @interface JMOrderDetailSectionView : UIView
 
+@property (nonatomic,strong) JMPackAgeModel *packageModel;
+
 @property (nonatomic, assign) NSInteger indexSection;
 
-@property (nonatomic, copy) NSString *packAgeStr;
 
 @property (nonatomic, weak) id<JMOrderDetailSectionViewDelegate>delegate;
 

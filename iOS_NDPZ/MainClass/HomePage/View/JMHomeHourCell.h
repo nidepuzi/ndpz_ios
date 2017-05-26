@@ -21,4 +21,5 @@
 @property (nonatomic, weak) id<JMHomeHourCellDelegate> delegate;
 @property (nonatomic, strong) JMHomeHourModel *model;
 
+
 @end

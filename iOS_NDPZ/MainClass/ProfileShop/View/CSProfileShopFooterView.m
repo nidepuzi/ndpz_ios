@@ -102,7 +102,7 @@
     
     
     
-    NSArray *section1Title = @[@"累计收益",@"业绩管理",@"优惠券",@"收货地址"];
+    NSArray *section1Title = @[@"收益管理",@"业绩管理",@"优惠券",@"收货地址"];
     NSArray *section1Image = @[@"cs_profileShop_leijishouyi",@"cs_profileShop_yeji",@"cs_profileShop_coupon",@"cs_profileShop_address"];
     CGFloat spaceLine = SCREENWIDTH / 4;
     CGFloat itemHeight = 80.;
@@ -199,7 +199,7 @@
     }];
 
     
-    NSArray *section2Title = @[@"待付款",@"待发货",@"已完成"];
+    NSArray *section2Title = @[@"待付款",@"待发货",@"退款退货"];
     NSArray *section2Image = @[@"cs_profileShop_orderWaitPay",@"cs_profileShop_orderWaitFahuo",@"cs_profileShop_orderWancheng"];
     CGFloat spaceLine2 = SCREENWIDTH / 3;
     for (int i = 0; i < section2Title.count; i++) {

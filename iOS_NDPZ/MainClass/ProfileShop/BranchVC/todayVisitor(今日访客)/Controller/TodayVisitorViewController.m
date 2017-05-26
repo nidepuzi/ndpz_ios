@@ -9,8 +9,9 @@
 #import "TodayVisitorViewController.h"
 #import "JMFetureFansCell.h"
 #import "JMVisitorModel.h"
+#import "JMReloadEmptyDataView.h"
 
-@interface TodayVisitorViewController () {
+@interface TodayVisitorViewController () <CSTableViewPlaceHolderDelegate> {
     NSInteger VisitorNum;
 }
 @property (nonatomic, strong)UITableView *tableView;
@@ -23,6 +24,9 @@
 //上拉的标志
 @property (nonatomic) BOOL isLoadMore;
 @property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) JMReloadEmptyDataView *reload;
+
+
 @end
 
 @implementation TodayVisitorViewController
@@ -110,6 +114,7 @@
     self.titleLabel.textColor = [UIColor buttonEnabledBackgroundColor];
     self.titleLabel.font = [UIFont boldSystemFontOfSize:36.];
     [headerView addSubview:self.titleLabel];
+    self.titleLabel.text = self.visitorsToday;
     
     [descLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(headerView).offset(20);
@@ -126,14 +131,13 @@
 }
 #pragma mark -- 请求数据
 - (void)loadDate {
-    NSString *url = [NSString stringWithFormat:@"%@/rest/v2/mama/visitor?recent=%@",Root_URL,self.visitorDate];
+    NSString *url = [NSString stringWithFormat:@"%@/rest/v2/mama/visitor/today?recent=%@",Root_URL,self.visitorDate];
     [JMHTTPManager requestWithType:RequestTypeGET WithURLString:url WithParaments:nil WithSuccess:^(id responseObject) {
         if (!responseObject)return;
         [self.dataArray removeAllObjects];
         [self.dataDic removeAllObjects];
         [self fetchedData:responseObject];
         [self endRefresh];
-        [self.tableView reloadData];
     } WithFail:^(NSError *error) {
         [self endRefresh];
     } Progress:^(float progress) {
@@ -152,7 +156,6 @@
         if (!responseObject)return;
         [self fetchedData:responseObject];
         [self endRefresh];
-        [self.tableView reloadData];
     } WithFail:^(NSError *error) {
         [self endRefresh];
     } Progress:^(float progress) {
@@ -179,8 +182,8 @@
 
 
 - (void)fetchedData:(NSDictionary *)dic{
-    VisitorNum = [dic[@"count"] integerValue];
-    self.titleLabel.text = [NSString stringWithFormat:@"%ld",VisitorNum];
+//    VisitorNum = [dic[@"count"] integerValue];
+//    self.titleLabel.text = [NSString stringWithFormat:@"%ld",VisitorNum];
     self.nextPage = dic[@"next"];
     NSArray *array = dic[@"results"];
     if (array.count == 0) { // 空视图
@@ -203,6 +206,7 @@
         self.dataArray = [[self.dataDic allKeys] mutableCopy];
         self.dataArray = [self sortAllKeyArray:self.dataArray];
     }
+    [self.tableView cs_reloadData];
 }
 
 - (NSString *)dateDeal:(NSString *)str {
@@ -285,6 +289,18 @@
     return year;
 }
 
+- (UIView *)createPlaceHolderView {
+    return self.reload;
+}
+- (JMReloadEmptyDataView *)reload {
+    if (!_reload) {
+        __block JMReloadEmptyDataView *reload = [[JMReloadEmptyDataView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) Title:@"您还没有访客哦..." DescTitle:@"" ButtonTitle:@"快去逛逛" Image:@"data_empty" ReloadBlcok:^{
+            [self.navigationController popViewControllerAnimated:YES];
+        }];
+        _reload = reload;
+    }
+    return _reload;
+}
 
 
 

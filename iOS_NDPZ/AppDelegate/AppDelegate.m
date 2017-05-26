@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "JMStoreManager.h"
-#import "QYSDK.h"
+#import "QYPOPSDK.h"
 #import "JMPayment.h"
 #import "JMMiPushManager.h"
 #import "JMRootTabBarController.h"
@@ -29,13 +29,10 @@
 @end
 
 @implementation AppDelegate
-// 我在这里修改了东西,你能看到么......嘻嘻(*^__^*) 嘻嘻……
+
 #pragma mark ======== 友盟统计/分享.uDesk ========
 - (void)udeskInit{
-    //uDesk 客服
-//    [UdeskManager initWithAppkey:@"e7bfd4447bf206d17fb536240a9f4fbb" domianName:@"xiaolumeimei.udesk.cn"];
     [[QYSDK sharedSDK] registerAppId:@"6df3367932bd8e384f359611ea48e90b" appName:@"你的铺子"];
-    
 }
 - (void)umengTrackInit {
     //[MobClick setLogEnabled:YES];
@@ -105,9 +102,6 @@
     }
     [self lodaUserInfo];
     [XHLaunchAd setWaitDataDuration:2];
-//    [self cancleWaitTimerAndReuestLaunchImage];
-//    [self getLaunchImage];
-    
 }
 - (void)newFeature {
     //1.获取当前版本号
@@ -186,14 +180,13 @@
     }
     //创建导航控制器，添加根视图控制器
     [self fetchRootVC];
-    
     return YES;
 }
 - (void)openPushMessage {
     [MiPushSDK registerMiPush:[JMMiPushManager miPushManager] type:0 connect:YES];
 }
 #pragma mark UIApplicationDelegate
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken{
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     [[JMMiPushManager miPushManager] registerForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error{
@@ -224,6 +217,8 @@
 // 程序进入后台
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     NSLog(@"applicationDidEnterBackground ---> 程序进入后台");
+//    NSInteger count = [[[QYSDK sharedSDK] conversationManager] allUnreadCount];
+//    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:count];
 }
 // 程序从后台回到前台
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -251,6 +246,7 @@
 }
 // 程序即将退出 -- > 在这里添加退出前的清理代码以及其他工作代码
 - (void)applicationWillTerminate:(UIApplication *)application {
+    NSLog(@"程序即将退出 -- > 在这里添加退出前的清理代码以及其他工作代码");
 }
 
 #pragma mark ======== 支付,分享 回调 ========
@@ -321,8 +317,20 @@
 
 
 
+/*
+ 
+ //七鱼客服推送消息相关处理
+ if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerForRemoteNotifications)]) {
+ UIUserNotificationType types = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert;
+ UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
+ [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+ [[UIApplication sharedApplication] registerForRemoteNotifications];
+ }else {
+ UIRemoteNotificationType types = UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeBadge;
+ [[UIApplication sharedApplication] registerForRemoteNotificationTypes:types];
+ }
 
-
+ */
 
 
 

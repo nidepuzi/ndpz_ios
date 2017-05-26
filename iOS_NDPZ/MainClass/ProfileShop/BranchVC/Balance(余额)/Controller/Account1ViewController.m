@@ -13,11 +13,12 @@
 #import "JMAccountCell.h"
 #import "CSTableViewPlaceHolderDelegate.h"
 #import "JMReloadEmptyDataView.h"
-#import "CSWithDrawPopView.h"
-#import "CSPopAnimationViewController.h"
 
 
-@interface Account1ViewController () <CSTableViewPlaceHolderDelegate>
+
+@interface Account1ViewController () <CSTableViewPlaceHolderDelegate> {
+    BOOL navigationBarClick;
+}
 @property (nonatomic, strong)UITableView *tableView;
 
 @property (nonatomic, strong)NSString *nextPage;
@@ -43,25 +44,18 @@
 @property (nonatomic, assign) BOOL isLoadMore;
 
 @property (nonatomic, assign) BOOL isPopToRootView;
-@property (nonatomic, strong) CSWithDrawPopView *popView;
+
+
 
 @end
 
-static NSString *JMAccountCellIdentifier = @"JMAccountCellIdentifier";
 @implementation Account1ViewController {
     NSMutableArray *_imageArray;
     UIView *emptyView;
     CGFloat accountMoneyValue;
+    NSArray *sectionFirstArr;
 }
 
-- (CSWithDrawPopView *)popView {
-    if (_popView == nil) {
-        _popView = [CSWithDrawPopView defaultWithdrawPopView];
-        _popView.typeStatus = popTypeStatusWithdraw;
-        _popView.parentVC = self;
-    }
-    return _popView;
-}
 - (NSMutableArray *)dataArr {
     if (!_dataArr) {
         self.dataArr = [[NSMutableArray alloc] initWithCapacity:0];
@@ -71,7 +65,10 @@ static NSString *JMAccountCellIdentifier = @"JMAccountCellIdentifier";
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     self.isPopToRootView = NO;
-    [self.tableView.mj_header beginRefreshing];
+    if (!navigationBarClick) {
+        [self.tableView.mj_header beginRefreshing];
+    }
+    navigationBarClick = NO;
     [JMNotificationCenter addObserver:self selector:@selector(updateMoneyLabel:) name:@"drawCashMoeny" object:nil];
 }
 - (void)viewWillDisappear:(BOOL)animated {
@@ -84,15 +81,17 @@ static NSString *JMAccountCellIdentifier = @"JMAccountCellIdentifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    self.automaticallyAdjustsScrollViewInsets = NO;
+//    self.automaticallyAdjustsScrollViewInsets = NO;
     [self createNavigationBarWithTitle:@"钱包" selecotr:@selector(backBtnClicked:)];
-    [self createRightbutton];
+    
+    navigationBarClick = NO;
+    
     [self createTableView];
     [self createButton];
     [self createPullHeaderRefresh];
     [self createPullFooterRefresh];
     accountMoneyValue = [self.accountMoney floatValue];
-
+//    [self.tableView.mj_header beginRefreshing];
 }
 
 
@@ -166,68 +165,19 @@ static NSString *JMAccountCellIdentifier = @"JMAccountCellIdentifier";
     [self.tableView cs_reloadData];
 }
 
-- (void)createRightbutton{
-    UIButton *button1 = [[UIButton alloc] initWithFrame:CGRectMake(SCREENWIDTH - 20, 0, 44, 44)];
-    [button1 setTitle:@"提现" forState:UIControlStateNormal];
-    [button1 setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [button1 addTarget:self action:@selector(rightBarButtonAction) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:button1];
-    self.navigationItem.rightBarButtonItem = rightItem;
-    
-    self.navigationController.navigationBarHidden = NO;
-}
 - (void)createTableView {
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, SCREENWIDTH, SCREENHEIGHT - 64) style:UITableViewStyleGrouped];
+    self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-//    self.tableView.rowHeight = 80;
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.tableFooterView = [UIView new];
+    self.tableView.separatorColor = [UIColor lineGrayColor];
+    self.tableView.separatorInset = UIEdgeInsetsMake(0, 15, 0, 0);
+    self.tableView.layoutMargins = UIEdgeInsetsZero;
     [self.view addSubview:self.tableView];
-    
-    //添加header
-    UIView *headerV = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 120)];
-    
-    self.moneyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, SCREENWIDTH, 50)];
-    self.moneyLabel.textColor = [UIColor orangeThemeColor];
-    self.moneyLabel.font = CS_UIFontSize(35.);
-    self.moneyLabel.textAlignment = NSTextAlignmentCenter;
-    self.moneyLabel.text = [NSString stringWithFormat:@"%.2f", [self.accountMoney floatValue]];
-    
-    
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(SCREENWIDTH * 0.5 - 50, 75, 100, 20)];
-    titleLabel.font = CS_UIFontSize(14.);
-    titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.text = @"零钱(元)";
-    
-    [headerV addSubview:titleLabel];
-    [headerV addSubview:self.moneyLabel];
-    headerV.backgroundColor = [UIColor whiteColor];
-    
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 120, SCREENWIDTH, 1)];
-    lineView.backgroundColor = [UIColor lightGrayColor];
-    lineView.alpha = 0.3;
-    [headerV addSubview:lineView];
-    
-    self.headerH = CGRectGetMaxY(headerV.frame);
-    
-    self.tableView.tableHeaderView = headerV;
-    
     [self.tableView registerClass:[JMAccountCell class] forCellReuseIdentifier:JMAccountCellIdentifier];
-//    [self.tableView registerNib:[UINib nibWithNibName:@"AccountTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:identifier];
     
 }
-//- (void)emptyView {
-//    kWeakSelf
-//    JMEmptyView *empty = [[JMEmptyView alloc] initWithFrame:CGRectMake(0, 220, SCREENWIDTH, SCREENHEIGHT - 220) Title:@"你的钱包空空如也" DescTitle:@"" BackImage:@"wallet" InfoStr:@"快去逛逛"];
-//    [self.view addSubview:empty];
-//    empty.block = ^(NSInteger index) {
-//        if (index == 100) {
-//            self.isPopToRootView = YES;
-//            [weakSelf.navigationController popToRootViewControllerAnimated:YES];
-////            [JMNotificationCenter postNotificationName:@"kuaiquguangguangButtonClick" object:nil];
-//        }
-//    };
-//}
+
 - (UIView *)createPlaceHolderView {
     return self.reload;
 }
@@ -245,43 +195,10 @@ static NSString *JMAccountCellIdentifier = @"JMAccountCellIdentifier";
 
 
 #pragma mark --邀请好友
-- (void)backBtnClicked:(UIButton *)button{
-    
+- (void)backBtnClicked:(UIButton *)button {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-
-//提现
-- (void)rightBarButtonAction {
-    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
-    if (![NSString isStringEmpty:vipStatus]) {
-        if ([vipStatus isEqual:@"15"]) { // 试用期 弹出框
-            [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] dismiss:^{
-            }];
-            return;
-        }
-        
-    }
-    JMWithdrawCashController *drawCash = [[JMWithdrawCashController alloc] init];
-//    if ([self.personCenterDict isKindOfClass:[NSDictionary class]] && [self.personCenterDict objectForKey:@"user_budget"]) {
-//        NSDictionary *userBudget = self.personCenterDict[@"user_budget"];
-//        if ([userBudget isKindOfClass:[NSDictionary class]] && [userBudget objectForKey:@"cash_out_limit"]) {
-            drawCash.personCenterDict = self.personCenterDict;
-            drawCash.isMaMaWithDraw = NO;
-//        }else {
-//            [MBProgressHUD showError:@"不可提现"];
-//            return ;
-//        }
-//    }else {
-//        
-//    }
-//    WithdrawCashViewController *drawCash = [[WithdrawCashViewController alloc] initWithNibName:@"WithdrawCashViewController" bundle:nil];
-//    CGFloat money = [self.moneyLabel.text floatValue];
-//    NSNumber *number = [NSNumber numberWithFloat:money];
-//    drawCash.money = number;
-    
-    [self.navigationController pushViewController:drawCash animated:YES];
-}
 - (void)updateMoneyLabel:(NSNotification *)center {
     self.moneyLabel.text = center.object;
 }
@@ -333,14 +250,13 @@ static NSString *JMAccountCellIdentifier = @"JMAccountCellIdentifier";
     }
     AccountModel *accountM = self.dataArr[indexPath.row];
     [cell fillDataOfCell:accountM];
+    
+    cell.layoutMargins = UIEdgeInsetsZero;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     AccountModel *accountM = self.dataArr[indexPath.row];
-//    JMBillDetailController *detailVC = [[JMBillDetailController alloc] init];
-//    detailVC.accountDic = [accountM mj_keyValues];
-    
     JMWithDrawDetailController *detailVC = [[JMWithDrawDetailController alloc] init];
     detailVC.drawDict = [accountM mj_keyValues];
     [self.navigationController pushViewController:detailVC animated:YES];
@@ -348,6 +264,26 @@ static NSString *JMAccountCellIdentifier = @"JMAccountCellIdentifier";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     AccountModel *accountM = self.dataArr[indexPath.row];
     return accountM.cellHeight;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 60;
+}
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *sectionView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 60)];
+    sectionView.layer.borderColor = [UIColor lineGrayColor].CGColor;
+    sectionView.layer.borderWidth = 1.;
+    UILabel *hengxianL = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 15)];
+    hengxianL.backgroundColor = [UIColor countLabelColor];
+    [sectionView addSubview:hengxianL];
+    UILabel *tixianjilu = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, SCREENWIDTH, 45)];
+    tixianjilu.backgroundColor = [UIColor whiteColor];
+    [sectionView addSubview:tixianjilu];
+    tixianjilu.textColor = [UIColor buttonTitleColor];
+    tixianjilu.font = CS_UIFontSize(16.);
+    tixianjilu.textAlignment = NSTextAlignmentCenter;
+    tixianjilu.text = @"提现记录";
+    
+    return sectionView;
 }
 
 - (void)dealloc {
@@ -383,8 +319,21 @@ static NSString *JMAccountCellIdentifier = @"JMAccountCellIdentifier";
 
 
 
-
-
+//微信红包提现入口
+//    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
+//    if (![NSString isStringEmpty:vipStatus]) {
+//        if ([vipStatus isEqual:@"15"]) { // 试用期 弹出框
+//            [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] dismiss:^{
+//            }];
+//            return;
+//        }
+//
+//    }
+//    JMWithdrawCashController *drawCash = [[JMWithdrawCashController alloc] init];
+//    drawCash.personCenterDict = self.personCenterDict;
+//    drawCash.isMaMaWithDraw = NO;
+//
+//    [self.navigationController pushViewController:drawCash animated:YES];
 
 
 

@@ -10,6 +10,10 @@
 
 extern NSString *const JMGoodsSafeGuardCellIdentifier;
 
+typedef void(^jumpWebViewBlock)(UIButton *button);
+
 @interface JMGoodsSafeGuardCell : UITableViewCell
+
+@property (nonatomic, copy) jumpWebViewBlock block;
 
 @end

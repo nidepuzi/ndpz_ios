@@ -14,6 +14,7 @@
 
 @interface JMMaMaFansController () <UIScrollViewDelegate> {
     NSArray *_itemArr;
+    NSArray *_itemIndexArr;
 }
 @property (nonatomic, strong) HMSegmentedControl *segmentControl;
 @property (nonatomic, strong) UIScrollView *baseScrollView;
@@ -59,8 +60,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    [self createNavigationBarWithTitle:@"粉丝列表" selecotr:@selector(backClick)];
-    _itemArr = @[@"我的粉丝",@"关于粉丝"];
+    [self createNavigationBarWithTitle:@"今日粉丝" selecotr:@selector(backClick)];
+    _itemArr = @[@"正式粉丝",@"转正粉丝",@"试用粉丝",@"冻结粉丝"];
+    _itemIndexArr = @[@"2",@"3",@"1",@"4"];
     [self.view addSubview:self.segmentControl];
     _segmentControl.selectedSegmentIndex = 0;
     [self.view addSubview:self.baseScrollView];
@@ -70,15 +72,9 @@
 }
 - (void)addChildController {
     for (int i = 0 ; i < _itemArr.count; i++) {
-        if (i == 0) {
-            JMNowFansController *nowFansVC = [[JMNowFansController alloc] init];
-            [self addChildViewController:nowFansVC];
-        }else {
-            JMAboutFansController *aboutFansVC = [[JMAboutFansController alloc] init];
-            aboutFansVC.fansUrlString = self.aboutFansUrl;
-            [self addChildViewController:aboutFansVC];
-        }
-        
+        JMNowFansController *nowFansVC = [[JMNowFansController alloc] init];
+        nowFansVC.urlString = [NSString stringWithFormat:@"%@/rest/v1/pmt/xlmm/get_today_referal_mama?type=%@",Root_URL,_itemIndexArr[i]];
+        [self addChildViewController:nowFansVC];
     }
     self.baseScrollView.contentSize = CGSizeMake(SCREENWIDTH * _itemArr.count, self.baseScrollView.frame.size.height);
 }
@@ -98,19 +94,10 @@
 }
 - (void)removeToPage:(NSInteger)index {
     self.baseScrollView.contentOffset = CGPointMake(SCREENWIDTH * index, 0);
-    if (index == 0) {
-        JMNowFansController *nowFansVC = self.childViewControllers[index];
-        nowFansVC.view.frame = self.baseScrollView.bounds;
-        [self.baseScrollView addSubview:nowFansVC.view];
-        [nowFansVC didMoveToParentViewController:self];
-    }else {
-        JMAboutFansController *aboutFansVC = self.childViewControllers[index];
-        aboutFansVC.view.frame = self.baseScrollView.bounds;
-        [self.baseScrollView addSubview:aboutFansVC.view];
-        [aboutFansVC didMoveToParentViewController:self];
-    }
-    
-
+    JMNowFansController *nowFansVC = self.childViewControllers[index];
+    nowFansVC.view.frame = self.baseScrollView.bounds;
+    [self.baseScrollView addSubview:nowFansVC.view];
+    [nowFansVC didMoveToParentViewController:self];
 }
 
 

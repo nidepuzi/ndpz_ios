@@ -10,11 +10,10 @@
 
 extern NSString *const JMTimeListCellIdentifier;
 
-//@class JMTimeInfoModel;
+@class JMTimeInfoModel;
 @interface JMTimeListCell : UITableViewCell
 
-//- (void)configData:(JMTimeInfoModel *)model;
 
-- (void)config:(NSDictionary *)itemDic Index:(NSInteger)index;
+- (void)config:(JMTimeInfoModel *)model Index:(NSInteger)index Count:(NSInteger)count;
 
 @end

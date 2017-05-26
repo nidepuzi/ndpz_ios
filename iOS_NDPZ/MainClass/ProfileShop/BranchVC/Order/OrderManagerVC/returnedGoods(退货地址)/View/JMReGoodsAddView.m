@@ -8,6 +8,8 @@
 
 #import "JMReGoodsAddView.h"
 #import "JMRichTextTool.h"
+#import "JMRefundModel.h"
+
 
 @interface JMReGoodsAddView ()
 /**
@@ -49,56 +51,21 @@
     }
     return self;
 }
-- (void)setReGoodsDic:(NSDictionary *)reGoodsDic {
-    _reGoodsDic = reGoodsDic;
-    
-//    self.nameL.text = [NSString stringWithFormat:@"收件人:%@",reGoodsDic[@"buyer_nick"]];
-//    self.PhoneL.text = [NSString stringWithFormat:@"联系电话:%@",reGoodsDic[@"mobile"]];
-//    NSString *douhaoStr = @"，";
-    NSString *addressStr = reGoodsDic[@"return_address"];
-    if ([NSString isStringEmpty:addressStr]) {
+- (void)setModel:(JMRefundModel *)model {
+    _model = model;
+    if ([NSString isStringEmpty:model.return_address]) {
         self.nameL.text = @"";
         self.PhoneL.text = @"";
         self.addressL.text = @"退货地址请咨询你的铺子客服哦";
         self.addressL.textColor = [UIColor redColor];
-        return ;
-    }
-    if ([addressStr rangeOfString:@"，"].location != NSNotFound) {
-        NSArray *arr = [addressStr componentsSeparatedByString:@"，"];
-        NSString *addStr = @"";
-        NSString *nameStr = @"";
-        NSString *phoneStr = @"";
-        if (arr.count > 0) {
-            addStr = arr[0];
-            nameStr = arr[2];
-            phoneStr = arr[1];
-            self.nameL.text = [NSString stringWithFormat:@"收件人:%@",nameStr];
-            self.PhoneL.text = [NSString stringWithFormat:@"联系电话:%@",phoneStr];
-            self.addressL.text = [NSString stringWithFormat:@"退货地址:%@",addStr];
-        }else {
-            //            return ;
-        }
-        
     }else {
-        self.nameL.text = @"";
-        self.PhoneL.text = @"";
-        self.addressL.text = @"退货地址请咨询你的铺子客服哦";
-        self.addressL.textColor = [UIColor redColor];
+        self.nameL.text = [NSString stringWithFormat:@"收货人: %@",model.return_contact];
+        self.PhoneL.text = [NSString stringWithFormat:@"联系方式: %@",model.return_mobile];
+        self.addressL.text = [NSString stringWithFormat:@"收货地址: %@",model.return_address];
     }
-    
-//    NSArray *arr = [reGoodsDic[@"return_address"] componentsSeparatedByString:@"，"];
-//    NSString *addStr = @"";
-//    NSString *nameStr = @"";
-//    NSString *phoneStr = @"";
-//    if (arr.count > 0) {
-//        addStr = arr[0];
-//        nameStr = arr[1];
-//        phoneStr = arr[2];
-//    }else {
-//        return ;
-//    }
     
 }
+
 - (void)preporaUI {
     UIView *topLineView = [UIView new];
     [self addSubview:topLineView];

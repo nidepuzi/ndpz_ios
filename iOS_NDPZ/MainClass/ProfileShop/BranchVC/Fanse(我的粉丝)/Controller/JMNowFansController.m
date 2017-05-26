@@ -7,10 +7,10 @@
 //
 
 #import "JMNowFansController.h"
-#import "FanceModel.h"
+#import "CSFansModel.h"
 #import "JMFetureFansCell.h"
 #import "JMReloadEmptyDataView.h"
-
+#import "CSTableViewPlaceHolderDelegate.h"
 
 @interface JMNowFansController () <UITableViewDelegate,UITableViewDataSource,CSTableViewPlaceHolderDelegate>
 
@@ -25,6 +25,7 @@
 //上拉的标志
 @property (nonatomic) BOOL isLoadMore;
 @property (nonatomic, strong) JMReloadEmptyDataView *reload;
+
 
 @end
 
@@ -55,10 +56,15 @@
     
 }
 - (void)createTableView {
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT - 64 - 45) style:UITableViewStylePlain];
+    self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    self.tableView.tableFooterView = [UIView new];
+    self.tableView.separatorColor = [UIColor lineGrayColor];
+    self.tableView.separatorInset = UIEdgeInsetsMake(0, 15, 0, 0);
+    self.tableView.layoutMargins = UIEdgeInsetsZero;
+    
     [self.view addSubview:self.tableView];
 }
 #pragma mrak 刷新界面
@@ -88,11 +94,11 @@
     }
 }
 - (NSString *)urlStr {
-    return [NSString stringWithFormat:@"%@/rest/v2/mama/fans", Root_URL];
+    return [NSString stringWithFormat:@"%@/rest/v1/pmt/xlmm/get_referal_mama", Root_URL];
 }
 - (void)loadDataSource {
-    NSString *string = [self urlStr];
-    [JMHTTPManager requestWithType:RequestTypeGET WithURLString:string WithParaments:nil WithSuccess:^(id responseObject) {
+//    NSString *string = [self urlStr];
+    [JMHTTPManager requestWithType:RequestTypeGET WithURLString:self.urlString WithParaments:nil WithSuccess:^(id responseObject) {
         if (!responseObject) return;
         if (self.dataArray.count > 0) {
             [self.dataArray removeAllObjects];
@@ -123,28 +129,17 @@
 }
 - (void)refetch:(NSDictionary *)data {
     _urlStr = data[@"next"];
-    
     NSArray *arr = data[@"results"];
     if (arr.count != 0) {
         for (NSDictionary *dic in arr) {
-            FanceModel *fetureModel = [FanceModel mj_objectWithKeyValues:dic];
+            CSFansModel *fetureModel = [CSFansModel mj_objectWithKeyValues:dic];
             [self.dataArray addObject:fetureModel];
         }
     }
     [self.tableView cs_reloadData];
 }
 
-//#pragma mark --- 没有粉丝展示
-//- (void)emptyView {
-//    kWeakSelf
-//    JMEmptyView *empty = [[JMEmptyView alloc] initWithFrame:CGRectMake(0, 99, SCREENWIDTH, SCREENHEIGHT - 99) Title:@"您还没有粉丝哦..." DescTitle:@"分享您的精选给好友就会获得粉丝哦~" BackImage:@"heart" InfoStr:@"我的精选"];
-//    [self.view addSubview:empty];
-//    empty.block = ^(NSInteger index) {
-//        if (index == 100) {
-//            [weakSelf.navigationController popViewControllerAnimated:YES];
-//        }
-//    };
-//}
+
 - (UIView *)createPlaceHolderView {
     return self.reload;
 }
@@ -166,7 +161,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 80;
+    return 380;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *cellID = @"FensiCell";
@@ -174,8 +169,10 @@
     if (cell == nil) {
         cell = [[JMFetureFansCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
     }
-    FanceModel *model = [self.dataArray objectAtIndex:indexPath.row];
+    CSFansModel *model = [self.dataArray objectAtIndex:indexPath.row];
     [cell configNowFnas:model];
+    
+    cell.layoutMargins = UIEdgeInsetsZero;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }

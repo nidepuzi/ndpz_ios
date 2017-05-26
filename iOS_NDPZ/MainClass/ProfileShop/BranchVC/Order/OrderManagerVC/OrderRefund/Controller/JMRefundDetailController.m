@@ -355,6 +355,7 @@
             [refundInfoView addSubview:addressLabel];
             addressLabel.userInteractionEnabled = YES;
             addressLabel.textColor = [UIColor buttonEnabledBackgroundColor];
+            addressLabel.numberOfLines = 2;
             addressLabel.font = [UIFont systemFontOfSize:12.];
 //            addressLabel.text = self.addressLabel;
             
@@ -404,25 +405,33 @@
             }];
             
             NSString *addressStr = self.refundModelr.return_address;
-            if ([addressStr rangeOfString:@"，"].location != NSNotFound) {
-                NSArray *arr = [self.refundModelr.return_address componentsSeparatedByString:@"，"];
-                NSString *addStr = @"";
-                NSString *nameStr = @"";
-                NSString *phoneStr = @"";
-                if (arr.count > 0) {
-                    addStr = arr[0];
-                    nameStr = arr[2];
-                    phoneStr = arr[1];
-                    afterServiceLabel.text = [NSString stringWithFormat:@"%@  %@",nameStr,phoneStr];
-                    addressLabel.text = addStr;
-                }else {
-                    //            return ;
-                }
-                
+            if ([NSString isStringEmpty:addressStr]) {
+                afterServiceLabel.text = @"售后: 13564677800";
+                addressLabel.text = @"上海市黄浦区北京东路668号科技京城B区7层703室";
             }else {
-                afterServiceLabel.text = @"铺子售后  021-50939326";
-                addressLabel.text = @"收货地址: 上海杨市松江区佘山镇吉业路245号5号楼";
+                afterServiceLabel.text = [NSString stringWithFormat:@"%@ %@",self.refundModelr.return_contact,self.refundModelr.return_mobile];
+                addressLabel.text = addressStr;
             }
+            
+//            if ([addressStr rangeOfString:@"，"].location != NSNotFound) {
+//                NSArray *arr = [self.refundModelr.return_address componentsSeparatedByString:@"，"];
+//                NSString *addStr = @"";
+//                NSString *nameStr = @"";
+//                NSString *phoneStr = @"";
+//                if (arr.count > 0) {
+//                    addStr = arr[0];
+//                    nameStr = arr[2];
+//                    phoneStr = arr[1];
+//                    afterServiceLabel.text = [NSString stringWithFormat:@"%@  %@",nameStr,phoneStr];
+//                    addressLabel.text = addStr;
+//                }else {
+//                    //            return ;
+//                }
+//                
+//            }else {
+//                afterServiceLabel.text = @"铺子售后  13564677800";
+//                addressLabel.text = @"收货地址: 上海市黄浦区北京东路668号科技京城B区7层703室";
+//            }
 
             
             

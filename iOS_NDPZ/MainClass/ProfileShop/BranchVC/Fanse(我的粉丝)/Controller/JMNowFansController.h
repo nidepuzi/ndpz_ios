@@ -10,6 +10,6 @@
 
 @interface JMNowFansController : UIViewController 
 
-
+@property (nonatomic, copy) NSString *urlString;
 
 @end

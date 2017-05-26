@@ -10,6 +10,8 @@
 #import "JMSelecterButton.h"
 #import "JMPackAgeModel.h"
 
+NSString *const JMBaseGoodsCellIdentifier = @"JMBaseGoodsCellIdentifier";
+
 @interface JMBaseGoodsCell ()
 
 @property (nonatomic,strong) UIImageView *iconImage;

@@ -14,7 +14,7 @@
 #import "JMEditAddressModel.h"
 #import "JMPackAgeModel.h"
 #import "JMBaseGoodsCell.h"
-#import "JMQueryLogInfoController.h"
+#import "CSLogisticsInformationController.h"
 #import "ShenQingTuikuanController.h"
 #import "JMApplyForRefundController.h"
 #import "ShenQingTuiHuoController.h"
@@ -34,9 +34,8 @@
 #import "JMPayment.h"
 #import "JMGoodsCountTime.h"
 #import "JMOrderListController.h"
-#import "CSLogisticsDetailController.h"
 #import "CSShareManager.h"
-#import "QYSDK.h"
+#import "QYPOPSDK.h"
 #import "CSCustomerServiceManager.h"
 #import "JMStoreManager.h"
 
@@ -234,6 +233,7 @@
     self.tableView.showsVerticalScrollIndicator = NO;
     self.tableView.rowHeight = 110.f;
     self.tableView.backgroundColor = [UIColor countLabelColor];
+    [self.tableView registerClass:[JMBaseGoodsCell class] forCellReuseIdentifier:JMBaseGoodsCellIdentifier];
     
     JMOrderPayOutdateView *outDateView = [[JMOrderPayOutdateView alloc] initWithFrame:CGRectMake(0, SCREENHEIGHT - 60, SCREENWIDTH, 60)];
     [self.view addSubview:outDateView];
@@ -451,10 +451,9 @@
     return [self.dataSource[section] count];
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *cellID = @"JMOrderDetailController";
-    JMBaseGoodsCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
+    JMBaseGoodsCell *cell = [tableView dequeueReusableCellWithIdentifier:JMBaseGoodsCellIdentifier];
     if (!cell) {
-        cell = [[JMBaseGoodsCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+        cell = [[JMBaseGoodsCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:JMBaseGoodsCellIdentifier];
     }
     self.orderGoodsModel = [[JMOrderGoodsModel alloc] init];
     self.orderGoodsModel = self.dataSource[indexPath.section][indexPath.row];
@@ -473,28 +472,27 @@
     return cell;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-//    if (self.logisticsArr.count == 0) {
-//        return 0;
-//    }else {
-//        if (self.logisticsArr.count > section) {
+    if (self.logisticsArr.count == 0) {
+        return 0;
+    }else {
+        if (self.logisticsArr.count > section) {
             return 35;
-//        }else {
-//            return 0;
-//        };
-//    }
+        }else {
+            return 0;
+        };
+    }
 }
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-//    if (self.logisticsArr.count == 0) {
-//        self.packageModel = nil;
-//        return nil;
-//    }else {
+    if (self.logisticsArr.count == 0) {
+        return nil;
+    }else {
         JMOrderDetailSectionView *sectionView = [[JMOrderDetailSectionView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 35)];
         sectionView.indexSection = section;
-//        self.packageModel = self.logisticsArr[section];
-//        sectionView.packAgeStr = self.packageModel.assign_status_display;
+        self.packageModel = self.logisticsArr[section];
+        sectionView.packageModel = self.packageModel;
         sectionView.delegate = self;
         return sectionView;
-//    }
+    }
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (isChakanWuliu) {
@@ -559,36 +557,21 @@
 //}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    NSInteger section = indexPath.section;
-//    [self queryLogInfo:section];
+    NSInteger section = indexPath.section;
+    [self queryLogInfo:section];
 }
 - (void)composeSectionView:(JMOrderDetailSectionView *)sectionView Index:(NSInteger)index {
-//    NSInteger section = index - 100;
-//    [self queryLogInfo:section];
+    NSInteger section = index - 100;
+    [self queryLogInfo:section];
 }
 - (void)queryLogInfo:(NSInteger)section {
-    CSLogisticsDetailController *logisDetailVC = [[CSLogisticsDetailController alloc] init];
-    logisDetailVC.goodsSource = self.dataSource[section];
-    
-//    JMQueryLogInfoController *queryVC = [[JMQueryLogInfoController alloc] init];
-//    queryVC.index = section;
-//    queryVC.orderDataSource = self.dataSource[section];
-//    if (self.logisticsArr.count == 0) {
-//        return ;
-//    }else {
-//        queryVC.logisDataSource = self.logisticsArr;
-//    }
-//    JMPackAgeModel *packageModel = [[JMPackAgeModel alloc] init];
-//    packageModel = self.logisticsArr[section];
-//    NSDictionary *ligisticsDic = packageModel.logistics_company;
-////    queryVC.logName = ligisticsDic[@"name"];
-//    //    NSDictionary *ligisticsDic = self.orderDetailModel.logistics_company;
-//    if (ligisticsDic == nil) {
-////        queryVC.logName = self.orderDetailHeaderView.logisticsStr;
-//    }else {
-//        queryVC.logName = ligisticsDic[@"name"];
-//    }
-    [self.navigationController pushViewController:logisDetailVC animated:YES];
+    CSLogisticsInformationController *vc = [[CSLogisticsInformationController alloc] init];
+    vc.orderDataSource = self.dataSource[section];
+    if (self.logisticsArr.count == 0) {
+    }else {
+        vc.packageModel = self.logisticsArr[section];
+    }
+    [self.navigationController pushViewController:vc animated:YES];
 }
 - (void)composeOptionClick:(JMBaseGoodsCell *)baseGoods Tap:(UITapGestureRecognizer *)tap Section:(NSInteger)section Row:(NSInteger)row {
     JMGoodsDetailController *detailVC = [[JMGoodsDetailController alloc] init];
@@ -661,25 +644,6 @@
 //    [self createClassPopView:@"铺子退款说明" Message:orderDetailReturnMoney Index:1];
     [self refundEntry];
 }
-
-- (QYSessionViewController *)sessionViewController {
-    if (_sessionViewController == nil) {
-        QYSource *source = [[QYSource alloc] init];
-        source.title =  @"你的铺子";
-        source.urlString = @"https://m.nidepuzi.com";
-        _sessionViewController = [[QYSDK sharedSDK] sessionViewController];
-        _sessionViewController.sessionTitle = @"你的铺子";
-        _sessionViewController.source = source;
-        //    sessionViewController.hidesBottomBarWhenPushed = NO;
-        
-        _sessionViewController.navigationItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain
-                                        target:self action:@selector(onBack)];
-    }
-    return _sessionViewController;
-}
-
-
 #pragma mark 订单倒计时点击时间
 - (void)composeOutDateView:(JMOrderPayOutdateView *)outDateView Index:(NSInteger)index {
     if (index == 100) { // 取消支付
@@ -691,7 +655,23 @@
     }else if (index == 102) {
         // 联系客服
         [[CSCustomerServiceManager defaultManager] registerUserInfo:[JMStoreManager getDataDictionary:@"userProfile"]];
-        [self.navigationController pushViewController:self.sessionViewController animated:YES];
+        QYSource *source = [[QYSource alloc] init];
+        source.title =  @"你的铺子";
+        source.urlString = @"https://m.nidepuzi.com";
+        
+        QYSessionViewController *sessionViewController = [[QYSDK sharedSDK] sessionViewController];
+//        sessionViewController.delegate = self;
+        sessionViewController.sessionTitle = @"你的铺子";
+        sessionViewController.source = source;
+        
+        sessionViewController.navigationController.navigationBar.translucent = NO;
+        NSDictionary * dict = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
+        sessionViewController.navigationController.navigationBar.titleTextAttributes = dict;
+        [sessionViewController.navigationController.navigationBar setBarTintColor:[UIColor colorWithHex:0x62a8ea]];
+        sessionViewController.navigationItem.leftBarButtonItem =
+        [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain
+                                        target:self action:@selector(onBack)];
+        [self.navigationController pushViewController:sessionViewController animated:YES];
         
         //分享红包
 //        if (redPageNumber > 0) {

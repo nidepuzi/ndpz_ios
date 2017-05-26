@@ -32,10 +32,12 @@
 #import "CSMineMessageController.h"
 #import "CSJoinVipPopView.h"
 #import "CSPopAnimationViewController.h"
+#import "CSSearchCategoryController.h"
 
 
 @interface JMHomePageController () <UIScrollViewDelegate, JMHomeFirstControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     NSMutableArray *_categoryNameArray;
+    NSMutableArray *_categoryItemArray;
     NSMutableArray *_categoryCidArray;
     NSString *_currentCidString;
     NSString *_currentNameString;
@@ -101,12 +103,8 @@
     [self cs_dismissPopView];
 }
 - (void)rootViewWillEnterForeground:(NSNotification *)notification {
-    [self autoUpdateVersion];
     if (self.isPopUpdataView == YES) {
-        [self performSelector:@selector(updataAppPopView) withObject:nil afterDelay:10.0f];
-    }
-    if (self.homeFirst) {
-        [self.homeFirst refresh];
+        [self performSelector:@selector(updataAppPopView) withObject:nil afterDelay:3.0f];
     }
 }
 - (void)presentView:(NSNotification *)notification{
@@ -114,6 +112,12 @@
     [JumpUtils jumpToLocation:[notification.userInfo objectForKey:@"target_url"] viewController:self];
 }
 - (void)showNewFeatureView {
+    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
+    if (![NSString isStringEmpty:vipStatus]) {
+        if (![vipStatus isEqual:@"15"]) { // 试用期 弹出框
+            return;
+        }
+    }
     NSString *timeString = [JMUserDefaults objectForKey:@"huiyuanshijian"];
     NSString *currentTime = [NSString getCurrentTime];
     
@@ -131,6 +135,7 @@
 - (instancetype)init {
     if (self == [super init]) {
         _categoryNameArray = [NSMutableArray array];
+        _categoryItemArray = [NSMutableArray array];
         _categoryCidArray = [NSMutableArray array];
         _topImageArray = [NSMutableArray array];
     }
@@ -225,6 +230,7 @@
     [_categoryNameArray addObjectsFromArray:@[@"精品活动"]];
     for (NSDictionary *dic in categorys) {
         [_categoryNameArray addObject:dic[@"name"]];
+        [_categoryItemArray addObject:dic[@"name"]];
         [_categoryCidArray addObject:dic[@"id"]];
     }
     // 移除已经添加的子控制器
@@ -344,8 +350,15 @@
 //        }
 //            break;
         case 101:{
-            JMHomeRootCategoryController *searchVC = [[JMHomeRootCategoryController alloc] init];
+//            JMHomeRootCategoryController *searchVC = [[JMHomeRootCategoryController alloc] init];
+//            [self.navigationController pushViewController:searchVC animated:YES];
+
+            CSSearchCategoryController *searchVC = [[CSSearchCategoryController alloc] init];
+            searchVC.categoryItem = _categoryItemArray;
+            searchVC.categoryCid = _categoryCidArray;
             [self.navigationController pushViewController:searchVC animated:YES];
+            
+            
         }
             break;
         case 102:{
@@ -453,6 +466,7 @@
     self.updataPopView.releaseNotes = _releaseNotes;
     self.updataPopView.trailURL = self.trackViewUrl1;
     [self cs_presentPopView:self.updataPopView animation:[CSPopViewAnimationSpring new] dismiss:^{
+        self.isPopUpdataView = NO;
     }];
     
 }

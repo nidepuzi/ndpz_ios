@@ -10,10 +10,12 @@
 #import "MaMaOrderModel.h"
 #import "CarryLogHeaderView.h"
 #import "JMMaMaOrderListCell.h"
-#import "JMQueryLogInfoController.h"
+#import "CSLogisticsInformationController.h"
+#import "JMReloadEmptyDataView.h"
+#import "CSTableViewPlaceHolderDelegate.h"
 
 
-@interface MaMaOrderListViewController ()
+@interface MaMaOrderListViewController () <UITableViewDelegate, UITableViewDataSource, CSTableViewPlaceHolderDelegate>
 @property (nonatomic, strong)UITableView *tableView;
 @property (nonatomic, strong)NSMutableArray *dataArr;
 @property (nonatomic, strong)NSMutableDictionary *dataDic;
@@ -25,6 +27,10 @@
 @property (nonatomic) BOOL isPullDown;
 //上拉的标志
 @property (nonatomic) BOOL isLoadMore;
+
+@property (nonatomic, strong) JMReloadEmptyDataView *reload;
+
+
 @end
 
 @implementation MaMaOrderListViewController
@@ -134,26 +140,35 @@
 - (void)dataAnalysis:(NSDictionary *)data {
     self.nextPage = data[@"next"];
     NSArray *results = data[@"results"];
-    if (results.count == 0) { // 空视图
-        
-    }else {
-        for (NSDictionary *order in results) {
-            MaMaOrderModel *orderM = [MaMaOrderModel mj_objectWithKeyValues:order];
-            NSString *date = [self dateDeal:orderM.date_field];
-            self.dataArr = [[self.dataDic allKeys] mutableCopy];
-            //判断对应键值的数组是否存在
-            if ([self.dataArr containsObject:date]) {
-                NSMutableArray *orderArr = self.dataDic[date];
-                [orderArr addObject:orderM];
-            }else {
-                NSMutableArray *orderArr = [NSMutableArray arrayWithCapacity:0];
-                [orderArr addObject:orderM];
-                [self.dataDic setObject:orderArr forKey:date];
-            }
+    if (results.count != 0) {
+        for (NSDictionary *orderDic in results) {
+            MaMaOrderModel *orderM = [MaMaOrderModel mj_objectWithKeyValues:orderDic];
+            [self.dataArr addObject:orderM];
         }
-        self.dataArr = [[self.dataDic allKeys] mutableCopy];
-        self.dataArr = [self sortAllKeyArray:self.dataArr];
     }
+    
+//    if (results.count == 0) { // 空视图
+//        
+//    }else {
+//        for (NSDictionary *order in results) {
+//            MaMaOrderModel *orderM = [MaMaOrderModel mj_objectWithKeyValues:order];
+//            NSString *date = [NSString jm_deleteTimeWithT:orderM.created];
+//            self.dataArr = [[self.dataDic allKeys] mutableCopy];
+//            //判断对应键值的数组是否存在
+//            if ([self.dataArr containsObject:date]) {
+//                NSMutableArray *orderArr = self.dataDic[date];
+//                [orderArr addObject:orderM];
+//            }else {
+//                NSMutableArray *orderArr = [NSMutableArray arrayWithCapacity:0];
+//                [orderArr addObject:orderM];
+//                [self.dataDic setObject:orderArr forKey:date];
+//            }
+//        }
+//        self.dataArr = [[self.dataDic allKeys] mutableCopy];
+//        self.dataArr = [self sortAllKeyArray:self.dataArr];
+//    }
+    
+    [self.tableView cs_reloadData];
     
 }
 
@@ -180,14 +195,13 @@
 }
 #pragma mark -- 请求数据
 - (void)loadDate {
-    NSString *url = [NSString stringWithFormat:@"%@/rest/v2/mama/ordercarry?carry_type=direct",Root_URL];
+    NSString *url = [NSString stringWithFormat:@"%@/rest/v2/mama/ordercarry/today?carry_type=direct",Root_URL];
     [JMHTTPManager requestWithType:RequestTypeGET WithURLString:url WithParaments:nil WithSuccess:^(id responseObject) {
         if (!responseObject)return;
         [self.dataArr removeAllObjects];
         [self.dataDic removeAllObjects];
         [self dataAnalysis:responseObject];
         [self endRefresh];
-        [self.tableView reloadData];
     } WithFail:^(NSError *error) {
         [self endRefresh];
     } Progress:^(float progress) {
@@ -206,7 +220,6 @@
         if (!responseObject)return;
         [self dataAnalysis:responseObject];
         [self endRefresh];
-        [self.tableView reloadData];
     } WithFail:^(NSError *error) {
         [self endRefresh];
     } Progress:^(float progress) {
@@ -215,13 +228,14 @@
 }
 
 #pragma mark ---UItableView的代理
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.dataDic.count;
-}
+//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+//    return self.dataArr.count;
+//}
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSString *key = self.dataArr[section];
-    NSMutableArray *orderArr = self.dataDic[key];
-    return orderArr.count;
+//    NSString *key = self.dataArr[section];
+//    NSMutableArray *orderArr = self.dataDic[key];
+//    return orderArr.count;
+    return self.dataArr.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -231,10 +245,10 @@
         cell = [[JMMaMaOrderListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
     }
 
-    NSString *key = self.dataArr[indexPath.section];
-    NSMutableArray *orderArr = self.dataDic[key];
-    MaMaOrderModel *orderM = orderArr[indexPath.row];
-
+//    NSString *key = self.dataArr[indexPath.section];
+//    NSMutableArray *orderArr = self.dataDic[key];
+//    MaMaOrderModel *orderM = orderArr[indexPath.row];
+    MaMaOrderModel *orderM = self.dataArr[indexPath.row];
     [cell fillDataOfCell:orderM];
 //    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];//刷新行
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -243,45 +257,73 @@
     
     return cell;
 }
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+//    UIView *sectionView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 35)];
+//    sectionView.backgroundColor = [UIColor sectionViewColor];
+//    
+//    UILabel *timeLabel = [UILabel new];
+//    [sectionView addSubview:timeLabel];
+//    timeLabel.textColor = [UIColor buttonTitleColor];
+//    timeLabel.font = CS_UIFontSize(13.);
+//    
+//    [timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.equalTo(sectionView).offset(10);
+//        make.centerY.equalTo(sectionView.mas_centerY);
+//    }];
+//    MaMaOrderModel *orderM = self.dataArr[section];
+//    timeLabel.text = [NSString jm_deleteTimeWithT:orderM.created];
 
-    NSArray *nibView = [[NSBundle mainBundle] loadNibNamed:@"CarryLogHeaderView"owner:self options:nil];
-    CarryLogHeaderView *headerV = [nibView objectAtIndex:0];
-    headerV.frame = CGRectMake(0, 0, SCREENWIDTH, 30); 
-    //计算金额
-    NSString *key = self.dataArr[section];
-    NSMutableArray *orderArr = self.dataDic[key];
-    MaMaOrderModel *orderM = [orderArr firstObject];
-    
-    [headerV yearLabelAndTotalMoneyLabelText:orderM.date_field total:[NSString stringWithFormat:@"%.2f", [orderM.today_carry floatValue]]];
-    return headerV;
-}
+//    NSArray *nibView = [[NSBundle mainBundle] loadNibNamed:@"CarryLogHeaderView"owner:self options:nil];
+//    CarryLogHeaderView *headerV = [nibView objectAtIndex:0];
+//    headerV.frame = CGRectMake(0, 0, SCREENWIDTH, 30); 
+//    //计算金额
+//    NSString *key = self.dataArr[section];
+//    NSMutableArray *orderArr = self.dataDic[key];
+//    MaMaOrderModel *orderM = [orderArr firstObject];
+//    
+//    [headerV yearLabelAndTotalMoneyLabelText:[NSString jm_deleteTimeWithT:orderM.created] total:[NSString stringWithFormat:@"%.2f", [orderM.today_carry floatValue]]];
+//    return sectionView;
+//}
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 30;
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+//    return 35;
+//}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     return 1;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *key = self.dataArr[indexPath.section];
-    NSMutableArray *orderArr = self.dataDic[key];
-    MaMaOrderModel *orderM = orderArr[indexPath.row];
-    NSLog(@"%@",[orderM mj_keyValues]);
+//    NSString *key = self.dataArr[indexPath.section];
+//    NSMutableArray *orderArr = self.dataDic[key];
+//    MaMaOrderModel *orderM = orderArr[indexPath.row];
+    MaMaOrderModel *orderM = self.dataArr[indexPath.row];
+//    NSLog(@"%@",[orderM mj_keyValues]);
     BOOL isComanyCode = [NSString isStringEmpty:orderM.company_code];
     BOOL isPacketId = [NSString isStringEmpty:orderM.packetid];
     if (isComanyCode || isPacketId) {
         
     }else {
-        JMQueryLogInfoController *loginfoVC = [[JMQueryLogInfoController alloc] init];
-        loginfoVC.packetId = orderM.packetid;
-        loginfoVC.companyCode = orderM.company_code;
-        loginfoVC.logName = orderM.company_code;
-        [self.navigationController pushViewController:loginfoVC animated:YES];
+        CSLogisticsInformationController *vc = [[CSLogisticsInformationController alloc] init];
+        vc.packetID = orderM.packetid;
+        vc.companyCODE = orderM.company_code;
+        [self.navigationController pushViewController:vc animated:YES];
     }
 
 }
+
+- (UIView *)createPlaceHolderView {
+    return self.reload;
+}
+- (JMReloadEmptyDataView *)reload {
+    if (!_reload) {
+        __block JMReloadEmptyDataView *reload = [[JMReloadEmptyDataView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) Title:@"您暂时还没有订单哦～" DescTitle:@"" ButtonTitle:@"快去逛逛" Image:@"data_empty" ReloadBlcok:^{
+            [self.navigationController popViewControllerAnimated:YES];
+        }];
+        _reload = reload;
+    }
+    return _reload;
+}
+
 
 #pragma mark 返回顶部  image == >backTop
 - (void)createButton {

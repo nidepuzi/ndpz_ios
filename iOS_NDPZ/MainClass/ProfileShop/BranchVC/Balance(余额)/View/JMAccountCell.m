@@ -9,9 +9,11 @@
 #import "JMAccountCell.h"
 #import "AccountModel.h"
 
+NSString *const JMAccountCellIdentifier = @"JMAccountCellIdentifier";
 
 @interface JMAccountCell ()
 
+@property (nonatomic, strong) UILabel *typeLabel;
 @property (nonatomic, strong) UILabel *statusLabel;
 @property (nonatomic, strong) UILabel *timeLabel;
 @property (nonatomic, strong) UILabel *sourceLabel;
@@ -31,15 +33,21 @@
     return self;
 }
 - (void)initUI {
+    
+    self.typeLabel = [UILabel new];
+    [self.contentView addSubview:self.typeLabel];
+    self.typeLabel.textColor = [UIColor buttonEnabledBackgroundColor];
+    self.typeLabel.font = [UIFont systemFontOfSize:13.];
+    
     self.statusLabel = [UILabel new];
     [self.contentView addSubview:self.statusLabel];
     self.statusLabel.textColor = [UIColor buttonEnabledBackgroundColor];
-    self.statusLabel.font = [UIFont systemFontOfSize:12.];
+    self.statusLabel.font = [UIFont systemFontOfSize:13.];
     
     self.timeLabel = [UILabel new];
     [self.contentView addSubview:self.timeLabel];
     self.timeLabel.textColor = [UIColor dingfanxiangqingColor];
-    self.timeLabel.font = [UIFont systemFontOfSize:12.];
+    self.timeLabel.font = [UIFont systemFontOfSize:14.];
     
     self.sourceLabel = [UILabel new];
     [self.contentView addSubview:self.sourceLabel];
@@ -53,33 +61,38 @@
     self.moneyLabel.font = [UIFont systemFontOfSize:16.];
     self.moneyLabel.textAlignment = NSTextAlignmentRight;
     
-    self.bottomLabel = [UILabel new];
-    [self.contentView addSubview:self.bottomLabel];
-    self.bottomLabel.backgroundColor = [UIColor countLabelColor];
+//    self.bottomLabel = [UILabel new];
+//    [self.contentView addSubview:self.bottomLabel];
+//    self.bottomLabel.backgroundColor = [UIColor countLabelColor];
     
     kWeakSelf
-    [self.statusLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.typeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.top.equalTo(weakSelf.contentView).offset(10);
     }];
-    [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(weakSelf.statusLabel.mas_right).offset(10);
-        make.centerY.equalTo(weakSelf.statusLabel.mas_centerY);
+    [self.statusLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(weakSelf.typeLabel.mas_right).offset(10);
+        make.centerY.equalTo(weakSelf.typeLabel.mas_centerY);
     }];
+    [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(weakSelf.typeLabel);
+        make.top.equalTo(weakSelf.typeLabel.mas_bottom).offset(10);
+    }];
+    
     [self.sourceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(weakSelf.statusLabel);
-        make.top.equalTo(weakSelf.statusLabel.mas_bottom).offset(10);
-        make.width.mas_equalTo(@(SCREENWIDTH - 20));
+        make.left.equalTo(weakSelf.typeLabel);
+        make.top.equalTo(weakSelf.timeLabel.mas_bottom).offset(10);
+        make.right.equalTo(weakSelf.contentView).offset(-10);
     }];
     [self.moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(weakSelf.statusLabel.mas_centerY);
+        make.centerY.equalTo(weakSelf.timeLabel.mas_centerY);
         make.right.equalTo(weakSelf.contentView).offset(-10);
 //        make.width.mas_equalTo(@120);
     }];
-    [self.bottomLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.bottom.equalTo(weakSelf.contentView).offset(-1);
-        make.width.mas_equalTo(@(SCREENWIDTH));
-        make.height.mas_equalTo(@1);
-    }];
+//    [self.bottomLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.right.bottom.equalTo(weakSelf.contentView);
+//        make.width.mas_equalTo(@(SCREENWIDTH));
+//        make.height.mas_equalTo(@1);
+//    }];
     
     
     
@@ -87,6 +100,7 @@
 
 
 - (void)fillDataOfCell:(AccountModel *)accountM {
+    self.typeLabel.text = accountM.budget_log_type_display;
     self.statusLabel.text = accountM.get_status_display;
     self.timeLabel.text = accountM.budget_date;
     self.sourceLabel.text = accountM.desc;
@@ -101,6 +115,9 @@
     
     
 }
+
+
+
 
 
 

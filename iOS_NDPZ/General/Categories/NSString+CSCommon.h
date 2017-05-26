@@ -159,6 +159,7 @@
  *  @return N天前的日期
  */
 + (NSString *)getBeforeDay:(NSInteger)dayNum;
++ (NSString *)getTime:(NSString *)timeString BeforeOrAfterDay:(NSInteger)dayNum;
 
 /**
  *  获取当前时间

@@ -10,4 +10,15 @@
 
 @implementation JMTimeInfoModel
 
+- (CGFloat)cellHeight {
+    if (!_cellHeight) {
+        CGFloat contentW = SCREENWIDTH - 60;
+        CGFloat contentH = [self.content boundingRectWithSize:CGSizeMake(contentW, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:CS_UIFontSize(14.)} context:nil].size.height;
+        _cellHeight = contentH + 60;
+    }
+    return _cellHeight;
+}
+
+
+
 @end

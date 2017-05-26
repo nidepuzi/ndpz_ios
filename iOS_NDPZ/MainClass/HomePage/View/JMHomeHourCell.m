@@ -9,7 +9,6 @@
 #import "JMHomeHourCell.h"
 #import "JMHomeHourModel.h"
 
-
 @interface JMHomeHourCell ()
 
 @property (nonatomic, strong) UIImageView *iconImage;
@@ -17,6 +16,7 @@
 @property (nonatomic, strong) UILabel *PriceLabel;
 @property (nonatomic, strong) UILabel *profitLabel;
 @property (nonatomic, strong) UILabel *skuNumLabel;
+@property (nonatomic, strong) UILabel *selNumLabel;
 
 @end
 
@@ -52,8 +52,13 @@
     UILabel *PriceLabel = [UILabel new];
     [self.contentView addSubview:PriceLabel];
     self.PriceLabel = PriceLabel;
-    self.PriceLabel.font = [UIFont systemFontOfSize:16.];
+    self.PriceLabel.font = [UIFont systemFontOfSize:14.];
     self.PriceLabel.textColor = [UIColor settingBackgroundColor];
+    
+    UILabel *fengexianL = [UILabel new];
+    [self.contentView addSubview:fengexianL];
+    fengexianL.textColor = [UIColor dingfanxiangqingColor];
+    fengexianL.text = @"/";
     
     UILabel *profitLabel = [UILabel new];
     [self.contentView addSubview:profitLabel];
@@ -67,11 +72,18 @@
     self.skuNumLabel.font = [UIFont systemFontOfSize:12.];
     self.skuNumLabel.textColor = [UIColor dingfanxiangqingColor];
     
+    UILabel *selNumLabel = [UILabel new];
+    [self.contentView addSubview:selNumLabel];
+    self.selNumLabel = selNumLabel;
+    self.selNumLabel.font = [UIFont systemFontOfSize:12.];
+    self.selNumLabel.textColor = [UIColor dingfanxiangqingColor];
+    
+    
     UIButton *lookWirter = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.contentView addSubview:lookWirter];
     [lookWirter setTitle:@"分享素材" forState:UIControlStateNormal];
-    [lookWirter setTitleColor:[UIColor timeLabelColor] forState:UIControlStateNormal];
-    lookWirter.titleLabel.font = [UIFont systemFontOfSize:14.];
+    [lookWirter setTitleColor:[UIColor buttonTitleColor] forState:UIControlStateNormal];
+    lookWirter.titleLabel.font = [UIFont systemFontOfSize:13.];
     [lookWirter setImage:[UIImage imageNamed:@"copyWenan"] forState:UIControlStateNormal];
     lookWirter.layer.masksToBounds = YES;
     lookWirter.layer.borderWidth = 0.5f;
@@ -83,8 +95,8 @@
     UIButton *shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.contentView addSubview:shareButton];
     [shareButton setTitle:@"单品分享" forState:UIControlStateNormal];
-    [shareButton setTitleColor:[UIColor timeLabelColor] forState:UIControlStateNormal];
-    shareButton.titleLabel.font = [UIFont systemFontOfSize:14.];
+    [shareButton setTitleColor:[UIColor buttonTitleColor] forState:UIControlStateNormal];
+    shareButton.titleLabel.font = [UIFont systemFontOfSize:13.];
     [shareButton setImage:[UIImage imageNamed:@"wenanShare"] forState:UIControlStateNormal];
     shareButton.layer.masksToBounds = YES;
     shareButton.layer.borderWidth = 0.5f;
@@ -96,8 +108,8 @@
     UIButton *jiaodianButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.contentView addSubview:jiaodianButton];
     [jiaodianButton setTitle:@"店铺分享" forState:UIControlStateNormal];
-    [jiaodianButton setTitleColor:[UIColor timeLabelColor] forState:UIControlStateNormal];
-    jiaodianButton.titleLabel.font = [UIFont systemFontOfSize:14.];
+    [jiaodianButton setTitleColor:[UIColor buttonTitleColor] forState:UIControlStateNormal];
+    jiaodianButton.titleLabel.font = [UIFont systemFontOfSize:13.];
     [jiaodianButton setImage:[UIImage imageNamed:@"fenxiangjiaodian"] forState:UIControlStateNormal];
     jiaodianButton.layer.masksToBounds = YES;
     jiaodianButton.layer.borderWidth = 0.5f;
@@ -130,16 +142,28 @@
     
     [self.PriceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(weakSelf.titleLabel);
-        make.bottom.equalTo(weakSelf.skuNumLabel.mas_top).offset(-10);
+        make.bottom.equalTo(weakSelf.selNumLabel.mas_top).offset(-5);
+    }];
+    [fengexianL mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(weakSelf.PriceLabel.mas_centerY).offset(-2);
+        make.left.equalTo(weakSelf.PriceLabel.mas_right).offset(2);
     }];
     [self.profitLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(weakSelf.contentView).offset(-10);
+        make.left.equalTo(fengexianL.mas_right).offset(2);
+//        make.bottom.equalTo(weakSelf.selNumLabel.mas_top).offset(-5);
         make.centerY.equalTo(weakSelf.PriceLabel.mas_centerY);
+        
+    }];
+    
+    [self.selNumLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(weakSelf.titleLabel);
+        make.bottom.equalTo(weakSelf.skuNumLabel.mas_top).offset(-5);
     }];
     [self.skuNumLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(weakSelf.titleLabel);
-        make.bottom.equalTo(weakSelf.iconImage).offset(-2);
+        make.bottom.equalTo(weakSelf.iconImage);
     }];
+    
     
     [lookWirter mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(weakSelf.contentView);
@@ -173,7 +197,6 @@
 }
 
 
-
 - (void)setModel:(JMHomeHourModel *)model {
     _model = model;
     NSString *picString = model.pic;
@@ -186,14 +209,15 @@
     self.titleLabel.text = model.name;
     self.PriceLabel.text = [NSString stringWithFormat:@"¥%.2f", [model.price floatValue]];
     NSDictionary *profitDic = model.profit;
-    self.profitLabel.text = [NSString stringWithFormat:@"利润:¥%.1f",[profitDic[@"min"] floatValue]];
+    self.profitLabel.text = [NSString stringWithFormat:@"赚:¥%.1f",[profitDic[@"min"] floatValue]];
     
     NSInteger kucunNum = [model.stock integerValue];
     if (kucunNum < 0) {
         kucunNum = 0;
     }
     NSInteger zaishouNum = [model.selling_num integerValue];
-    self.skuNumLabel.text = [NSString stringWithFormat:@"库存%ld件 / 在售人数%ld",kucunNum,zaishouNum];
+    self.selNumLabel.text = [NSString stringWithFormat:@"在售人数%ld",zaishouNum];
+    self.skuNumLabel.text = [NSString stringWithFormat:@"库存%ld件 ",kucunNum];
     
 }
 - (void)buttonClick:(UIButton *)button {

@@ -14,8 +14,9 @@
 #import "CSAccountSecurityController.h"
 #import "CSOnlineTestController.h"
 #import "MiPushSDK.h"
-#import "QYSDK.h"
+#import "QYPOPSDK.h"
 #import "JMVerificationCodeController.h"
+#import "JMStoreManager.h"
 
 
 @interface CSProfilerSettingController () <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate> {
@@ -32,8 +33,7 @@
     [super viewDidLoad];
     
     [self createNavigationBarWithTitle:@"设置" selecotr:@selector(backClick)];
-    
-    dataArr = [self getData:nil];
+    dataArr = [self getData:[JMStoreManager getDataDictionary:@"userProfile"]];
     [self createTableView];
     
     
@@ -228,7 +228,7 @@
     if (sizeValue < 1.0) {
         sizeValue = 0.0f;
     }
-    dataArr = [self getData:nil];
+    dataArr = [self getData:[JMStoreManager getDataDictionary:@"userProfile"]];
     [self.tableView reloadData];
     [MBProgressHUD hideHUD];
 }
@@ -237,8 +237,15 @@
     NSString *appVersion = [[CSDevice defaultDevice] getDeviceAppVersion];
     NSString *appBulidVersion = [[CSDevice defaultDevice] getDeviceAppBuildVersion];
     NSString *deviceVersion = [NSString stringWithFormat:@"%@.%@",appVersion,appBulidVersion];
-    
     NSString *cacheString = [[CSDevice defaultDevice] getDeviceCacheSize];
+    
+    NSString *phoneString = dic[@"mobile"];
+    NSMutableString * mutablePhoneNumber = [phoneString mutableCopy];
+    NSRange range = {3,4};
+    if (mutablePhoneNumber.length == 11) {
+        [mutablePhoneNumber replaceCharactersInRange:range withString:@"****"];
+    }
+    
     
     NSArray *arr = @[@[
                          @{
@@ -249,7 +256,7 @@
                              },
                          @{
                              @"title":@"绑定手机",
-                             @"descTitle":@"",
+                             @"descTitle":mutablePhoneNumber,
                              @"iconImage":@"cs_profile_bindPhone",
                              @"cellImage":@"cs_pushInImage"
                              },

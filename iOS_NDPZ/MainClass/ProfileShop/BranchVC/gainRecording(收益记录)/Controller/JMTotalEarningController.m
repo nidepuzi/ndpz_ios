@@ -65,35 +65,39 @@
         valueLabel.font = [UIFont systemFontOfSize:36.];
         valueLabel.textColor = [UIColor buttonEnabledBackgroundColor];
         [_headerView addSubview:valueLabel];
+        
         UILabel *descLabel = [UILabel new];
-        descLabel.font = [UIFont systemFontOfSize:14.];
+        descLabel.font = [UIFont systemFontOfSize:12.];
         descLabel.textColor = [UIColor dingfanxiangqingColor];
+        descLabel.numberOfLines = 0;
+        descLabel.textAlignment = NSTextAlignmentCenter;
         [_headerView addSubview:descLabel];
+        
         [recordLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(_headerView.mas_centerX);
-            make.top.equalTo(_headerView).offset(10);
+            make.top.equalTo(_headerView).offset(15);
         }];
         [valueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(_headerView.mas_centerX);
-            make.top.equalTo(recordLabel.mas_bottom).offset(10);
+            make.top.equalTo(recordLabel.mas_bottom);
         }];
         [descLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(_headerView.mas_centerX);
-            make.top.equalTo(valueLabel.mas_bottom).offset(10);
+            make.bottom.equalTo(_headerView).offset(-10);
+            make.width.mas_equalTo(SCREENWIDTH - 20);
         }];
-        recordLabel.text = @"累计收益";
+        recordLabel.text = @"今日收益";
         valueLabel.text = self.earningsRecord;
-        descLabel.text = [NSString stringWithFormat:@"2016.3.24号系统升级之前的收益%@",self.historyEarningsRecord];
-        
+        descLabel.text = @"备注:今日累计收益未考虑可能退换货,以实际到账收益为准";
     }
     return _headerView;
 }
 - (HMSegmentedControl *)segmentView {
     if (!_segmentView) {
         _segmentView = [[HMSegmentedControl alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 40)];
-        _segmentView.sectionTitles = @[@"全部",@"奖金",@"返现",@"佣金"];
+        _segmentView.sectionTitles = @[@"全部",@"奖金",@"佣金"];
         _segmentView.selectedSegmentIndex = _currentIndex;
-        _segmentView.backgroundColor = [UIColor whiteColor];
+        _segmentView.backgroundColor = [UIColor countLabelColor];
         _segmentView.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor blackColor],NSFontAttributeName:[UIFont systemFontOfSize:14.]};
         _segmentView.selectedTitleTextAttributes = @{NSForegroundColorAttributeName:[UIColor buttonEnabledBackgroundColor],NSFontAttributeName:[UIFont systemFontOfSize:15.]};
         //        _segmentView.selectionStyle = HMSegmentedControlSelectionStyleArrow;
@@ -178,9 +182,10 @@
 
 #pragma mark 获取固定数据处理
 - (NSMutableArray *)createRequestURL {
-    NSArray *urlBefroe = @[@"/rest/v2/mama/carry", @"/rest/v2/mama/awardcarry", @"/rest/v2/mama/clickcarry",
-                           @"/rest/v2/mama/ordercarry"];
-    for (int i = 0; i < 4; i++) {
+    NSArray *urlBefroe;
+    urlBefroe = @[@"/rest/v2/mama/carry/today", @"/rest/v2/mama/awardcarry/today",
+                  @"/rest/v2/mama/ordercarry/today"];
+    for (int i = 0; i < urlBefroe.count; i++) {
         NSString *url = [NSString stringWithFormat:@"%@%@", Root_URL, urlBefroe[i]];
         [_urlArray addObject:url];
     }
@@ -222,24 +227,11 @@
     NSNumber *currentUrlNum = [NSNumber numberWithInteger:_currentIndex];
     [_nextUrlDict setObject:dic[@"next"] forKey:currentUrlNum];
     NSArray *results = dic[@"results"];
+    
     NSMutableArray *currentDataArr = self.tableViewDataArr[_currentIndex];
-    NSMutableDictionary *currentDataDic = self.tableViewDataDicArr[_currentIndex];
-    for (NSDictionary *dict in results) {
-        CarryLogModel *model = [CarryLogModel mj_objectWithKeyValues:dict];
-        NSString *date = [self dateDeal:model.date_field];
-        NSMutableArray *currentArr = [[currentDataDic allKeys] mutableCopy];
-        if ([currentArr containsObject:date]) {
-            NSMutableArray *orderArr = [currentDataDic objectForKey:date];
-            [orderArr addObject:model];
-        }else {
-            NSMutableArray *orderArr = [NSMutableArray array];
-            [orderArr addObject:model];
-            [currentDataDic setObject:orderArr forKey:date];
-        }
-    }
-    NSArray *keysArr = [self sortAllKeyArray:[[currentDataDic allKeys] mutableCopy]];
-    for (int i = 0; i < keysArr.count; i++) {
-        [currentDataArr addObject:currentDataDic[keysArr[i]]];
+    for (NSDictionary *dic in results) {
+        CarryLogModel *model = [CarryLogModel mj_objectWithKeyValues:dic];
+        [currentDataArr addObject:model];
     }
     
     // 刷新 数据
@@ -267,7 +259,7 @@
 }
 #pragma mark SwipeTableView 代理
 - (NSInteger)numberOfItemsInSwipeTableView:(SwipeTableView *)swipeView {
-    return 4;
+    return 3;
 }
 - (UIScrollView *)swipeTableView:(SwipeTableView *)swipeView viewForItemAtIndex:(NSInteger)index reusingView:(UIScrollView *)view {
     JMEarningRecordTableView *tableView = (JMEarningRecordTableView *)view;

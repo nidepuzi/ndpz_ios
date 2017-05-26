@@ -10,6 +10,8 @@
 #import "JMOrderGoodsModel.h"
 #import "CartListModel.h"
 
+extern NSString *const JMBaseGoodsCellIdentifier;
+
 @class JMBaseGoodsCell;
 //@class JMOrderGoodsModel;
 @protocol JMBaseGoodsCellDelegate <NSObject>

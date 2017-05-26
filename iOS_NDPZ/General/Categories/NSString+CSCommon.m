@@ -264,6 +264,7 @@
     return string;
 }
 + (NSString *)jm_subWithHourMinuteSe:(NSString *)str {
+    str = [self jm_deleteTimeWithT:str];
     NSString *string = [str substringWithRange:NSMakeRange(11, str.length - 11)];
     return string;
 }
@@ -292,6 +293,17 @@
     NSString *getDayString = [dateFormatter stringFromDate:lastDay];
     return getDayString;
 }
++ (NSString *)getTime:(NSString *)timeString BeforeOrAfterDay:(NSInteger)dayNum {
+    timeString = [self jm_deleteTimeWithT:timeString];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+    NSDate *nowDate = [formatter dateFromString:timeString];
+    NSDate *dayTime = [NSDate dateWithTimeInterval:dayNum * 24 * 60 * 60 sinceDate:nowDate];
+    NSString *getDayString = [formatter stringFromDate:dayTime];
+    return getDayString;
+}
+
+
 /**
  *  获取当前时间
  *

@@ -217,7 +217,9 @@ static NSString *userCustomerID;
         BOOL kIsVIP = NO;
         if (kIsXLMMStatus) {
             NSDictionary *xlmmDict = responseObject[@"xiaolumm"];
-            [JMUserDefaults setValue:xlmmDict[@"renew_time"] forKey:@"huiyuanshijian"];
+            if (![NSString isStringEmpty:xlmmDict[@"renew_time"]]) {
+                [JMUserDefaults setValue:xlmmDict[@"renew_time"] forKey:@"huiyuanshijian"];
+            }
             NSString *last = [NSString stringWithFormat:@"%@",xlmmDict[@"last_renew_type"]];
             [JMUserDefaults setValue:last forKey:kUserVipStatus];
             kIsVIP = [xlmmDict[@"status"] isEqual:@"effect"] ? YES : NO;

@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MaMaOrderListViewController : UIViewController<UITableViewDelegate, UITableViewDataSource>
+@interface MaMaOrderListViewController : UIViewController 
 @property (nonatomic, strong)NSString *orderRecord;
 @end

@@ -112,7 +112,7 @@
     
     
     NSArray *title1 = @[@"0",@"0.00",@"0",@"0"];
-    NSArray *title2 = @[@"今日订单",@"累计销量",@"累计访问",@"粉丝人数"];
+    NSArray *title2 = @[@"今日订单",@"今日收益",@"今日访客",@"今日粉丝"];
     CGFloat itemSizeWidth = SCREENWIDTH / 4;
     for (int i = 0; i < title1.count; i++) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -152,28 +152,20 @@
 - (void)setMamaCenterModel:(JMMaMaCenterModel *)mamaCenterModel {
     _mamaCenterModel = mamaCenterModel;
     
-    UILabel *fensiLabel = (UILabel *)[self viewWithTag:13];
-//    UILabel *dingdanLabel = (UILabel *)[self viewWithTag:10];
-    UILabel *leijixiaoliangLabel = (UILabel *)[self viewWithTag:11];
-    
-    NSString *fansNum = mamaCenterModel.invite_all_num == nil ? @"0" : mamaCenterModel.invite_all_num;
-//    NSString *orderNum = mamaCenterModel.order_num == nil ? @"0" : mamaCenterModel.order_num;
-    NSString *leijixiaoliang = [NSString stringWithFormat:@"%.2f", [self.mamaCenterModel.carry_value floatValue]];   // 累计收益
-    fensiLabel.text = [NSString stringWithFormat:@"%@",fansNum];                                                     // 我的粉丝
-//    dingdanLabel.text = [NSString stringWithFormat:@"%@",orderNum];                                                  // 订单记录
-    leijixiaoliangLabel.text = leijixiaoliang;
-    
 }
 - (void)setMamaResults:(NSArray *)mamaResults {
     _mamaResults = mamaResults;
     NSArray *data = [NSArray reverse:mamaResults];
     NSDictionary *dic = data[0];
-    UILabel *fangwenLabel = (UILabel *)[self viewWithTag:12];
     UILabel *jinridingdanLabel = (UILabel *)[self viewWithTag:10];
-    fangwenLabel.text = [dic[@"visitor_num"] stringValue];                         // 访客
-    jinridingdanLabel.text = [dic[@"order_num"] stringValue];                      // 订单
+    UILabel *leijixiaoliangLabel = (UILabel *)[self viewWithTag:11];
+    UILabel *fangwenLabel = (UILabel *)[self viewWithTag:12];
+    UILabel *fensiLabel = (UILabel *)[self viewWithTag:13];
     
-    
+    fangwenLabel.text = [dic[@"visitor_num"] stringValue];                                      // 访客
+    jinridingdanLabel.text = [dic[@"order_num"] stringValue];                                   // 订单
+    leijixiaoliangLabel.text = [NSString stringWithFormat:@"%.2f",[dic[@"carry"] floatValue]];  // 今日收益
+    fensiLabel.text = [NSString stringWithFormat:@"%@",dic[@"today_referal_num"]];              // 今日粉丝
     
     
     

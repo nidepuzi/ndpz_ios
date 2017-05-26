@@ -34,8 +34,8 @@
         self.segmentedControl.sectionDescTitles = descTitleArray;
         self.segmentedControl.selectedSegmentIndex = 0;
         self.segmentedControl.backgroundColor = [UIColor whiteColor];
-        self.segmentedControl.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor buttonTitleColor],NSFontAttributeName:[UIFont systemFontOfSize:18.]};
-        self.segmentedControl.selectedTitleTextAttributes = @{NSForegroundColorAttributeName:[UIColor buttonEnabledBackgroundColor],NSFontAttributeName:[UIFont systemFontOfSize:20.]};
+        self.segmentedControl.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor buttonTitleColor],NSFontAttributeName:[UIFont boldSystemFontOfSize:18.]};
+        self.segmentedControl.selectedTitleTextAttributes = @{NSForegroundColorAttributeName:[UIColor buttonEnabledBackgroundColor],NSFontAttributeName:[UIFont boldSystemFontOfSize:20.]};
 //        self.segmentedControl.selectionStyle = HMSegmentedControlSelectionStyleArrow;
         self.segmentedControl.selectionIndicatorLocation = HMSegmentedControlSelectionIndicatorLocationDown;
         self.segmentedControl.selectionIndicatorHeight = 2.f;

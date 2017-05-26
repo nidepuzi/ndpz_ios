@@ -8,22 +8,24 @@
 
 #import "CSPopDescModel.h"
 
+
+
 @implementation CSPopDescModel
 
 - (CGFloat)cellHeight {
     if (!_cellHeight) {
-        CGFloat contentW = SCREENWIDTH * 0.7;
+        CGFloat contentW = SCREENWIDTH * 0.9;
         CGFloat contentH = [self.rowTitle boundingRectWithSize:CGSizeMake(contentW, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14.]} context:nil].size.height;
-        _cellHeight = contentH + 20;
+        _cellHeight = contentH + 15;
     }
     return _cellHeight;
 }
 
 - (CGFloat)sectionHeight {
     if (!_sectionHeight) {
-        CGFloat contentW = SCREENWIDTH * 0.7;
+        CGFloat contentW = SCREENWIDTH * 0.9;
         CGFloat contentH = [self.sectionTitle boundingRectWithSize:CGSizeMake(contentW, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:16.]} context:nil].size.height;
-        _sectionHeight = contentH + 20;
+        _sectionHeight = contentH + 15;
     }
     return _sectionHeight;
 }

@@ -11,6 +11,9 @@
 #import "CSPopDescModel.h"
 #import "CSPopDescCell.h"
 
+#define kPopWidth SCREENWIDTH * 0.9
+#define kPopHeight SCREENWIDTH * 1.0
+
 @interface CSPopDescriptionController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView *tableView;
@@ -39,8 +42,8 @@
 {
     self = [super init];
     if (self) {
-        self.contentSizeInPopup = CGSizeMake(SCREENWIDTH * 0.7, SCREENWIDTH * 0.9);             // 竖屏
-        self.landscapeContentSizeInPopup = CGSizeMake(SCREENWIDTH * 0.9, SCREENWIDTH * 0.6);    // 横屏
+        self.contentSizeInPopup = CGSizeMake(kPopWidth, kPopHeight);             // 竖屏
+//        self.landscapeContentSizeInPopup = CGSizeMake(SCREENWIDTH * 0.9, SCREENWIDTH * 0.6);    // 横屏
     }
     return self;
 }
@@ -118,7 +121,7 @@
 }
 
 - (void)createTableView {
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH * 0.7, SCREENWIDTH * 0.9 - 40) style:UITableViewStyleGrouped];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, kPopWidth, kPopHeight - 40) style:UITableViewStyleGrouped];
     [self.view addSubview:tableView];
     tableView.backgroundColor = [UIColor whiteColor];
     tableView.dataSource = self;
@@ -142,7 +145,7 @@
     [button mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(weakSelf.view);
         make.centerX.equalTo(weakSelf.view);
-        make.width.mas_equalTo(@(SCREENWIDTH * 0.7));
+        make.width.mas_equalTo(@(kPopWidth));
         make.height.mas_equalTo(@40);
     }];
     
@@ -172,7 +175,7 @@
 }
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     CSPopDescModel *model = self.sectionArr[section];
-    UIView *sectionView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH * 0.7, model.sectionHeight)];
+    UIView *sectionView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kPopWidth, model.sectionHeight)];
     UILabel *sectionDescLabel = [UILabel new];
     sectionDescLabel.font = CS_UIFontBoldSize(16.);
     sectionDescLabel.textColor = [UIColor buttonTitleColor];

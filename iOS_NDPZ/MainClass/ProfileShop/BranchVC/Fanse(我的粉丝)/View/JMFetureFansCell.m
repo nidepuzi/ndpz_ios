@@ -9,6 +9,9 @@
 #import "JMFetureFansCell.h"
 #import "JMFetureFansModel.h"
 #import "JMVisitorModel.h"
+#import "CSFansModel.h"
+#import "JMRichTextTool.h"
+
 
 @interface JMFetureFansCell ()
 
@@ -38,6 +41,10 @@
     UIImageView *iconImage = [UIImageView new];
     [self.contentView addSubview:iconImage];
     self.iconImage = iconImage;
+    self.iconImage.layer.cornerRadius = 30;
+    self.iconImage.layer.borderWidth = 0.5;
+    self.iconImage.layer.borderColor = [UIColor buttonDisabledBorderColor].CGColor;
+    self.iconImage.layer.masksToBounds = YES;
     
     UILabel *descLabel = [UILabel new];
     [self.contentView addSubview:descLabel];
@@ -64,8 +71,7 @@
     self.timeLabel.font = [UIFont systemFontOfSize:13.];
     self.timeLabel.textColor = [UIColor timeLabelColor];
     
-}
-- (void)layoutUI {
+    
     kWeakSelf
     
     [self.iconImage mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -96,6 +102,10 @@
         make.centerY.equalTo(weakSelf.nameLabel.mas_centerY);
     }];
     
+}
+- (void)layoutUI {
+    
+    
     
 }
 
@@ -106,10 +116,6 @@
     }else {
         [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[model.headimgurl JMUrlEncodedString]]];
     }
-    self.iconImage.layer.cornerRadius = 30;
-    self.iconImage.layer.borderWidth = 0.5;
-    self.iconImage.layer.borderColor = [UIColor buttonDisabledBorderColor].CGColor;
-    self.iconImage.layer.masksToBounds = YES;
     
     if ([model.nick isEqualToString:@""]) {
         self.nameLabel.text = @"匿名用户";
@@ -137,46 +143,25 @@
     }else {
         [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[model.visitor_img JMUrlEncodedString]]];
     }
-    
-    self.iconImage.layer.cornerRadius = 30;
-    self.iconImage.layer.borderWidth = 0.5;
-    self.iconImage.layer.borderColor = [UIColor buttonDisabledBorderColor].CGColor;
-    self.iconImage.layer.masksToBounds = YES;
     self.nameLabel.text = model.visitor_nick;
-    
     self.descLabel.text = model.visitor_description;
-    
     self.timeLabel.text = [NSString jm_cutOutYearWihtSec:model.created];
     
     
     
 }
-- (void)configNowFnas:(FanceModel *)model {
-    kWeakSelf
-    if (model.fans_thumbnail.length == 0) {
-        self.iconImage.image = [UIImage imageNamed:@"icon_placeholderEmpty"];
+- (void)configNowFnas:(CSFansModel *)model {
+    [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[model.thumbnail JMUrlEncodedString]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"]];
+    self.nameLabel.text = model.nick;
+//    self.timeLabel.text = [NSString jm_cutOutYearWihtSec:model.charge_time];
+    NSString *timeString = [NSString yearDeal:model.charge_time];
+    
+    if ([model.referal_type isEqual:@"15"]) {
+        self.descLabel.text = [NSString stringWithFormat:@"试用时间: %@",timeString];
     }else {
-        [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[model.fans_thumbnail JMUrlEncodedString]]];
+        self.descLabel.text = [NSString stringWithFormat:@"注册时间: %@",timeString];
     }
     
-    self.iconImage.layer.cornerRadius = 30;
-    self.iconImage.layer.borderWidth = 0.5;
-    self.iconImage.layer.borderColor = [UIColor buttonDisabledBorderColor].CGColor;
-    self.iconImage.layer.masksToBounds = YES;
-    self.nameLabel.text = model.fans_nick;
-    
-    self.descLabel.text = model.fans_description;
-    self.timeLabel.text = [NSString jm_cutOutYearWihtSec:model.created];
-    
-    if (model.fans_mobile == nil) {
-        [self.descLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(weakSelf.nameLabel);
-            make.right.equalTo(weakSelf.contentView).offset(-20);
-            make.top.equalTo(weakSelf.nameLabel.mas_bottom).offset(15);
-        }];
-    }else {
-        self.phoneLabel.text = [NSString stringWithFormat:@"TEL:%@",model.fans_mobile];
-    }
     
     
 }

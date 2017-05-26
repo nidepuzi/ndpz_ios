@@ -13,7 +13,7 @@
 #import "MaMaOrderListViewController.h"
 #import "JMEarningListController.h"
 #import "TodayVisitorViewController.h"
-#import "JMAboutFansController.h"
+#import "JMNowFansController.h"
 #import "CSDevice.h"
 #import "Account1ViewController.h"
 #import "JMCouponController.h"
@@ -31,6 +31,11 @@
 #import "CSPersonalInfoController.h"
 #import "CSWithDrawPopView.h"
 #import "CSPopAnimationViewController.h"
+#import "JMTotalEarningController.h"
+#import "CSCreateBankCardController.h"
+#import "CSBankWithdrawRecordingController.h"
+#import "NSArray+Reverse.h"
+#import "JMMaMaFansController.h"
 
 #define Max_OffsetY  50
 #define  Statur_HEIGHT   [[UIApplication sharedApplication] statusBarFrame].size.height
@@ -42,9 +47,13 @@
     BOOL isShowRefresh;
     
     NSString *_orderRecord;             // 订单记录
+    NSString *_orderRecordToday;        // 今日订单记录
     NSString *_fansWebUrl;              // 关于粉丝入口
     NSDictionary *_persinCenterDict;    // 用户信息
     NSNumber *_accountMoney;            // 零钱
+    NSString *_earningsRecord;          // 收益记录
+    NSString *_earningsRecordToday;     // 今日收益记录
+    NSString *_visitorsToday;           // 今日访客
     
 }
 
@@ -142,6 +151,7 @@
     self.mamaCenterModel = [JMMaMaCenterModel mj_objectWithKeyValues:fortuneDic];
     self.proHeaderView.mamaCenterModel = self.mamaCenterModel;
     _orderRecord = [NSString stringWithFormat:@"%@", self.mamaCenterModel.order_num];
+    _earningsRecord = [NSString stringWithFormat:@"%.2f", [self.mamaCenterModel.carry_value floatValue]];
     
 }
 // 折线图数据请求
@@ -152,6 +162,12 @@
         NSArray *arr = responseObject[@"results"];
         if (arr.count == 0)return;
         self.proHeaderView.mamaResults = arr;
+        NSInteger index = arr.count - 1;
+        NSDictionary *dic = arr[index];
+        _earningsRecordToday = [NSString stringWithFormat:@"%.2f",[dic[@"carry"] floatValue]];  // 今日收益
+        _orderRecordToday = [dic[@"order_num"] stringValue];
+        _visitorsToday = [dic[@"visitor_num"] stringValue];
+        
     } WithFail:^(NSError *error) {
     } Progress:^(float progress) {
     }];
@@ -303,7 +319,7 @@
         return;
     }
     NSInteger currentIndex = button.tag;
-    NSArray *itemArr = @[@"头像",@"今日订单",@"累计销量",@"累计访问",@"粉丝"];
+    NSArray *itemArr = @[@"头像",@"今日订单",@"今日收益",@"今日访客",@"今日粉丝"];
     NSDictionary *tempDict = @{@"code" : [NSString stringWithFormat:@"%@",itemArr[currentIndex - 100]]};
     [MobClick event:@"CSProfileShopController_ButtonClick" attributes:tempDict];
     
@@ -317,27 +333,29 @@
             break;
         case 101: {
             MaMaOrderListViewController *order = [[MaMaOrderListViewController alloc] init];
-            order.orderRecord = _orderRecord;
+            order.orderRecord = _orderRecordToday;
             [self.navigationController pushViewController:order animated:YES];
             
         }
             
             break;
         case 102: {
-            JMEarningListController *carry = [[JMEarningListController alloc] init];
-            [self.navigationController pushViewController:carry animated:YES];
+            JMTotalEarningController *vc = [[JMTotalEarningController alloc] init];
+            vc.earningsRecord = _earningsRecordToday;
+            [self.navigationController pushViewController:vc animated:YES];
         }
             
             break;
         case 103: {
             TodayVisitorViewController *today = [[TodayVisitorViewController alloc] init];
+            today.visitorsToday = _visitorsToday;
             today.visitorDate = [NSNumber numberWithInteger:kAppVisitoryDay];
             [self.navigationController pushViewController:today animated:YES];
         }
             
             break;
         case 104: {
-            JMAboutFansController *mamaCenterFansVC = [[JMAboutFansController alloc] init];
+            JMMaMaFansController *mamaCenterFansVC = [[JMMaMaFansController alloc] init];
 //            mamaCenterFansVC.aboutFansUrl = _fansWebUrl;
             [self.navigationController pushViewController:mamaCenterFansVC animated:YES];
         }
@@ -365,42 +383,48 @@
         [[JMGlobal global] showLoginViewController];
         return;
     }
-    NSArray *itemArr = @[@"提现记录",@"提现",@"累计收益",@"业绩管理",@"优惠券",@"收货地址",@"全部订单",@"待付款",@"待发货",@"已完成"];
+    NSArray *itemArr = @[@"提现记录",@"提现",@"收益管理",@"业绩管理",@"优惠券",@"收货地址",@"全部订单",@"待付款",@"待发货",@"退款退货"];
     NSDictionary *tempDict = @{@"code" : [NSString stringWithFormat:@"%@",itemArr[button.tag - 99]]};
     [MobClick event:@"CSProfileShopController_ButtonClick" attributes:tempDict];
     
     switch (button.tag) {
         case 99: {
+            
+            
+            
+//            CSBankWithdrawRecordingController *vc = [[CSBankWithdrawRecordingController alloc] init];
+//            vc.accountMoney = [NSString stringWithFormat:@"%.2f",[_accountMoney floatValue]];
+//            [self.navigationController pushViewController:vc animated:YES];
             Account1ViewController *account = [[Account1ViewController alloc] init];
-            account.accountMoney = _accountMoney;
-            account.personCenterDict = _persinCenterDict;
+//            account.accountMoney = _accountMoney;
+//            account.personCenterDict = _persinCenterDict;
             [self.navigationController pushViewController:account animated:YES];
         }
             break;
         case 100: {
-            NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
-            if (![NSString isStringEmpty:vipStatus]) {
-                if ([vipStatus isEqual:@"15"]) { // 试用期 弹出框
-                    [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] dismiss:^{
-                    }];
-                    return;
-                }
-            }
-            
-            JMWithdrawCashController *drawCash = [[JMWithdrawCashController alloc] init];
-//            if ([_persinCenterDict isKindOfClass:[NSDictionary class]] && [_persinCenterDict objectForKey:@"user_budget"]) {
-//                NSDictionary *userBudget = _persinCenterDict[@"user_budget"];
-//                if ([userBudget isKindOfClass:[NSDictionary class]] && [userBudget objectForKey:@"cash_out_limit"]) {
-                    drawCash.personCenterDict = _persinCenterDict;
-                    drawCash.isMaMaWithDraw = NO;
-//                }else {
-//                    [MBProgressHUD showError:@"不可提现"];
-//                    return ;
+//            NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
+//            if (![NSString isStringEmpty:vipStatus]) {
+//                if ([vipStatus isEqual:@"15"]) { // 试用期 弹出框
+//                    [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] dismiss:^{
+//                    }];
+//                    return;
 //                }
-//            }else {
-//                
 //            }
-            [self.navigationController pushViewController:drawCash animated:YES];
+//            CSCreateBankCardController *vc = [[CSCreateBankCardController alloc] init];
+//            vc.accountMoney = [NSString stringWithFormat:@"%.2f",[_accountMoney floatValue]];
+//            [self.navigationController pushViewController:vc animated:YES];
+            
+            CSBankWithdrawRecordingController *vc = [[CSBankWithdrawRecordingController alloc] init];
+            vc.accountMoney = [NSString stringWithFormat:@"%.2f",[_accountMoney floatValue]];
+            [self.navigationController pushViewController:vc animated:YES];
+            
+            
+//            JMWithdrawCashController *drawCash = [[JMWithdrawCashController alloc] init];
+//            drawCash.personCenterDict = _persinCenterDict;
+//            drawCash.isMaMaWithDraw = NO;
+//            [self.navigationController pushViewController:drawCash animated:YES];
+            
+            
 //            Account1ViewController *account = [[Account1ViewController alloc] init];
 //            account.accountMoney = _accountMoney;
 //            account.personCenterDict = _persinCenterDict;
@@ -408,10 +432,11 @@
         }
             break;
         case 101: {
-            JMEarningListController *carry = [[JMEarningListController alloc] init];
-            [self.navigationController pushViewController:carry animated:YES];
+            JMEarningListController *vc = [[JMEarningListController alloc] init];
+//            vc.totalStatus = TotalWithTodayTypeTotal;
+//            vc.earningsRecord = _earningsRecord;
+            [self.navigationController pushViewController:vc animated:YES];
         }
-            
             break;
         case 102: {
             CSPerformanceManagerController *product = [[CSPerformanceManagerController alloc] init];

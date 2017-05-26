@@ -7,7 +7,7 @@
 //
 
 #import "CSCustomerServiceManager.h"
-#import "QYSDK.h"
+#import "QYPOPSDK.h"
 
 @implementation CSCustomerServiceManager
 
@@ -25,8 +25,9 @@
         return;
     }
     [[QYSDK sharedSDK] customUIConfig].customerHeadImageUrl = dic[@"thumbnail"];
+    [[QYSDK sharedSDK] customUIConfig].rightBarButtonItemColorBlackOrWhite = NO;
     QYUserInfo *userInfo = [[QYUserInfo alloc] init];
-    userInfo.userId = dic[@"user_id"];
+    userInfo.userId = dic[@"id"];
     NSArray *userArr = @[@{
                              @"key":@"real_name",
                              @"value":dic[@"nick"]
@@ -78,6 +79,10 @@
     //    "{\"index\":6, \"key\":\"last_login\", \"label\":\"上次登录时间\", \"value\":\"2017-04-27 11:11:11\"}]";
     
     [[QYSDK sharedSDK] setUserInfo:userInfo];
+    
+    
+    
+    
 }
 
 

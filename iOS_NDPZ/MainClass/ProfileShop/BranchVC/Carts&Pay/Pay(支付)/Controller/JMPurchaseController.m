@@ -518,7 +518,7 @@ static BOOL isAgreeTerms = YES;
     self.tableView.dataSource = self;
     self.tableView.showsVerticalScrollIndicator = NO;
     self.tableView.rowHeight = 110.;
-    
+    [self.tableView registerClass:[JMBaseGoodsCell class] forCellReuseIdentifier:JMBaseGoodsCellIdentifier];
     
     _addressInfoHeight = [payOrderLevelInfo heightWithWidth:SCREENWIDTH - 50 andFont:12.].height + 20;
     CGFloat y = CGRectGetMaxY(self.navigationController.navigationBar.frame) - _addressInfoHeight;
@@ -585,10 +585,9 @@ static BOOL isAgreeTerms = YES;
     return self.purchaseGoodsArr.count;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *cellID = @"cellID";
-    JMBaseGoodsCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
+    JMBaseGoodsCell *cell = [tableView dequeueReusableCellWithIdentifier:JMBaseGoodsCellIdentifier];
     if (!cell) {
-        cell = [[JMBaseGoodsCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+        cell = [[JMBaseGoodsCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:JMBaseGoodsCellIdentifier];
     }
     CartListModel *listModel = self.purchaseGoodsArr[indexPath.row];
     [cell configPurchaseModel:listModel];

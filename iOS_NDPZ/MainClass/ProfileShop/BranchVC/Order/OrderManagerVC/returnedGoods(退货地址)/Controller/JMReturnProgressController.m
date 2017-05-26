@@ -100,16 +100,9 @@
     self.tableView.backgroundColor = [UIColor countLabelColor];
     
     JMReGoodsAddView *reGoodsV = [JMReGoodsAddView new];
-    self.reGoodsV =reGoodsV;
+    self.reGoodsV = reGoodsV;
     self.reGoodsV.frame = CGRectMake(0, 0, SCREENWIDTH, 420);
-    NSString *nameStr = self.refundModelr.buyer_nick;
-    NSString *phoneStr = self.refundModelr.mobile;
-    NSString *addStr = self.refundModelr.return_address;
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    [dict setValue:nameStr forKey:@"buyer_nick"];
-    [dict setValue:phoneStr forKey:@"mobile"];
-    [dict setValue:addStr forKey:@"return_address"];
-    self.reGoodsV.reGoodsDic = dict;
+    self.reGoodsV.model = self.refundModelr;
     self.tableView.tableHeaderView = self.reGoodsV;
     self.reGoodsV.backgroundColor = [UIColor countLabelColor];
     

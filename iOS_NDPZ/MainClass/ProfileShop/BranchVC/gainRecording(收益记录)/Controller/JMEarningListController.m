@@ -8,7 +8,7 @@
 
 #import "JMEarningListController.h"
 #import "JMEarningRecordTableView.h"
-#import "JMEarningModel.h"
+#import "CarryLogModel.h"
 #import "JMReloadEmptyDataView.h"
 #import "JMEarningRecordCell.h"
 
@@ -85,17 +85,29 @@
     titleLabel.font = [UIFont systemFontOfSize:14.];
     titleLabel.text = @"累计收益";
     
+    UILabel *descLabel = [UILabel new];
+    descLabel.font = [UIFont systemFontOfSize:12.];
+    descLabel.textColor = [UIColor dingfanxiangqingColor];
+    descLabel.numberOfLines = 0;
+    descLabel.textAlignment = NSTextAlignmentCenter;
+    [sectionView addSubview:descLabel];
+    
     [valueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(sectionView.mas_centerX);
-        make.top.equalTo(sectionView).offset(20);
+        make.top.equalTo(sectionView).offset(10);
     }];
     [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(sectionView.mas_centerX);
-        make.top.equalTo(valueLabel.mas_bottom).offset(10);
+        make.top.equalTo(valueLabel.mas_bottom);
+    }];
+    [descLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(sectionView.mas_centerX);
+        make.bottom.equalTo(sectionView).offset(-10);
+        make.width.mas_equalTo(SCREENWIDTH - 20);
     }];
     
     self.tableView.tableHeaderView = sectionView;
-    
+    descLabel.text = @"备注:今日累计收益未考虑可能退换货,以实际到账收益为准";
     
     
 }
@@ -128,7 +140,7 @@
 
 #pragma mark 网络请求,数据处理
 - (void)loadDataSource {
-    NSString *urlString = [NSString stringWithFormat:@"%@/rest/v2/mmcarry",Root_URL];
+    NSString *urlString = [NSString stringWithFormat:@"%@/rest/v2/mama/carry",Root_URL];
     [JMHTTPManager requestWithType:RequestTypeGET WithURLString:urlString WithParaments:nil WithSuccess:^(id responseObject) {
         if (!responseObject)return ;
         [self.dataSource removeAllObjects];
@@ -163,7 +175,7 @@
     NSArray *results = dic[@"results"];
     if (results.count > 0) {
         for (NSDictionary *dict in results) {
-            JMEarningModel *model = [JMEarningModel mj_objectWithKeyValues:dict];
+            CarryLogModel *model = [CarryLogModel mj_objectWithKeyValues:dict];
             NSString *date = [self dateDeal:model.created];
             self.dataSource = [[self.currentDataDic allKeys] mutableCopy];
             if ([self.dataSource containsObject:date]) {
@@ -199,7 +211,7 @@
         cell = [[JMEarningRecordCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"JMEarningRecordCellIdentifier"];
     }
     NSString *key = self.dataSource[indexPath.section];
-    JMEarningModel *model = self.currentDataDic[key][indexPath.row];
+    CarryLogModel *model = self.currentDataDic[key][indexPath.row];
     [cell configEarningModel:model];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
@@ -224,7 +236,7 @@
     }
     NSString *key = self.dataSource[section];
     NSMutableArray *orderArr = self.currentDataDic[key];
-    JMEarningModel *model = [orderArr firstObject];
+    CarryLogModel *model = [orderArr firstObject];
     timeLabel.text = [NSString yearDeal:model.created];
     return sectionView;
 }

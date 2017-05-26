@@ -7,6 +7,8 @@
 //
 
 #import "JMTimeListCell.h"
+#import "JMTimeInfoModel.h"
+
 
 NSString *const JMTimeListCellIdentifier = @"JMTimeListCellIdentifier";
 
@@ -32,18 +34,21 @@ NSString *const JMTimeListCellIdentifier = @"JMTimeListCellIdentifier";
 }
 - (void)initUI {
     UILabel *titleLabel = [UILabel new];
-    titleLabel.font = CS_UIFontSize(16.);
+    titleLabel.font = CS_UIFontSize(14.);
     titleLabel.textColor = [UIColor buttonTitleColor];
     self.titleLabel = titleLabel;
+    titleLabel.numberOfLines = 0;
     [self.contentView addSubview:self.titleLabel];
     
     UILabel *timeLabel = [UILabel new];
-    timeLabel.font = CS_UIFontSize(16.);
-    timeLabel.textColor = [UIColor buttonTitleColor];
+    timeLabel.font = CS_UIFontSize(14.);
+    timeLabel.textColor = [UIColor dingfanxiangqingColor];
     self.timeLabel = timeLabel;
     [self.contentView addSubview:self.timeLabel];
     
     self.iconImage = [UIImageView new];
+//    self.iconImage.contentMode = UIViewContentModeScaleAspectFit;
+//    self.iconImage.clipsToBounds = YES;
     self.iconImage.image = [UIImage imageNamed:@"cs_timeLine_history"];
     
     self.lineLabel1 = [UILabel new];
@@ -52,15 +57,18 @@ NSString *const JMTimeListCellIdentifier = @"JMTimeListCellIdentifier";
     self.lineLabel2 = [UILabel new];
     self.lineLabel2.backgroundColor = [UIColor titleDarkGrayColor];
     
+    UIView *lineView = [UIView new];
+    lineView.backgroundColor = [UIColor lineGrayColor];
+    [self.contentView addSubview:lineView];
+    
     [self.contentView addSubview:self.iconImage];
     [self.contentView addSubview:self.lineLabel1];
     [self.contentView addSubview:self.lineLabel2];
     
     kWeakSelf
     [self.iconImage mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(weakSelf.contentView).offset(40);
-        make.top.equalTo(weakSelf.contentView).offset(20);
-        make.width.height.mas_equalTo(@18);
+        make.top.left.equalTo(weakSelf.contentView).offset(20);
+        make.width.height.mas_equalTo(@8);
     }];
     [self.lineLabel1 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(weakSelf.iconImage.mas_centerX);
@@ -75,28 +83,53 @@ NSString *const JMTimeListCellIdentifier = @"JMTimeListCellIdentifier";
         make.width.mas_equalTo(@1);
     }];
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(weakSelf.iconImage.mas_right).offset(20);
+        make.left.equalTo(weakSelf.iconImage.mas_right).offset(10);
         make.right.equalTo(weakSelf.contentView).offset(-10);
-        make.centerY.equalTo(weakSelf.iconImage.mas_centerY);
+        make.top.equalTo(weakSelf.iconImage).offset(-5);
     }];
     [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(weakSelf.titleLabel);
-        make.top.equalTo(weakSelf.titleLabel.mas_bottom).offset(10);
+        make.left.equalTo(weakSelf.iconImage.mas_right).offset(10);
+        make.right.equalTo(weakSelf.contentView).offset(-10);
+        make.top.equalTo(weakSelf.titleLabel.mas_bottom).offset(5);
+    }];
+    [lineView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(weakSelf.titleLabel);
+        make.right.equalTo(weakSelf.contentView);
+        make.bottom.equalTo(weakSelf.contentView);
+        make.height.mas_equalTo(@1);
     }];
     
     
     
 }
 
-- (void)config:(NSDictionary *)itemDic Index:(NSInteger)index {
-    self.titleLabel.text = itemDic[@"title"];
-    self.timeLabel.text = itemDic[@"time"];
+- (void)config:(JMTimeInfoModel *)model Index:(NSInteger)index Count:(NSInteger)count {
+    self.titleLabel.text = model.content;
+    self.timeLabel.text = model.time;
     if (index == 0) {
         self.iconImage.image = [UIImage imageNamed:@"cs_timeLine_current"];
         self.lineLabel1.hidden = YES;
+        self.lineLabel2.hidden = NO;
+        [self.iconImage mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.width.height.mas_equalTo(@14);
+            make.left.equalTo(self.contentView).offset(17);
+        }];
+    }else if (index == count - 1) {
+        self.iconImage.image = [UIImage imageNamed:@"cs_timeLine_history"];
+        self.lineLabel2.hidden = YES;
+        self.lineLabel1.hidden = NO;
+        [self.iconImage mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.width.height.mas_equalTo(@8);
+            make.left.equalTo(self.contentView).offset(20);
+        }];
     }else {
         self.iconImage.image = [UIImage imageNamed:@"cs_timeLine_history"];
+        self.lineLabel2.hidden = NO;
         self.lineLabel1.hidden = NO;
+        [self.iconImage mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.width.height.mas_equalTo(@8);
+            make.left.equalTo(self.contentView).offset(20);
+        }];
     }
 
 }

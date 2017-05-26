@@ -15,6 +15,7 @@
 
 @property (nonatomic, assign) CGFloat offsetProgress;
 @property (nonatomic, strong) JMRefreshLoadView *refreshLoadView;
+
 @end
 
 @implementation MJAnimationHeader

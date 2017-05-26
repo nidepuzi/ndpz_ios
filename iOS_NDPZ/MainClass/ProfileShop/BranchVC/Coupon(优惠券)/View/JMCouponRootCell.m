@@ -103,13 +103,15 @@
     CGFloat spaceLeft = HomeCategoryRatio * 5;
     if (SCREENWIDTH > 320 && SCREENWIDTH <= 375) {
         spaceLeft = HomeCategoryRatio * 6;
-        valueLabel.font = CS_UIFontBoldSize(32);
+        valueLabel.font = CS_UIFontBoldSize(28);
     }else if (SCREENWIDTH > 375) {
         spaceLeft = HomeCategoryRatio * 8;
-        valueLabel.font = CS_UIFontBoldSize(36);
+        valueLabel.font = CS_UIFontBoldSize(32);
     }else {
-        
+        valueLabel.font = CS_UIFontBoldSize(24);
     }
+    
+    CGFloat titleW = SCREENWIDTH - 70 - HomeCategoryRatio * 110;
     
     kWeakSelf
     [self.couponBackImage mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -130,14 +132,17 @@
     [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(weakSelf.couponBackImage).offset(HomeCategoryRatio * 110);
         make.centerY.equalTo(weakSelf.couponBackImage.mas_centerY).offset(-25);
+        make.width.mas_equalTo(@(titleW));
     }];
     [tiaojianLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(titleLabel);
         make.centerY.equalTo(weakSelf.couponBackImage.mas_centerY);
+        make.width.mas_equalTo(@(titleW));
     }];
     [timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(titleLabel);
         make.centerY.equalTo(weakSelf.couponBackImage.mas_centerY).offset(25);
+        make.width.mas_equalTo(@(titleW));
     }];
     [statusImageV mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(weakSelf.couponBackImage).offset(15);
@@ -207,8 +212,7 @@
 //        make.width.mas_offset(@(valueWidth));
 //    }];
     
-    self.couponUsefeeLabel.text = couponModel.use_fee_des;
-    self.couponProsdescLabel.text = couponModel.pros_desc;
+    self.couponProsdescLabel.text = couponModel.use_fee_des;
     self.couponTypeLabel.text = couponModel.title;
 //    self.couponCreatedTimeLabel.text = [self composeString:couponModel.created];
     self.couponDeadLineLabel.text = [NSString stringWithFormat:@"有效期至: %@",[NSString yearDeal:couponModel.deadline]];
@@ -253,8 +257,7 @@
 //        make.width.mas_offset(@(valueWidth));
 //    }];
 
-    self.couponUsefeeLabel.text = couponModel.use_fee_des;
-    self.couponProsdescLabel.text = couponModel.pros_desc;
+    self.couponProsdescLabel.text = couponModel.use_fee_des;
     self.couponTypeLabel.text = couponModel.title;
     //    self.couponCreatedTimeLabel.text = [self composeString:couponModel.created];
     self.couponDeadLineLabel.text = [NSString stringWithFormat:@"有效期至: %@",[NSString yearDeal:couponModel.deadline]];

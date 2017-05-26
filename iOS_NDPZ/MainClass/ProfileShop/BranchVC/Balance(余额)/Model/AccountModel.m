@@ -17,7 +17,7 @@
     if (!_cellHeight) {
         CGFloat contentW = SCREENWIDTH - 20;
         CGFloat contentH = [self.desc boundingRectWithSize:CGSizeMake(contentW, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:CS_UIFontSize(14.)} context:nil].size.height;
-        _cellHeight = contentH + 50;
+        _cellHeight = contentH + 70;
     }
     return _cellHeight;
 }

@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+
 @interface JMTotalEarningController : UIViewController
 @property (nonatomic, strong)NSString *earningsRecord;
 @property (nonatomic, strong)NSString *historyEarningsRecord;
+
+
 @end

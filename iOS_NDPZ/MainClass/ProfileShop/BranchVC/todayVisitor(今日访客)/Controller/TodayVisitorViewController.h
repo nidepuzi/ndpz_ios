@@ -10,4 +10,6 @@
 
 @interface TodayVisitorViewController : UIViewController<UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong)NSNumber *visitorDate;
+@property (nonatomic, copy) NSString *visitorsToday;
+
 @end

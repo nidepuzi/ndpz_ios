@@ -7,12 +7,15 @@
 //
 
 #import "JMOrderDetailSectionView.h"
+#import "JMPackAgeModel.h"
+
 
 @interface JMOrderDetailSectionView ()
 
 @property (nonatomic, strong) UILabel *packageLabel;
 
 @property (nonatomic, strong) UILabel *descLabel;
+@property (nonatomic, strong) UILabel *wuliugongsiLabel;
 
 @end
 
@@ -30,16 +33,18 @@
     _indexSection = indexSection;
     self.packageLabel.text = [NSString stringWithFormat:@"包裹%@",arr[indexSection]];
 }
-- (void)setPackAgeStr:(NSString *)packAgeStr {
-    _packAgeStr = packAgeStr;
-    self.descLabel.text = packAgeStr;
+- (void)setPackageModel:(JMPackAgeModel *)packageModel {
+    _packageModel = packageModel;
+    self.descLabel.text = packageModel.assign_status_display;
+    NSDictionary *dic = packageModel.logistics_company;
+    self.wuliugongsiLabel.text = dic[@"name"];
 }
 - (void)setUpTopUI {
     UIView *baseView = [UIView new];
     [self addSubview:baseView];
     baseView.frame = self.frame;
-//    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapClick:)];
-//    [baseView addGestureRecognizer:tap];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapClick:)];
+    [baseView addGestureRecognizer:tap];
     
     UILabel *packageLabel = [UILabel new];
     [baseView addSubview:packageLabel];
@@ -47,41 +52,53 @@
     packageLabel.textColor = [UIColor buttonTitleColor];
     self.packageLabel = packageLabel;
     
-//    UILabel *descLabel = [UILabel new];
-//    [baseView addSubview:descLabel];
-//    self.descLabel = descLabel;
-//    self.descLabel.font = [UIFont systemFontOfSize:13.];
-//    self.descLabel.textColor = [UIColor timeLabelColor];
+    UILabel *wuliugongsiLabel = [UILabel new];
+    [baseView addSubview:wuliugongsiLabel];
+    wuliugongsiLabel.font = [UIFont systemFontOfSize:13.];
+    wuliugongsiLabel.textColor = [UIColor buttonEnabledBackgroundColor];
+    self.wuliugongsiLabel = wuliugongsiLabel;
+    
+    
+    UILabel *descLabel = [UILabel new];
+    [baseView addSubview:descLabel];
+    self.descLabel = descLabel;
+    self.descLabel.font = [UIFont systemFontOfSize:13.];
+    self.descLabel.textColor = [UIColor buttonEnabledBackgroundColor];
     
 //    UIImageView *goinImage = [UIImageView new];
 //    [baseView addSubview:goinImage];
 //    goinImage.image = [UIImage imageNamed:@"rightArrow"];
-//    UILabel *chakanwuliu = [UILabel new];
-//    [baseView addSubview:chakanwuliu];
-//    chakanwuliu.font = CS_UIFontSize(12.f);
-//    chakanwuliu.text = @"查看物流";
-//    chakanwuliu.textColor = [UIColor buttonEnabledBackgroundColor];
-//    chakanwuliu.textAlignment = NSTextAlignmentCenter;
-//    chakanwuliu.layer.masksToBounds = YES;
-//    chakanwuliu.layer.borderColor = [UIColor buttonEnabledBackgroundColor].CGColor;
-//    chakanwuliu.layer.borderWidth = 1.f;
-//    chakanwuliu.layer.cornerRadius = 10.f;
+    UILabel *chakanwuliu = [UILabel new];
+    [baseView addSubview:chakanwuliu];
+    chakanwuliu.font = CS_UIFontSize(12.f);
+    chakanwuliu.text = @"查看物流";
+    chakanwuliu.textColor = [UIColor buttonEnabledBackgroundColor];
+    chakanwuliu.textAlignment = NSTextAlignmentCenter;
+    chakanwuliu.layer.masksToBounds = YES;
+    chakanwuliu.layer.borderColor = [UIColor buttonEnabledBackgroundColor].CGColor;
+    chakanwuliu.layer.borderWidth = 1.f;
+    chakanwuliu.layer.cornerRadius = 3.f;
     
     [self.packageLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(baseView).offset(10);
         make.centerY.equalTo(baseView.mas_centerY);
     }];
+    [self.wuliugongsiLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.packageLabel.mas_right).offset(5);
+        make.centerY.equalTo(baseView.mas_centerY);
+    }];
+    
 
-//    [descLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.right.equalTo(chakanwuliu.mas_left).offset(-10);
-//        make.centerY.equalTo(baseView.mas_centerY);
-//    }];
-//    [chakanwuliu mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.right.equalTo(baseView).offset(-10);
-//        make.centerY.equalTo(baseView.mas_centerY);
-//        make.width.mas_equalTo(@70);
-//        make.height.mas_equalTo(@20);
-//    }];
+    [descLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(chakanwuliu.mas_left).offset(-10);
+        make.centerY.equalTo(baseView.mas_centerY);
+    }];
+    [chakanwuliu mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(baseView).offset(-10);
+        make.centerY.equalTo(baseView.mas_centerY);
+        make.width.mas_equalTo(@70);
+        make.height.mas_equalTo(@20);
+    }];
 //    [goinImage mas_makeConstraints:^(MASConstraintMaker *make) {
 //        make.right.equalTo(baseView).offset(-10);
 //        make.centerY.equalTo(baseView.mas_centerY);
@@ -91,13 +108,13 @@
     
     
 }
-//- (void)tapClick:(UITapGestureRecognizer *)tap {
-//    UIView *tapView = [tap view];
-//    tapView.tag = 100 + _indexSection;
-//    if (_delegate && [_delegate respondsToSelector:@selector(composeSectionView:Index:)]) {
-//        [_delegate composeSectionView:self Index:tapView.tag];
-//    }
-//}
+- (void)tapClick:(UITapGestureRecognizer *)tap {
+    UIView *tapView = [tap view];
+    tapView.tag = 100 + _indexSection;
+    if (_delegate && [_delegate respondsToSelector:@selector(composeSectionView:Index:)]) {
+        [_delegate composeSectionView:self Index:tapView.tag];
+    }
+}
 
 
 /**

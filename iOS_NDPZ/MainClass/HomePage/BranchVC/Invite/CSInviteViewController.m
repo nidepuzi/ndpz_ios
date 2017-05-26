@@ -13,7 +13,7 @@
 
 
 @interface CSInviteViewController () {
-    BOOL isloadSuccess;
+ 
 }
 
 @property (nonatomic, strong) JMShareModel *shareModel;
@@ -49,8 +49,6 @@
     self.view.backgroundColor = [UIColor whiteColor];
     [self createNavigationBarWithTitle:@"邀请好礼" selecotr:@selector(backCkick)];
     
-    isloadSuccess = YES;
-    
     UIImageView *headerImageView = [UIImageView new];
     headerImageView.contentMode = UIViewContentModeScaleAspectFill;
     headerImageView.userInteractionEnabled = YES;
@@ -82,7 +80,7 @@
     [headerImageView addSubview:titleLabel];
     
     [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(headerImageView.mas_centerY).offset(30);
+        make.top.equalTo(headerImageView.mas_centerY);
         make.centerX.equalTo(headerImageView.mas_centerX);
         make.width.mas_equalTo(SCREENWIDTH - 20);
     }];
@@ -101,53 +99,54 @@
         make.width.mas_equalTo(SCREENWIDTH - 20);
     }];
     
-    NSString *titleStr = @"邀请好礼";
-    CGFloat titleStrW = [titleStr widthWithHeight:20 andFont:13.].width;
     UIButton *invetButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [headerImageView addSubview:invetButton];
     invetButton.backgroundColor = [UIColor colorWithHex:0xff5000];
     invetButton.layer.cornerRadius = 2.;
-    [invetButton setImage:CS_UIImageName(@"pushInImage") forState:UIControlStateNormal];
-    [invetButton setImage:CS_UIImageName(@"pushInImage") forState:UIControlStateHighlighted];
     [invetButton addTarget:self action:@selector(inviteClick) forControlEvents:UIControlEventTouchUpInside];
     
-    [invetButton setTitle:titleStr forState:UIControlStateNormal];
+    [invetButton setTitle:@"邀请方式二  30天试用掌柜" forState:UIControlStateNormal];
     invetButton.titleLabel.font = CS_UIFontSize(13.);
     [invetButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
-    invetButton.imageEdgeInsets = UIEdgeInsetsMake(0, titleStrW, 0, -titleStrW);
-    invetButton.titleEdgeInsets = UIEdgeInsetsMake(0, -10, 0, 10);
+    UIButton *invetZhengshiButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [headerImageView addSubview:invetZhengshiButton];
+    invetZhengshiButton.backgroundColor = [UIColor colorWithHex:0xff5000];
+    invetZhengshiButton.layer.cornerRadius = 2.;
+    [invetZhengshiButton addTarget:self action:@selector(inviteZhengshiClick) forControlEvents:UIControlEventTouchUpInside];
     
+    [invetZhengshiButton setTitle:@"邀请方式一  365天正式掌柜" forState:UIControlStateNormal];
+    invetZhengshiButton.titleLabel.font = CS_UIFontSize(13.);
+    [invetZhengshiButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    
+    
+    [invetZhengshiButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(titleLabel1.mas_bottom).offset(25);
+        make.width.mas_equalTo(@(SCREENWIDTH - 40));
+        make.height.mas_equalTo(@(40));
+        make.centerX.equalTo(weakSelf.view.mas_centerX);
+    }];
     [invetButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(titleLabel1.mas_bottom).offset(40);
+        make.top.equalTo(invetZhengshiButton.mas_bottom).offset(15);
         make.width.mas_equalTo(@(SCREENWIDTH - 40));
         make.height.mas_equalTo(@(40));
         make.centerX.equalTo(weakSelf.view.mas_centerX);
     }];
     
-//    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 80, 44)];
-//    [button setTitle:@"邀请记录" forState:UIControlStateNormal];
-//    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//    button.titleLabel.font = CS_UIFontSize(14.);
-//    [button addTarget:self action:@selector(inviteHistoryClick:) forControlEvents:UIControlEventTouchUpInside];
-//    [button sizeToFit];
-//    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:button];
-//    self.navigationItem.rightBarButtonItem = rightItem;
-    
-    
-    [self loadData];
-
+ 
 
 
 }
 
-- (void)loadData {
-    NSString *string = [NSString stringWithFormat:@"%@/rest/v1/activitys/%@/get_share_params", Root_URL, @"8"];
+- (void)loadData:(NSString *)activeID {
+    [MBProgressHUD showLoading:@""];
+    NSString *string = [NSString stringWithFormat:@"%@/rest/v1/activitys/%@/get_share_params", Root_URL, activeID];
     [JMHTTPManager requestWithType:RequestTypeGET WithURLString:string WithParaments:nil WithSuccess:^(id responseObject) {
         if (!responseObject) {
             return;
         }
         [self resolveActivityShareParam:responseObject];
+        
     } WithFail:^(NSError *error) {
         [MBProgressHUD showMessage:@"分享数据请求失败!"];
     } Progress:^(float progress) {
@@ -162,11 +161,10 @@
     self.shareModel.share_link = [dic objectForKey:@"share_link"];
     self.sharPopVC.model = self.shareModel;
     
-    if (!isloadSuccess) {
-        isloadSuccess = YES;
-        [MBProgressHUD hideHUD];
-        [self inviteClick];
-    }
+    [MBProgressHUD hideHUD];
+    [[CSShareManager manager] showSharepopViewController:self.sharPopVC withRootViewController:self WithBlock:^(BOOL dismiss) {
+        
+    }];
     
     
 }
@@ -174,17 +172,11 @@
 
 - (void)inviteClick {
     [MobClick event:@"CSInviteViewController_inviteButtonClick"];
-    if ([NSString isStringEmpty:self.shareModel.share_link]) {
-        isloadSuccess = NO;
-        [MBProgressHUD showLoading:@""];
-        [self loadData];
-    }
-    if (isloadSuccess) {
-        [[CSShareManager manager] showSharepopViewController:self.sharPopVC withRootViewController:self WithBlock:^(BOOL dismiss) {
-            
-        }];
-    }
-    
+    [self loadData:@"8"];
+}
+- (void)inviteZhengshiClick {
+    [MobClick event:@"CSInviteViewController_inviteButtonClick"];
+    [self loadData:@"13"];
 }
 
 

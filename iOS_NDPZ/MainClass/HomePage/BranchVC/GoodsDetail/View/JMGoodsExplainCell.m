@@ -170,7 +170,7 @@ NSString *const JMGoodsExplainCellIdentifier = @"JMGoodsExplainCellIdentifier";
     [lookWirter setTitle:@"查看文案" forState:UIControlStateNormal];
     [lookWirter setTitleColor:[UIColor timeLabelColor] forState:UIControlStateNormal];
     lookWirter.titleLabel.font = [UIFont systemFontOfSize:14.];
-    [lookWirter setImage:[UIImage imageNamed:@"copyWenan"] forState:UIControlStateNormal];
+//    [lookWirter setImage:[UIImage imageNamed:@"copyWenan"] forState:UIControlStateNormal];
     lookWirter.layer.masksToBounds = YES;
     lookWirter.layer.borderWidth = 0.5f;
     lookWirter.layer.borderColor = [UIColor buttonDisabledBorderColor].CGColor;
@@ -316,7 +316,7 @@ NSString *const JMGoodsExplainCellIdentifier = @"JMGoodsExplainCellIdentifier";
     
     [lookWirter mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(baoyouBUtton.mas_centerY);
-        make.width.mas_equalTo(@80);
+        make.width.mas_equalTo(@75);
         make.height.mas_equalTo(@30);
         make.right.equalTo(baoyouBUtton.mas_left).offset(-5);
     }];

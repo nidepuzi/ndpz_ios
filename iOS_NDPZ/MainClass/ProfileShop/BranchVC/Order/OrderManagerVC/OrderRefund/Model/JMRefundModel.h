@@ -89,6 +89,16 @@
  *  退货地址
  */
 @property (nonatomic, copy) NSString *return_address;
+/**
+ *  退货手机
+ */
+@property (nonatomic, copy) NSString *return_mobile;
+/**
+ *  退货联系人
+ */
+@property (nonatomic, copy) NSString *return_contact;
+
+
 
 @property (nonatomic, copy) NSString *sid;
 

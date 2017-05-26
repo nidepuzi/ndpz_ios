@@ -7,10 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FanceModel.h"
 
-@class JMFetureFansModel;
-@class JMVisitorModel;
+@class JMFetureFansModel,CSFansModel,JMVisitorModel;
 @interface JMFetureFansCell : UITableViewCell
 
 // 未来粉丝
@@ -18,5 +16,8 @@
 // 我的访客
 - (void)fillVisitorData:(JMVisitorModel *)model;
 // 今日粉丝
-- (void)configNowFnas:(FanceModel *)model;
+- (void)configNowFnas:(CSFansModel *)model;
+
+
+
 @end

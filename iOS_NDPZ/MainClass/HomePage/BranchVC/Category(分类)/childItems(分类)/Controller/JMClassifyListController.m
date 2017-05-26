@@ -14,8 +14,12 @@
 #import "JMEmptyGoodsView.h"
 #import "JMRootGoodsModel.h"
 #import "JMReloadEmptyDataView.h"
+#import "CSFineCounpContentCell.h"
+#import "JMFineCouponModel.h"
+#import "CSShareManager.h"
 
-@interface JMClassifyListController ()<UICollectionViewDelegateFlowLayout,UICollectionViewDelegate,UICollectionViewDataSource,CSTableViewPlaceHolderDelegate>
+
+@interface JMClassifyListController ()<UICollectionViewDelegateFlowLayout,UICollectionViewDelegate,UICollectionViewDataSource,CSTableViewPlaceHolderDelegate,CSFineCounpContentCellDelegate>
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 
@@ -28,6 +32,9 @@
 
 @property (nonatomic, strong) JMSelecterButton *selectedButton;
 @property (nonatomic, strong) JMReloadEmptyDataView *reload;
+@property (nonatomic, strong) JMShareModel *shareModel;
+@property (nonatomic, strong) CSSharePopController *sharPopVC;
+
 
 @end
 
@@ -39,7 +46,19 @@ static NSString * cellId = @"JMClassifyListController";
     NSString *_currentUrlString;
 }
 
-
+#pragma mark 懒加载
+- (CSSharePopController *)sharPopVC {
+    if (!_sharPopVC) {
+        _sharPopVC = [[CSSharePopController alloc] init];
+    }
+    return _sharPopVC;
+}
+- (JMShareModel *)shareModel {
+    if (!_shareModel) {
+        _shareModel = [[JMShareModel alloc] init];
+    }
+    return _shareModel;
+}
 - (NSMutableArray *)dataSource {
     if (!_dataSource) {
         _dataSource = [NSMutableArray array];
@@ -95,6 +114,50 @@ static NSString * cellId = @"JMClassifyListController";
     [MBProgressHUD showLoading:@""];
     [self loadDataSource];
 }
+#pragma mark 网络请求,数据处理
+- (void)loadShareData:(NSString *)urlString {
+    [MBProgressHUD showLoading:@"正在分享..."];
+    [JMHTTPManager requestWithType:RequestTypeGET WithURLString:[urlString JMUrlEncodedString] WithParaments:nil WithSuccess:^(id responseObject) {
+        if (!responseObject) return ;
+        self.shareModel = [JMShareModel mj_objectWithKeyValues:responseObject];
+        self.shareModel.share_type = @"link";
+        self.sharPopVC.popViewHeight = kAppShareEarningViewHeight;
+        self.sharPopVC.model = self.shareModel;
+        [MBProgressHUD hideHUD];
+        [self popShareView:kAppShareEarningViewHeight];
+    } WithFail:^(NSError *error) {
+        [MBProgressHUD showError:@"分享失败"];
+    } Progress:^(float progress) {
+    }];
+}
+
+- (void)loadSharDataWithHour:(NSString *)urlString {
+    [MBProgressHUD showLoading:@"正在分享..."];
+    [JMHTTPManager requestWithType:RequestTypeGET WithURLString:urlString WithParaments:nil WithSuccess:^(id responseObject) {
+        if (!responseObject) return ;
+        NSDictionary *shopInfo = responseObject[@"shop_info"];
+        self.shareModel.share_type = @"link";
+        self.shareModel.share_img = [shopInfo objectForKey:@"thumbnail"]; //图片
+        self.shareModel.desc = [shopInfo objectForKey:@"desc"]; // 文字详情
+        self.shareModel.title = [shopInfo objectForKey:@"name"]; //标题
+        self.shareModel.share_link = [shopInfo objectForKey:@"shop_link"];
+        self.sharPopVC.popViewHeight = kAppShareViewHeight;
+        self.sharPopVC.model = self.shareModel;
+        [MBProgressHUD hideHUD];
+        [self popShareView:kAppShareViewHeight];
+    } WithFail:^(NSError *error) {
+        [MBProgressHUD showError:@"分享失败"];
+    } Progress:^(float progress) {
+        
+    }];
+}
+#pragma mark 弹出视图 (弹出分享界面)
+- (void)popShareView:(CGFloat)popHeeight {
+    [[CSShareManager manager] showSharepopViewController:self.sharPopVC withRootViewController:self WithBlock:^(BOOL dismiss) {
+        
+    }];
+    
+}
 - (void)loadDataSource {
 //    [self.dataSource removeAllObjects];
     [JMHTTPManager requestWithType:RequestTypeGET WithURLString:self.urlString WithParaments:nil WithSuccess:^(id responseObject) {
@@ -134,7 +197,7 @@ static NSString * cellId = @"JMClassifyListController";
     NSArray *resultsArr = itemDic[@"results"];
     if (resultsArr.count != 0) {
         for (NSDictionary *dic in resultsArr) {
-            JMRootGoodsModel *model = [JMRootGoodsModel mj_objectWithKeyValues:dic];
+            JMFineCouponModel *model = [JMFineCouponModel mj_objectWithKeyValues:dic];
             [self.dataSource addObject:model];
         }
     }
@@ -148,7 +211,7 @@ static NSString * cellId = @"JMClassifyListController";
         for (NSDictionary *dic in resultsArr) {
             NSIndexPath *index ;
             index = [NSIndexPath indexPathForRow:self.dataSource.count inSection:0];
-            JMRootGoodsModel *model = [JMRootGoodsModel mj_objectWithKeyValues:dic];
+            JMFineCouponModel *model = [JMFineCouponModel mj_objectWithKeyValues:dic];
             [self.dataSource addObject:model];
             [_numArray addObject:index];
         }
@@ -181,7 +244,7 @@ static NSString * cellId = @"JMClassifyListController";
     self.collectionView.delegate = self;
     [self.view addSubview:self.collectionView];
     
-    [self.collectionView registerClass:[JMRootgoodsCell class] forCellWithReuseIdentifier:cellId];
+    [self.collectionView registerClass:[CSFineCounpContentCell class] forCellWithReuseIdentifier:cellId];
     
 }
 
@@ -193,40 +256,49 @@ static NSString * cellId = @"JMClassifyListController";
     return self.dataSource.count;
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    JMRootgoodsCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellId forIndexPath:indexPath];
-    JMRootGoodsModel *model = self.dataSource[indexPath.row];
-    [cell fillDataWithGoodsList:model];
+    CSFineCounpContentCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellId forIndexPath:indexPath];
+    cell.delegate = self;
+    JMFineCouponModel *model = self.dataSource[indexPath.row];
+    cell.model = model;
     return cell;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake((SCREENWIDTH - 15) * 0.5, (SCREENWIDTH - 15) * 0.5 * 8/6 + 60);
+    return CGSizeMake(SCREENWIDTH, 175);
 }
 
 
 // 选中某item
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    JMRootGoodsModel *model = self.dataSource[indexPath.row];
-    NSString *goodsID = model.goodsID;
+    JMFineCouponModel *model = self.dataSource[indexPath.row];
+    NSString *goodsID = model.fineCouponModelID;
     
     JMGoodsDetailController *detailVC = [[JMGoodsDetailController alloc] init];
     detailVC.goodsID = goodsID;
     [self.navigationController pushViewController:detailVC animated:YES];
     
 }
-//- (void)emptyView {
-//    if ([NSString isStringEmpty:self.emptyTitle]) {
-//        self.emptyTitle = @"查看其它分类";
-//    }
-//    kWeakSelf
-//    JMEmptyView *empty = [[JMEmptyView alloc] initWithFrame:CGRectMake(0, 220, SCREENWIDTH, SCREENHEIGHT - 220) Title:@"暂时没有商品哦~" DescTitle:@"" BackImage:@"emptyGoods" InfoStr:self.emptyTitle];
-//    [self.view addSubview:empty];
-//    empty.block = ^(NSInteger index) {
-//        if (index == 100) {
-//            [weakSelf.navigationController popViewControllerAnimated:YES];
-//        }
-//    };
-//}
+#pragma mark CSFineCounpContentCellDelegate 点击事件
+- (void)composeHourCell:(CSFineCounpContentCell *)cell Model:(JMFineCouponModel *)model ButtonClick:(UIButton *)button {
+    NSInteger mobClickIndex = button.tag - 100;
+    NSArray *itemArr = @[@"分享素材",@"单品分享",@"店铺分享"];
+    NSDictionary *tempDict = @{@"code" : [NSString stringWithFormat:@"%@",itemArr[mobClickIndex]]};
+    [MobClick event:@"JMHomeHourCell_ButtonClickIndex" attributes:tempDict];
+    
+    if (button.tag == 100) {
+        JMGoodsDetailController *detailVC = [[JMGoodsDetailController alloc] init];
+        detailVC.goodsID = model.fineCouponModelID;
+        [self.navigationController pushViewController:detailVC animated:YES];
+    }else if (button.tag == 101) {
+        NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/share/model?model_id=%@",Root_URL,model.fineCouponModelID];
+        [self loadShareData:urlString];
+    }else {
+        NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/pmt/cushop/customer_shop", Root_URL];
+        [self loadSharDataWithHour:urlString];
+    }
+}
+
+
 
 - (UIView *)createPlaceHolderView {
     return self.reload;

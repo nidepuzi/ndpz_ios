@@ -8,6 +8,8 @@
 
 #import "CSPersonalInfoCell.h"
 
+NSString *const CSPersonalInfoCellIdentifier = @"CSPersonalInfoCellIdentifier";
+
 @interface CSPersonalInfoCell ()
 
 @property (nonatomic, strong) UILabel *settingTitleLabel;
@@ -26,7 +28,6 @@
         self.cellImageView = [UIImageView new];
         [self.contentView addSubview:self.cellImageView];
         
-        
         self.settingTitleLabel = [UILabel new];
         self.settingTitleLabel.textColor = [UIColor buttonTitleColor];
         self.settingTitleLabel.font = CS_UIFontSize(14.);
@@ -41,9 +42,9 @@
         [self.contentView addSubview:self.iconImageView];
         self.iconImageView.hidden = YES;
         
-        UIView *lineView = [UIView new];
-        lineView.backgroundColor = [UIColor countLabelColor];
-        [self.contentView addSubview:lineView];
+//        UIView *lineView = [UIView new];
+//        lineView.backgroundColor = [UIColor countLabelColor];
+//        [self.contentView addSubview:lineView];
         
         kWeakSelf
 
@@ -66,12 +67,12 @@
             make.width.mas_equalTo(@(8));
             make.height.mas_equalTo(@(15));
         }];
-        [lineView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(weakSelf.contentView).offset(15);
-            make.right.equalTo(weakSelf.contentView).offset(-15);
-            make.bottom.equalTo(weakSelf.contentView);
-            make.height.mas_equalTo(@1);
-        }];
+//        [lineView mas_makeConstraints:^(MASConstraintMaker *make) {
+//            make.left.equalTo(weakSelf.contentView).offset(15);
+//            make.right.equalTo(weakSelf.contentView).offset(-15);
+//            make.bottom.equalTo(weakSelf.contentView);
+//            make.height.mas_equalTo(@1);
+//        }];
         
         
         
@@ -113,6 +114,56 @@
     self.iconImageView.image = [UIImage imageNamed:itemDic[@"iconImage"]];
     
 }
+- (void)configWithItemForBankWithdraw:(NSDictionary *)itemDic {
+    self.iconImageView.hidden = NO;
+    
+    kWeakSelf
+    [self.iconImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(weakSelf.contentView).offset(10);
+        make.centerY.equalTo(weakSelf.contentView.mas_centerY);
+        make.width.mas_equalTo(@30);
+        make.height.mas_equalTo(@23);
+    }];
+    [self.settingTitleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(weakSelf.iconImageView.mas_right).offset(10);
+        make.centerY.equalTo(weakSelf.contentView.mas_centerY);
+    }];
+    [self.settingDescTitleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(weakSelf.settingTitleLabel.mas_right).offset(10);
+        make.centerY.equalTo(weakSelf.contentView.mas_centerY);
+    }];
+    self.settingTitleLabel.text = itemDic[@"title"];
+    self.settingDescTitleLabel.text = itemDic[@"descTitle"];
+    self.cellImageView.image = [UIImage imageNamed:itemDic[@"cellImage"]];
+    self.iconImageView.image = [UIImage imageNamed:itemDic[@"iconImage"]];
+    
+}
+- (void)configWithItemForBankChoise:(NSDictionary *)itemDic {
+    self.cellImageView.hidden = YES;
+    self.iconImageView.hidden = NO;
+    self.iconImageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.iconImageView.clipsToBounds = YES;
+    
+    kWeakSelf
+    [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:itemDic[@"bank_img"]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        CGFloat imageWidth = (image.size.width / image.size.height) * 30;
+        
+        [weakSelf.iconImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(weakSelf.contentView).offset(10);
+            make.centerY.equalTo(weakSelf.contentView.mas_centerY);
+            make.width.mas_equalTo(imageWidth);
+            make.height.mas_equalTo(@30);
+        }];
+        
+        
+        
+    }];
+    
+
+    
+    
+}
+
 
 
 

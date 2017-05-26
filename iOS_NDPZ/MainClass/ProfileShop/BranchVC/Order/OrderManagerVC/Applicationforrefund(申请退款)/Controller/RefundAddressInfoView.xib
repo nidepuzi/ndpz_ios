@@ -34,52 +34,13 @@
                             <color key="textColor" red="0.38431372549019605" green="0.38431372549019605" blue="0.38431372549019605" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="da6-id-typ">
-                            <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cs_lianxikefu_icon.png" translatesAutoresizingMaskIntoConstraints="NO" id="kJf-7Q-7Kb">
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="20" id="4Qg-aR-LMm"/>
-                                        <constraint firstAttribute="width" constant="20" id="NVS-Fs-xRb"/>
-                                    </constraints>
-                                </imageView>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="联系客服" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oSi-bF-12s">
-                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                    <color key="textColor" red="0.96078431372549022" green="0.65098039215686276" blue="0.13725490196078433" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h7q-Gs-HNu">
-                                    <color key="backgroundColor" red="0.96078431372549022" green="0.65098039215686276" blue="0.13725490196078433" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="2" id="5Uc-Su-U7S"/>
-                                    </constraints>
-                                </view>
-                                <button opaque="NO" tag="800" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YsP-fH-oYi"/>
-                            </subviews>
-                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
-                            <constraints>
-                                <constraint firstAttribute="trailing" secondItem="YsP-fH-oYi" secondAttribute="trailing" id="FRJ-oN-uFl"/>
-                                <constraint firstItem="oSi-bF-12s" firstAttribute="centerY" secondItem="da6-id-typ" secondAttribute="centerY" id="IUA-CF-cc4"/>
-                                <constraint firstItem="YsP-fH-oYi" firstAttribute="top" secondItem="da6-id-typ" secondAttribute="top" id="QGy-Wd-vsj"/>
-                                <constraint firstItem="kJf-7Q-7Kb" firstAttribute="top" secondItem="da6-id-typ" secondAttribute="top" constant="10" id="RbR-CS-QVc"/>
-                                <constraint firstItem="YsP-fH-oYi" firstAttribute="leading" secondItem="da6-id-typ" secondAttribute="leading" id="SP2-yG-P7y"/>
-                                <constraint firstAttribute="bottom" secondItem="YsP-fH-oYi" secondAttribute="bottom" id="TlI-mI-oDM"/>
-                                <constraint firstItem="h7q-Gs-HNu" firstAttribute="width" secondItem="oSi-bF-12s" secondAttribute="width" id="Toa-TY-nyy"/>
-                                <constraint firstAttribute="width" constant="100" id="b7T-fy-5xb"/>
-                                <constraint firstItem="h7q-Gs-HNu" firstAttribute="leading" secondItem="oSi-bF-12s" secondAttribute="leading" id="cdG-Rv-703"/>
-                                <constraint firstItem="oSi-bF-12s" firstAttribute="leading" secondItem="kJf-7Q-7Kb" secondAttribute="trailing" constant="8" id="fHr-Yh-Ae9"/>
-                                <constraint firstItem="kJf-7Q-7Kb" firstAttribute="leading" secondItem="da6-id-typ" secondAttribute="leading" constant="5" id="oQy-BJ-LJC"/>
-                                <constraint firstItem="h7q-Gs-HNu" firstAttribute="top" secondItem="oSi-bF-12s" secondAttribute="top" constant="20" id="vTs-KB-fyo"/>
-                            </constraints>
-                        </view>
                     </subviews>
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="ajD-yc-kpF" secondAttribute="trailing" constant="10" id="4MN-5B-vxA"/>
-                        <constraint firstItem="da6-id-typ" firstAttribute="top" secondItem="ajD-yc-kpF" secondAttribute="bottom" id="5pg-ra-1WT"/>
                         <constraint firstItem="ajD-yc-kpF" firstAttribute="leading" secondItem="vbn-Pa-cqf" secondAttribute="leading" constant="10" id="6QQ-0k-kYb"/>
                         <constraint firstItem="ajD-yc-kpF" firstAttribute="top" secondItem="m1j-Q8-Jcp" secondAttribute="bottom" constant="8" id="DnV-VP-e0R"/>
                         <constraint firstItem="m1j-Q8-Jcp" firstAttribute="top" secondItem="IRu-o6-UpR" secondAttribute="bottom" constant="8" id="FFn-0x-Bew"/>
-                        <constraint firstAttribute="bottom" secondItem="da6-id-typ" secondAttribute="bottom" id="KCM-zz-Lkp"/>
                         <constraint firstItem="ajD-yc-kpF" firstAttribute="centerX" secondItem="vbn-Pa-cqf" secondAttribute="centerX" id="O2U-0E-u3Z"/>
                         <constraint firstItem="ccS-kQ-udh" firstAttribute="top" secondItem="vbn-Pa-cqf" secondAttribute="top" constant="8" id="P28-83-ccg"/>
                         <constraint firstItem="m1j-Q8-Jcp" firstAttribute="centerX" secondItem="vbn-Pa-cqf" secondAttribute="centerX" id="S3c-bU-RPY"/>
@@ -89,7 +50,6 @@
                         <constraint firstItem="IRu-o6-UpR" firstAttribute="leading" secondItem="vbn-Pa-cqf" secondAttribute="leading" constant="10" id="aeA-S1-8k4"/>
                         <constraint firstItem="IRu-o6-UpR" firstAttribute="centerX" secondItem="vbn-Pa-cqf" secondAttribute="centerX" id="ayv-6Z-Swh"/>
                         <constraint firstItem="ccS-kQ-udh" firstAttribute="centerX" secondItem="vbn-Pa-cqf" secondAttribute="centerX" id="gwZ-xl-cQG"/>
-                        <constraint firstItem="da6-id-typ" firstAttribute="centerX" secondItem="ajD-yc-kpF" secondAttribute="centerX" id="nbN-hL-QZB"/>
                         <constraint firstAttribute="trailing" secondItem="m1j-Q8-Jcp" secondAttribute="trailing" constant="10" id="rA5-FG-1kf"/>
                         <constraint firstItem="m1j-Q8-Jcp" firstAttribute="leading" secondItem="vbn-Pa-cqf" secondAttribute="leading" constant="10" id="ykN-Of-lED"/>
                     </constraints>
@@ -105,9 +65,6 @@
             <point key="canvasLocation" x="238" y="363"/>
         </view>
     </objects>
-    <resources>
-        <image name="cs_lianxikefu_icon.png" width="17" height="18"/>
-    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

@@ -75,15 +75,8 @@
     
     JMReGoodsAddView *reGoodsV = [JMReGoodsAddView new];
     [self.baseScrollV addSubview:reGoodsV];
-    self.reGoodsV =reGoodsV;
-//    NSString *nameStr = self.refundModelr.buyer_nick;
-//    NSString *phoneStr = self.refundModelr.mobile;
-    NSString *addStr = self.refundModelr.return_address;
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-//    [dict setValue:nameStr forKey:@"buyer_nick"];
-//    [dict setValue:phoneStr forKey:@"mobile"];
-    [dict setValue:addStr forKey:@"return_address"];
-    self.reGoodsV.reGoodsDic = dict;
+    self.reGoodsV = reGoodsV;
+    self.reGoodsV.model = self.refundModelr;
     
     [self.reGoodsV mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(weakSelf.baseScrollV);
@@ -184,8 +177,11 @@
     UIButton *sureButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.baseScrollV addSubview:sureButton];
     self.sureButton = sureButton;
-    [self.sureButton setBackgroundImage:[UIImage imageNamed:@"success_purecolor"] forState:UIControlStateNormal];
     [self.sureButton setTitle:@"确定" forState:UIControlStateNormal];
+    [self.sureButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    self.sureButton.backgroundColor = [UIColor buttonEnabledBackgroundColor];
+    self.sureButton.layer.cornerRadius = 20.;
+    self.sureButton.layer.masksToBounds = YES;
     [self.sureButton addTarget:self action:@selector(sureButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     
     [self.sureButton mas_makeConstraints:^(MASConstraintMaker *make) {

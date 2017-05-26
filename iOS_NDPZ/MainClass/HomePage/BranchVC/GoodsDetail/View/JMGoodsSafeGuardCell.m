@@ -37,6 +37,50 @@ NSString *const JMGoodsSafeGuardCellIdentifier = @"JMGoodsSafeGuardCellIdentifie
 //        make.bottom.equalTo(weakSelf.contentView).offset(-10);
     }];
     
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.backgroundColor = [UIColor whiteColor];
+    [self.contentView addSubview:button];
+    [button addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [button mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(guaranteeView.mas_bottom).offset(1);
+        make.width.mas_equalTo(@(SCREENWIDTH));
+        make.centerX.equalTo(weakSelf.contentView.mas_centerX);
+    }];
+    
+    
+    UIImageView *iconImage = [UIImageView new];
+    [button addSubview:iconImage];
+    iconImage.image = [UIImage imageNamed:@"cs_qitianwuliyou"];
+    
+    UILabel *titleLabel = [UILabel new];
+    [button addSubview:titleLabel];
+    titleLabel.textColor = [UIColor buttonTitleColor];
+    titleLabel.font = CS_UIFontBoldSize(13.);
+    titleLabel.text = @"七天退换货规则";
+    
+    UIImageView *rightImage = [UIImageView new];
+    [button addSubview:rightImage];
+    rightImage.image = [UIImage imageNamed:@"cs_pushInImage"];
+    
+    [iconImage mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(button).offset(10);
+        make.centerY.equalTo(button.mas_centerY);
+        make.width.mas_equalTo(14);
+        make.height.mas_equalTo(19);
+    }];
+    [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(iconImage.mas_right).offset(5);
+        make.centerY.equalTo(button.mas_centerY);
+    }];
+    [rightImage mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(button).offset(-10);
+        make.centerY.equalTo(button.mas_centerY);
+        make.width.mas_equalTo(8);
+        make.height.mas_equalTo(15);
+    }];
+    
+    
     
     NSInteger count = 4;
     CGFloat accountH = 90;
@@ -75,5 +119,37 @@ NSString *const JMGoodsSafeGuardCellIdentifier = @"JMGoodsSafeGuardCellIdentifie
     
     
 }
+- (void)buttonClick:(UIButton *)button {
+    if (self.block) {
+        self.block(button);
+    }
+}
+
 
 @end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

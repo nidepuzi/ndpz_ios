@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+extern NSString *const JMAccountCellIdentifier;
+
 @class AccountModel;
 @interface JMAccountCell : UITableViewCell
 

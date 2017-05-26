@@ -9,7 +9,7 @@
 #import "CSAccountSecurityController.h"
 #import "CSAccountSecurityCell.h"
 #import "MiPushSDK.h"
-#import "QYSDK.h"
+#import "QYPOPSDK.h"
 
 @interface CSAccountSecurityController () <UITableViewDelegate, UITableViewDataSource> {
     NSArray *dataArr;

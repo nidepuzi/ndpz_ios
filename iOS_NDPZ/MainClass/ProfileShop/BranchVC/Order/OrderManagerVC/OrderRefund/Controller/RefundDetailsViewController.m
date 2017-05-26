@@ -241,8 +241,8 @@
         }
 
     }else {
-        self.afterServiceLabel = @"你的铺子售后  021-50939326";
-        self.addressLabel = @"收货地址: 上海杨市松江区佘山镇吉业路245号5号楼";
+        self.afterServiceLabel = @"你的铺子售后  13564677800";
+        self.addressLabel = @"收货地址: 上海市黄浦区北京东路668号科技京城B区7层703室";
     }
     
     

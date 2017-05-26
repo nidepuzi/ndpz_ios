@@ -749,7 +749,7 @@
     [self.maskView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideRefundpopView)]];
     JMRefundView *popView = [JMRefundView defaultPopView];
     self.popView = popView;
-    self.popView.titleStr = @"退货请求提交成功，客服会在24小时完成审核，您可以在退货界面查询进展，审核通过后您需要在退货界面填写退货快递单号，方便我们为你快速处理退款。";
+    self.popView.titleStr = @"退货请求提交成功，客服会在一个工作日完成审核，您可以在退货界面查询进展，审核通过后您需要在退货界面填写退货快递单号，方便我们为你快速处理退款。";
     self.popView.delegate = self;
     [self.view addSubview:self.maskView];
     [self.view addSubview:self.popView];

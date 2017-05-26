@@ -71,11 +71,11 @@
     [super viewDidLayoutSubviews];
     if (IS_IOS8) {
     }else {
-        if (self.verificationCodeType == SMSVerificationCodeWithBind) {
-            self.maskScrollView.contentSize = CGSizeMake(SCREENWIDTH, self.skipButton.cs_max_Y + 20);
-        }else {
+//        if (self.verificationCodeType == SMSVerificationCodeWithBind) {
+//            self.maskScrollView.contentSize = CGSizeMake(SCREENWIDTH, self.skipButton.cs_max_Y + 20);
+//        }else {
             self.maskScrollView.contentSize = CGSizeMake(SCREENWIDTH, self.sureButton.cs_max_Y + 20);
-        }
+//        }
     }
 }
 
@@ -239,7 +239,7 @@
             self.title = @"手机注册";
             break;
         case SMSVerificationCodeWithBind:       // 微信登录用户绑定手机号
-            [self.sureButton setTitle:@"绑定手机号" forState:UIControlStateNormal];
+            [self.sureButton setTitle:@"确定" forState:UIControlStateNormal];
             self.title = @"手机绑定";
             break;
         case SMSVerificationCodeWithChangePWD:  // 修改密码
@@ -255,15 +255,15 @@
     }
     [self createNavigationBarWithTitle:self.title selecotr:@selector(backClick)];
     
-    if (self.verificationCodeType == SMSVerificationCodeWithBind) {
-        self.skipButton = [JMSelecterButton buttonWithType:UIButtonTypeCustom];
-        [self.maskScrollView addSubview:self.skipButton];
-        [self.skipButton setSelecterBorderColor:[UIColor buttonEnabledBackgroundColor] TitleColor:[UIColor buttonEnabledBackgroundColor] Title:@"跳过" TitleFont:14. CornerRadius:20.];
-        self.skipButton.frame = CGRectMake(spaceing, self.sureButton.cs_max_Y + 10, SCREENWIDTH - spaceing * 2, 40);
-        [self.skipButton addTarget:self action:@selector(skipClick) forControlEvents:UIControlEventTouchUpInside];
-    }else {
-        
-    }
+//    if (self.verificationCodeType == SMSVerificationCodeWithBind) {
+//        self.skipButton = [JMSelecterButton buttonWithType:UIButtonTypeCustom];
+//        [self.maskScrollView addSubview:self.skipButton];
+//        [self.skipButton setSelecterBorderColor:[UIColor buttonEnabledBackgroundColor] TitleColor:[UIColor buttonEnabledBackgroundColor] Title:@"跳过" TitleFont:14. CornerRadius:20.];
+//        self.skipButton.frame = CGRectMake(spaceing, self.sureButton.cs_max_Y + 10, SCREENWIDTH - spaceing * 2, 40);
+//        [self.skipButton addTarget:self action:@selector(skipClick) forControlEvents:UIControlEventTouchUpInside];
+//    }else {
+//        
+//    }
     
     UILabel *registDescLabel = [UILabel new];
     registDescLabel.textColor = [UIColor dingfanxiangqingColor];
@@ -277,11 +277,11 @@
     registDescLabel.userInteractionEnabled = YES;
     UITapGestureRecognizer *termsTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(termsTapClick)];
     [registDescLabel addGestureRecognizer:termsTap];
-    if (self.verificationCodeType == SMSVerificationCodeWithBind) {
-        registDescLabel.frame = CGRectMake(10, self.skipButton.cs_max_Y + 20, SCREENWIDTH - 20, 40);
-    }else {
-        registDescLabel.frame = CGRectMake(10, self.sureButton.cs_max_Y + 20, SCREENWIDTH - 20, 40);
-    }
+//    if (self.verificationCodeType == SMSVerificationCodeWithBind) {
+//        registDescLabel.frame = CGRectMake(10, self.skipButton.cs_max_Y + 20, SCREENWIDTH - 20, 40);
+//    }else {
+//        registDescLabel.frame = CGRectMake(10, self.sureButton.cs_max_Y + 20, SCREENWIDTH - 20, 40);
+//    }
     self.maskScrollView.contentSize = CGSizeMake(SCREENWIDTH, registDescLabel.cs_max_Y + 20);
     
     

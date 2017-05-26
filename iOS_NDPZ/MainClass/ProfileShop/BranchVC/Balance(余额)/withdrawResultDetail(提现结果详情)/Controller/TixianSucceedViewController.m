@@ -137,9 +137,12 @@
     UIButton *completeBtn = [[UIButton alloc] init];
     [self.bottomView addSubview:completeBtn];
     self.completeBtn = completeBtn;
-    [completeBtn setBackgroundImage:[UIImage imageNamed:@"success_purecolor"] forState:UIControlStateNormal];
+//    [completeBtn setBackgroundImage:[UIImage imageNamed:@"success_purecolor"] forState:UIControlStateNormal];
     [completeBtn setTitle:@"完成" forState:UIControlStateNormal];
     [completeBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    completeBtn.backgroundColor = [UIColor buttonEnabledBackgroundColor];
+    completeBtn.layer.cornerRadius = 20.;
+    completeBtn.layer.masksToBounds = YES;
     [completeBtn addTarget:self action:@selector(finishButton:) forControlEvents:UIControlEventTouchUpInside];
     
     [self.headView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -153,8 +156,8 @@
     [self.successImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.headView.mas_top).offset(116/2);
         make.centerX.equalTo(self.headView.mas_centerX);
-        make.width.mas_offset(@60);
-        make.height.mas_offset(@(79/2));
+        make.width.mas_offset(@90);
+        make.height.mas_offset(@90);
     }];
     
     [self.cuccessLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -204,31 +207,14 @@
 - (void) createRightButonItem{
     UIButton *rightBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 40)];
     [rightBtn addTarget:self action:@selector(rightClicked:) forControlEvents:UIControlEventTouchUpInside];
-//    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 40)];
-//    label.textColor = [UIColor textDarkGrayColor];
-//    label.font = [UIFont systemFontOfSize:14];
-//    label.textAlignment = NSTextAlignmentRight;
-//    [rightBtn addSubview:label];
-//    label.text = @"查看详情";
     [rightBtn setTitle:@"查看详情" forState:UIControlStateNormal];
-    [rightBtn setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
-    
+    [rightBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     rightBtn.titleLabel.font = [UIFont systemFontOfSize:14.];
-    
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:rightBtn];
     self.navigationItem.rightBarButtonItem = rightItem;
-    
-    
 }
 
 - (void)rightClicked:(UIButton *)button{
-
-//    JMBillDetailController *billDetail = [[JMBillDetailController alloc] init];
-//    billDetail.withdrawMoney = _surplusMoney; // 剩余金额
-//    billDetail.activeValue = _activeValueNum; // 剩余活跃值
-//    billDetail.withDrawF = self.tixianjine;
-//    billDetail.isActiveValue = self.isActiveValue;
-    
     JMWithDrawDetailController *billDetail = [[JMWithDrawDetailController alloc] init];
     [self.navigationController pushViewController:billDetail animated:YES];
     
@@ -241,15 +227,6 @@
     _activeValueNum = activeValueNum;
 
 }
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 - (void)finishButton:(UIButton *)btn {
     NSInteger count = 0;
@@ -262,13 +239,9 @@
     
 }
 
-- (IBAction)fabuClicked:(id)sender {
-    
- //NSLog(@"发布产品");
-    
-    JMPushingDaysController *publish = [[JMPushingDaysController alloc] init];
-    [self.navigationController pushViewController:publish animated:YES];
-}
+
+
+
 @end
 
 

@@ -7,76 +7,69 @@
 //
 
 #import "CSCustomeServiceController.h"
-#import "Udesk.h"
-#import "QYSDK.h"
+#import "QYPOPSDK.h"
+#import "CSCustomerServiceManager.h"
+#import "JMStoreManager.h"
 
-@interface CSCustomeServiceController ()
-@property (nonatomic, strong) QYSessionViewController *sessionViewController;
+
+
+@interface CSCustomeServiceController () <QYConversationManagerDelegate, QYSessionViewDelegate>
+
+
 
 @end
 
 @implementation CSCustomeServiceController
-- (QYSessionViewController *)sessionViewController {
-    if (_sessionViewController == nil) {
-        QYSource *source = [[QYSource alloc] init];
-        source.title =  @"你的铺子";
-        source.urlString = @"https://m.nidepuzi.com";
-        _sessionViewController = [[QYSDK sharedSDK] sessionViewController];
-        _sessionViewController.sessionTitle = @"你的铺子";
-        _sessionViewController.source = source;
-        //    sessionViewController.hidesBottomBarWhenPushed = NO;
-        
-        _sessionViewController.navigationItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain
-                                        target:self action:@selector(onBack:)];
-    }
-    return _sessionViewController;
-}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self createNavigationBarWithTitle:@"客服" selecotr:nil];
     
-    
-//    UIButton *kefuButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    [self.view addSubview:kefuButton];
-//    [kefuButton setTitle:@"进入客服" forState:UIControlStateNormal];
-//    kefuButton.backgroundColor = [UIColor buttonEnabledBackgroundColor];
-//    kefuButton.frame = CGRectMake(SCREENWIDTH / 2 - 50, 200, 100, 50);
-//    
-//    [kefuButton addTarget:self action:@selector(kefuButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    
-    
-//    [[QYSDK sharedSDK] sessionViewController];
-    
-    
 
 }
+
+
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-//    [self kefuButtonClick];
-    [self setUserInfo];
-    [self.navigationController pushViewController:self.sessionViewController animated:NO];
+    
+    
+    
+    [[[QYSDK sharedSDK] conversationManager] setDelegate:self];
+    [self updateUserInfo:[JMStoreManager getDataDictionary:@"userProfile"]];
+    
+    
+    QYSource *source = [[QYSource alloc] init];
+    source.title =  @"你的铺子";
+    source.urlString = @"https://m.nidepuzi.com";
+    
+    QYSessionViewController *sessionViewController = [[QYSDK sharedSDK] sessionViewController];
+    sessionViewController.delegate = self;
+    sessionViewController.sessionTitle = @"你的铺子";
+    sessionViewController.source = source;
+    
+    sessionViewController.navigationController.navigationBar.translucent = NO;
+    NSDictionary * dict = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
+    sessionViewController.navigationController.navigationBar.titleTextAttributes = dict;
+    [sessionViewController.navigationController.navigationBar setBarTintColor:[UIColor colorWithHex:0x62a8ea]];
+    
+    sessionViewController.navigationItem.leftBarButtonItem =
+    [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain
+                                    target:self action:@selector(onBack:)];
+    
+    [self.navigationController pushViewController:sessionViewController animated:NO];
+    
     
 }
-// 个人信息请求
-- (void)setUserInfo{
-    [[JMGlobal global] upDataLoginStatusSuccess:^(id responseObject) {
-        [self updateUserInfo:responseObject];
-    } failure:^(NSInteger errorCode) {
-        [self updateUserInfo:nil];
-        if (errorCode == 403) {
-        }else {
-            [MBProgressHUD showError:@"请求失败,请手动刷新"];
-        }
-    }];
-}
+
 - (void)updateUserInfo:(NSDictionary *)dic {
     if (dic == nil || dic.count == 0) {
         return;
     }
     [[QYSDK sharedSDK] customUIConfig].customerHeadImageUrl = dic[@"thumbnail"];
+    [[QYSDK sharedSDK] customUIConfig].rightBarButtonItemColorBlackOrWhite = NO;
     QYUserInfo *userInfo = [[QYUserInfo alloc] init];
-    userInfo.userId = dic[@"user_id"];
+    userInfo.userId = dic[@"id"];
     NSArray *userArr = @[@{
                             @"key":@"real_name",
                             @"value":dic[@"nick"]
@@ -155,28 +148,31 @@
 }
 
 
-//- (void)waitButtonStatus:(UIButton *)button {
-//    button.enabled = YES;
-//}
-- (void)kefuButtonClick {
-//    button.enabled = NO;
-//    [self performSelector:@selector(waitButtonStatus:) withObject:button afterDelay:1.];
-//    UdeskSDKManager *chatViewManager = [[UdeskSDKManager alloc] initWithSDKStyle:[UdeskSDKStyle defaultStyle]];
-//    [chatViewManager pushUdeskViewControllerWithType:UdeskRobot viewController:self];
-    
-    
-    [self.navigationController pushViewController:self.sessionViewController animated:NO];
-    
-
-    
+/**
+ *  点击商铺入口按钮回调
+ */
+- (void)onTapShopEntrance {
+    NSLog(@"\n 点击商铺入口按钮回调");
 }
+
+/**
+ *  点击聊天窗口右边或左边会话列表按钮回调
+ */
+- (void)onTapSessionListEntrance {
+    NSLog(@"\n 点击聊天窗口右边或左边会话列表按钮回调");
+}
+- (void)onReceiveMessage:(QYMessageInfo *)message {
+    NSLog(@"%@",message);
+}
+- (void)onSessionListChanged:(NSArray<QYSessionInfo*> *)sessionList {
+    NSLog(@"%@",sessionList);
+}
+
 - (void)onBack:(id)sender {
+    [self.navigationController popViewControllerAnimated:NO];
     [JMNotificationCenter postNotificationName:@"kuaiquguangguangButtonClick" object:nil];
 }
-- (void)backClick {
-    [self.navigationController popViewControllerAnimated:YES];
-    
-}
+
 
 @end
 

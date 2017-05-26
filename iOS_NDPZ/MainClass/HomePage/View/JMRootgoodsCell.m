@@ -92,11 +92,11 @@
 - (void)layoutUI {
     kWeakSelf
     CGFloat imageW = (SCREENWIDTH - 15) / 2;
-    CGFloat imageH = (SCREENWIDTH-15) * 2 / 3;
+//    CGFloat imageH = (SCREENWIDTH-15) * 2 / 3;
     [self.iconImage mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.equalTo(weakSelf.contentView);
         make.width.mas_equalTo(imageW);
-        make.height.mas_equalTo(imageH);
+        make.height.mas_equalTo(imageW);
     }];
     
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
