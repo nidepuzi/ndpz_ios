@@ -18,6 +18,8 @@
 #import "JMRichTextTool.h"
 #import <STPopup/STPopup.h>
 #import "CSPopDescriptionController.h"
+#import "CSCustomerServiceManager.h"
+
 
 @interface JMVerificationCodeController () <JMSliderLockViewDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate> {
 //    BOOL isUnlock;
@@ -516,6 +518,14 @@
      4. 用户没有绑定手机, 且不是精英妈妈. ---> 提示用户需要注册成为会员
      */
     [[JMGlobal global] upDataLoginStatusSuccess:^(id responseObject) {
+        if (self.verificationCodeType == SMSVerificationCodeWithLogin) {
+            if ([responseObject[@"check_xiaolumm"] integerValue] != 1) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+                [JMNotificationCenter postNotificationName:@"WeChatLoginSuccess" object:nil];
+                [MBProgressHUD hideHUD];
+                return ;
+            }
+        }
         BOOL kIsBindPhone = [NSString isStringEmpty:[responseObject objectForKey:@"mobile"]];
         BOOL kIsVIP = [JMUserDefaults boolForKey:kISNDPZVIP];
         
@@ -757,15 +767,24 @@
     }
 }
 - (void)registeredButtonClicked {
-    NSString *urlString = @"https://m.nidepuzi.com/mall/boutiqueinvite";
-    NSString *active = @"myInvite";
-    NSString *titleName = @"我的邀请";
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    [dict setValue:@8 forKey:@"activity_id"];
-    [dict setValue:urlString forKey:@"web_url"];
-    [dict setValue:active forKey:@"type_title"];
-    [dict setValue:titleName forKey:@"name_title"];
-    [self pushWebView:dict ShowNavBar:YES ShowRightShareBar:YES Title:nil];
+    // 点击进入客服
+    kWeakSelf
+    [[CSCustomerServiceManager defaultManager] showCustomerService:self];
+    [CSCustomerServiceManager defaultManager].popBlock = ^() {
+        [weakSelf.navigationController popViewControllerAnimated:NO];
+    };
+    
+    
+    
+//    NSString *urlString = @"https://m.nidepuzi.com/mall/boutiqueinvite";
+//    NSString *active = @"myInvite";
+//    NSString *titleName = @"我的邀请";
+//    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+//    [dict setValue:@8 forKey:@"activity_id"];
+//    [dict setValue:urlString forKey:@"web_url"];
+//    [dict setValue:active forKey:@"type_title"];
+//    [dict setValue:titleName forKey:@"name_title"];
+//    [self pushWebView:dict ShowNavBar:YES ShowRightShareBar:YES Title:nil];
     
 }
 - (void)pushWebView:(NSMutableDictionary *)dict ShowNavBar:(BOOL)isShowNavBar ShowRightShareBar:(BOOL)isShowRightShareBar Title:(NSString *)title {

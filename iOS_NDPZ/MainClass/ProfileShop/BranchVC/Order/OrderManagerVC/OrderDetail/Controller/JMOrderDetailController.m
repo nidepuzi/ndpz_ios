@@ -653,25 +653,32 @@
         [[JMGlobal global] showpopBoxType:popViewTypeBox Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, 260) ViewController:self.refundVC WithBlock:^(UIView *maskView) {
         }];
     }else if (index == 102) {
+        [[CSCustomerServiceManager defaultManager] showCustomerService:self];
+        kWeakSelf
+        [CSCustomerServiceManager defaultManager].popBlock = ^() {
+            [weakSelf.navigationController popViewControllerAnimated:YES];
+        };
+        
+        
         // 联系客服
-        [[CSCustomerServiceManager defaultManager] registerUserInfo:[JMStoreManager getDataDictionary:@"userProfile"]];
-        QYSource *source = [[QYSource alloc] init];
-        source.title =  @"你的铺子";
-        source.urlString = @"https://m.nidepuzi.com";
-        
-        QYSessionViewController *sessionViewController = [[QYSDK sharedSDK] sessionViewController];
-//        sessionViewController.delegate = self;
-        sessionViewController.sessionTitle = @"你的铺子";
-        sessionViewController.source = source;
-        
-        sessionViewController.navigationController.navigationBar.translucent = NO;
-        NSDictionary * dict = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
-        sessionViewController.navigationController.navigationBar.titleTextAttributes = dict;
-        [sessionViewController.navigationController.navigationBar setBarTintColor:[UIColor colorWithHex:0x62a8ea]];
-        sessionViewController.navigationItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain
-                                        target:self action:@selector(onBack)];
-        [self.navigationController pushViewController:sessionViewController animated:YES];
+//        [[CSCustomerServiceManager defaultManager] registerUserInfo:[JMStoreManager getDataDictionary:@"userProfile"]];
+//        QYSource *source = [[QYSource alloc] init];
+//        source.title =  @"你的铺子";
+//        source.urlString = @"https://m.nidepuzi.com";
+//        
+//        QYSessionViewController *sessionViewController = [[QYSDK sharedSDK] sessionViewController];
+////        sessionViewController.delegate = self;
+//        sessionViewController.sessionTitle = @"你的铺子";
+//        sessionViewController.source = source;
+//        
+//        sessionViewController.navigationController.navigationBar.translucent = NO;
+//        NSDictionary * dict = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
+//        sessionViewController.navigationController.navigationBar.titleTextAttributes = dict;
+//        [sessionViewController.navigationController.navigationBar setBarTintColor:[UIColor colorWithHex:0x62a8ea]];
+//        sessionViewController.navigationItem.leftBarButtonItem =
+//        [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain
+//                                        target:self action:@selector(onBack)];
+//        [self.navigationController pushViewController:sessionViewController animated:YES];
         
         //分享红包
 //        if (redPageNumber > 0) {
@@ -692,9 +699,6 @@
         
         
     }
-}
-- (void)onBack {
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 

@@ -8,11 +8,11 @@
 
 #import "MaMaOrderListViewController.h"
 #import "MaMaOrderModel.h"
-#import "CarryLogHeaderView.h"
 #import "JMMaMaOrderListCell.h"
 #import "CSLogisticsInformationController.h"
 #import "JMReloadEmptyDataView.h"
 #import "CSTableViewPlaceHolderDelegate.h"
+#import "CarryLogHeaderView.h"
 
 
 @interface MaMaOrderListViewController () <UITableViewDelegate, UITableViewDataSource, CSTableViewPlaceHolderDelegate>
@@ -65,7 +65,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     self.automaticallyAdjustsScrollViewInsets = NO;
-    [self createNavigationBarWithTitle:@"订单列表" selecotr:@selector(backClickAction)];
+    [self createNavigationBarWithTitle:@"" selecotr:@selector(backClickAction)];
     
     [self createTableView];
     [self createButton];
@@ -114,13 +114,14 @@
     
     //添加header
     UIView *headerV = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 120)];
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(SCREENWIDTH * 0.5 - 50, 25, 100, 20)];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(SCREENWIDTH * 0.5 - 50, 15, 100, 20)];
     titleLabel.font = [UIFont systemFontOfSize:14];
     titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.text = @"订单记录";
-    UILabel *moneyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 45, SCREENWIDTH, 50)];
+    
+    
+    UILabel *moneyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, SCREENWIDTH, 40)];
     moneyLabel.textColor = [UIColor orangeThemeColor];
-    moneyLabel.font = [UIFont systemFontOfSize:35];
+    moneyLabel.font = [UIFont systemFontOfSize:32];
     moneyLabel.textAlignment = NSTextAlignmentCenter;
     moneyLabel.text = self.orderRecord;
     [headerV addSubview:titleLabel];
@@ -132,70 +133,48 @@
     lineView.alpha = 0.3;
     [headerV addSubview:lineView];
     
+    UILabel *descLabel = [UILabel new];
+    descLabel.font = [UIFont systemFontOfSize:12.];
+    descLabel.textColor = [UIColor dingfanxiangqingColor];
+    descLabel.numberOfLines = 0;
+    descLabel.textAlignment = NSTextAlignmentCenter;
+    [headerV addSubview:descLabel];
+    
+    [descLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(headerV.mas_centerX);
+        make.bottom.equalTo(headerV).offset(-10);
+        make.width.mas_equalTo(SCREENWIDTH - 20);
+    }];
+    
     self.tableView.tableHeaderView = headerV;
-//    self.tableView.estimatedRowHeight = 80;
-
-}
-#pragma mark ---数据处理
-- (void)dataAnalysis:(NSDictionary *)data {
-    self.nextPage = data[@"next"];
-    NSArray *results = data[@"results"];
-    if (results.count != 0) {
-        for (NSDictionary *orderDic in results) {
-            MaMaOrderModel *orderM = [MaMaOrderModel mj_objectWithKeyValues:orderDic];
-            [self.dataArr addObject:orderM];
-        }
+    
+    if (self.orderListType == orderListWithToday) {
+        titleLabel.text = @"订单记录";
+        descLabel.text = @"备注:累计收益未考虑可能退换货,以实际到账收益为准";
+        self.title = @"今日订单";
+    }else if (self.orderListType == orderListWithShare) {
+        titleLabel.text = @"累计分享佣金";
+        descLabel.text = @"备注:未签收订单暂不计入佣金;累计收益未考虑可能退换货,以实际到账收益为准";
+        self.title = @"分享佣金";
+    }else {
+        titleLabel.text = @"累计自购佣金";
+        descLabel.text = @"备注:未签收订单暂不计入佣金;累计收益未考虑可能退换货,以实际到账收益为准";
+        self.title = @"自购佣金";
     }
-    
-//    if (results.count == 0) { // 空视图
-//        
-//    }else {
-//        for (NSDictionary *order in results) {
-//            MaMaOrderModel *orderM = [MaMaOrderModel mj_objectWithKeyValues:order];
-//            NSString *date = [NSString jm_deleteTimeWithT:orderM.created];
-//            self.dataArr = [[self.dataDic allKeys] mutableCopy];
-//            //判断对应键值的数组是否存在
-//            if ([self.dataArr containsObject:date]) {
-//                NSMutableArray *orderArr = self.dataDic[date];
-//                [orderArr addObject:orderM];
-//            }else {
-//                NSMutableArray *orderArr = [NSMutableArray arrayWithCapacity:0];
-//                [orderArr addObject:orderM];
-//                [self.dataDic setObject:orderArr forKey:date];
-//            }
-//        }
-//        self.dataArr = [[self.dataDic allKeys] mutableCopy];
-//        self.dataArr = [self sortAllKeyArray:self.dataArr];
-//    }
-    
-    [self.tableView cs_reloadData];
+    [self createNavigationBarWithTitle:self.title selecotr:@selector(backClickAction)];
     
 }
 
-//将日期去掉－
-- (NSString *)dateDeal:(NSString *)str {
-//    NSArray *strarray = [str componentsSeparatedByString:@"T"];
-//    NSString *year = strarray[0];
-    NSString *date = [str stringByReplacingOccurrencesOfString:@"-" withString:@""];
-    return date;
-}
-
-//将所有的key排序
-- (NSMutableArray *)sortAllKeyArray:(NSMutableArray *)keyArr {
-    for (int i = 0; i < keyArr.count; i++) {
-        for (int j = 0; j < keyArr.count - i - 1; j++) {
-            if ([keyArr[j] intValue] < [keyArr[j + 1] intValue]) {
-                NSNumber *temp = keyArr[j + 1];
-                keyArr[j + 1] = keyArr[j];
-                keyArr[j] = temp;
-            }
-        }
-    }
-    return keyArr;
-}
 #pragma mark -- 请求数据
 - (void)loadDate {
-    NSString *url = [NSString stringWithFormat:@"%@/rest/v2/mama/ordercarry/today?carry_type=direct",Root_URL];
+    NSString *url = @"";
+    if (self.orderListType == orderListWithToday) {
+        url = [NSString stringWithFormat:@"%@/rest/v2/mama/ordercarry/today",Root_URL];
+    }else if (self.orderListType == orderListWithShare) {
+        url = [NSString stringWithFormat:@"%@/rest/v2/mama/ordercarry?carry_type=share",Root_URL];
+    }else {
+        url = [NSString stringWithFormat:@"%@/rest/v2/mama/ordercarry?carry_type=self",Root_URL];
+    }
     [JMHTTPManager requestWithType:RequestTypeGET WithURLString:url WithParaments:nil WithSuccess:^(id responseObject) {
         if (!responseObject)return;
         [self.dataArr removeAllObjects];
@@ -226,16 +205,78 @@
         
     }];
 }
+#pragma mark ---数据处理
+- (void)dataAnalysis:(NSDictionary *)data {
+    self.nextPage = data[@"next"];
+    NSArray *results = data[@"results"];
+    if (results.count != 0) {
+        if (self.orderListType == orderListWithToday) {
+            for (NSDictionary *orderDic in results) {
+                MaMaOrderModel *orderM = [MaMaOrderModel mj_objectWithKeyValues:orderDic];
+                [self.dataArr addObject:orderM];
+            }
+        }else {
+            for (NSDictionary *order in results) {
+                MaMaOrderModel *orderM = [MaMaOrderModel mj_objectWithKeyValues:order];
+                NSString *date = [self dateDeal:orderM.date_field];
+                self.dataArr = [[self.dataDic allKeys] mutableCopy];
+                //判断对应键值的数组是否存在
+                if ([self.dataArr containsObject:date]) {
+                    NSMutableArray *orderArr = self.dataDic[date];
+                    [orderArr addObject:orderM];
+                }else {
+                    NSMutableArray *orderArr = [NSMutableArray arrayWithCapacity:0];
+                    [orderArr addObject:orderM];
+                    [self.dataDic setObject:orderArr forKey:date];
+                }
+            }
+            self.dataArr = [[self.dataDic allKeys] mutableCopy];
+            self.dataArr = [self sortAllKeyArray:self.dataArr];
+        }
+    }
+    
+    [self.tableView cs_reloadData];
+    
+}
+
+//将日期去掉－
+- (NSString *)dateDeal:(NSString *)str {
+    NSString *date = [str stringByReplacingOccurrencesOfString:@"-" withString:@""];
+    return date;
+}
+
+//将所有的key排序
+- (NSMutableArray *)sortAllKeyArray:(NSMutableArray *)keyArr {
+    for (int i = 0; i < keyArr.count; i++) {
+        for (int j = 0; j < keyArr.count - i - 1; j++) {
+            if ([keyArr[j] intValue] < [keyArr[j + 1] intValue]) {
+                NSNumber *temp = keyArr[j + 1];
+                keyArr[j + 1] = keyArr[j];
+                keyArr[j] = temp;
+            }
+        }
+    }
+    return keyArr;
+}
+
 
 #pragma mark ---UItableView的代理
-//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-//    return self.dataArr.count;
-//}
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    if (self.orderListType == orderListWithToday) {
+        return 1;
+    }else {
+        return self.dataArr.count;
+    }
+}
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//    NSString *key = self.dataArr[section];
-//    NSMutableArray *orderArr = self.dataDic[key];
-//    return orderArr.count;
-    return self.dataArr.count;
+    if (self.orderListType == orderListWithToday) {
+        return self.dataArr.count;
+    }else {
+        NSString *key = self.dataArr[section];
+        NSMutableArray *orderArr = self.dataDic[key];
+        return orderArr.count;
+    }
+
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -244,59 +285,53 @@
     if (!cell) {
         cell = [[JMMaMaOrderListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
     }
-
-//    NSString *key = self.dataArr[indexPath.section];
-//    NSMutableArray *orderArr = self.dataDic[key];
-//    MaMaOrderModel *orderM = orderArr[indexPath.row];
-    MaMaOrderModel *orderM = self.dataArr[indexPath.row];
-    [cell fillDataOfCell:orderM];
-//    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];//刷新行
+    if (self.orderListType == orderListWithToday) {
+        MaMaOrderModel *orderM = self.dataArr[indexPath.row];
+        [cell fillDataOfCell:orderM];
+    }else {
+        NSString *key = self.dataArr[indexPath.section];
+        NSMutableArray *orderArr = self.dataDic[key];
+        MaMaOrderModel *orderM = orderArr[indexPath.row];
+        [cell fillDataOfCell:orderM];
+    }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-//    [self.tableView reloadData];
     
     return cell;
 }
-//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-//    UIView *sectionView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 35)];
-//    sectionView.backgroundColor = [UIColor sectionViewColor];
-//    
-//    UILabel *timeLabel = [UILabel new];
-//    [sectionView addSubview:timeLabel];
-//    timeLabel.textColor = [UIColor buttonTitleColor];
-//    timeLabel.font = CS_UIFontSize(13.);
-//    
-//    [timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(sectionView).offset(10);
-//        make.centerY.equalTo(sectionView.mas_centerY);
-//    }];
-//    MaMaOrderModel *orderM = self.dataArr[section];
-//    timeLabel.text = [NSString jm_deleteTimeWithT:orderM.created];
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (self.orderListType == orderListWithToday) {
+        return nil;
+    }else {
+        NSArray *nibView = [[NSBundle mainBundle] loadNibNamed:@"CarryLogHeaderView"owner:self options:nil];
+        CarryLogHeaderView *headerV = [nibView objectAtIndex:0];
+        headerV.frame = CGRectMake(0, 0, SCREENWIDTH, 30);
+        //计算金额
+        NSString *key = self.dataArr[section];
+        NSMutableArray *orderArr = self.dataDic[key];
+        MaMaOrderModel *orderM = [orderArr firstObject];
+        
+        [headerV yearLabelAndTotalMoneyLabelText:orderM.date_field total:[NSString stringWithFormat:@"%.2f", [orderM.today_carry floatValue]]];
+        return headerV;
+    }
+}
 
-//    NSArray *nibView = [[NSBundle mainBundle] loadNibNamed:@"CarryLogHeaderView"owner:self options:nil];
-//    CarryLogHeaderView *headerV = [nibView objectAtIndex:0];
-//    headerV.frame = CGRectMake(0, 0, SCREENWIDTH, 30); 
-//    //计算金额
-//    NSString *key = self.dataArr[section];
-//    NSMutableArray *orderArr = self.dataDic[key];
-//    MaMaOrderModel *orderM = [orderArr firstObject];
-//    
-//    [headerV yearLabelAndTotalMoneyLabelText:[NSString jm_deleteTimeWithT:orderM.created] total:[NSString stringWithFormat:@"%.2f", [orderM.today_carry floatValue]]];
-//    return sectionView;
-//}
-
-//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-//    return 35;
-//}
-
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (self.orderListType == orderListWithToday) {
+        return 0;
+    }else {
+        return 35;
+    }
+}
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     return 1;
 }
+
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    NSString *key = self.dataArr[indexPath.section];
-//    NSMutableArray *orderArr = self.dataDic[key];
-//    MaMaOrderModel *orderM = orderArr[indexPath.row];
-    MaMaOrderModel *orderM = self.dataArr[indexPath.row];
+    NSString *key = self.dataArr[indexPath.section];
+    NSMutableArray *orderArr = self.dataDic[key];
+    MaMaOrderModel *orderM = orderArr[indexPath.row];
+//    MaMaOrderModel *orderM = self.dataArr[indexPath.row];
 //    NSLog(@"%@",[orderM mj_keyValues]);
     BOOL isComanyCode = [NSString isStringEmpty:orderM.company_code];
     BOOL isPacketId = [NSString isStringEmpty:orderM.packetid];

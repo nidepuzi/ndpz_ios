@@ -125,7 +125,10 @@
 - (void)lodaUserInfo {
     [[JMGlobal global] upDataLoginStatusSuccess:^(id responseObject) {
         [self cancleWaitTimerAndReuestLaunchImage];
-//        BOOL kIsXLMMStatus = [[responseObject objectForKey:@"xiaolumm"] isKindOfClass:[NSDictionary class]];
+        if ([responseObject[@"check_xiaolumm"] integerValue] != 1) {
+            return ;
+        }
+        
         BOOL kIsBindPhone = [NSString isStringEmpty:[responseObject objectForKey:@"mobile"]];
         BOOL kIsVIP = [JMUserDefaults boolForKey:kISNDPZVIP];
         if (kIsVIP) {

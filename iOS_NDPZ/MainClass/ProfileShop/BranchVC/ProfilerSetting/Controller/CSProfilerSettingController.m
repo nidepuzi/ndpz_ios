@@ -234,6 +234,9 @@
 }
 
 - (NSArray *)getData:(NSDictionary *)dic {
+    if (dic == nil) {
+        return nil;
+    }
     NSString *appVersion = [[CSDevice defaultDevice] getDeviceAppVersion];
     NSString *appBulidVersion = [[CSDevice defaultDevice] getDeviceAppBuildVersion];
     NSString *deviceVersion = [NSString stringWithFormat:@"%@.%@",appVersion,appBulidVersion];

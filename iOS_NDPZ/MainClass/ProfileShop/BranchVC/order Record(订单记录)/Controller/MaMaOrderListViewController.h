@@ -8,6 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSInteger, orderList) {
+    orderListWithToday,
+    orderListWithShare,
+    orderListWithSelfBuy
+};
+
 @interface MaMaOrderListViewController : UIViewController 
-@property (nonatomic, strong)NSString *orderRecord;
+
+@property (nonatomic, strong) NSString *orderRecord;
+@property (nonatomic, assign) orderList orderListType;
+
+
 @end

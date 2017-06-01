@@ -163,7 +163,7 @@
     if ([self isFileExist:fileName]) {
         return ;
     }
-    NSString *documentPath = [self getLastFilePath:fileName];
+    NSString *documentPath = [self appendFilePath:fileName];
     [dic writeToFile:documentPath atomically:YES];
 }
 // 存储数组

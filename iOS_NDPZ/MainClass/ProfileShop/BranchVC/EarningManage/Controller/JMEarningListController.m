@@ -54,7 +54,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     self.automaticallyAdjustsScrollViewInsets = NO;
-    [self createNavigationBarWithTitle:@"收益记录" selecotr:@selector(backClick)];
+    [self createNavigationBarWithTitle:@"" selecotr:@selector(backClick)];
     
     [self createTableView];
     [self createPullHeaderRefresh];
@@ -83,7 +83,7 @@
     [sectionView addSubview:titleLabel];
     titleLabel.textColor = [UIColor buttonTitleColor];
     titleLabel.font = [UIFont systemFontOfSize:14.];
-    titleLabel.text = @"累计收益";
+    
     
     UILabel *descLabel = [UILabel new];
     descLabel.font = [UIFont systemFontOfSize:12.];
@@ -107,7 +107,22 @@
     }];
     
     self.tableView.tableHeaderView = sectionView;
-    descLabel.text = @"备注:今日累计收益未考虑可能退换货,以实际到账收益为准";
+    
+    if (self.earningRecodeType == EarningRecodeWithTotal) {
+        titleLabel.text = @"累计收益";
+        descLabel.text = @"备注:累计收益未考虑可能退换货,以实际到账收益为准";
+        self.title = @"累计收益";
+    }else if (self.earningRecodeType == EarningRecodeWithWeek) {
+        titleLabel.text = @"本周累计收益";
+        descLabel.text = @"备注:本周累计收益未考虑可能退换货,以实际到账收益为准";
+        self.title = @"本周收益";
+    }else {
+        titleLabel.text = @"本月累计收益";
+        descLabel.text = @"备注:本月累计收益未考虑可能退换货,以实际到账收益为准";
+        self.title = @"本月收益";
+    }
+    self.valueLabel.text = self.earningValue;
+    [self createNavigationBarWithTitle:self.title selecotr:@selector(backClick)];
     
     
 }
@@ -140,7 +155,14 @@
 
 #pragma mark 网络请求,数据处理
 - (void)loadDataSource {
-    NSString *urlString = [NSString stringWithFormat:@"%@/rest/v2/mama/carry",Root_URL];
+    NSString *urlString = @"";
+    if (self.earningRecodeType == EarningRecodeWithTotal) {
+        urlString = [NSString stringWithFormat:@"%@/rest/v2/mama/carry",Root_URL];
+    }else if (self.earningRecodeType == EarningRecodeWithWeek) {
+        urlString = [NSString stringWithFormat:@"%@/rest/v2/mama/carry?days=7",Root_URL];
+    }else {
+        urlString = [NSString stringWithFormat:@"%@/rest/v2/mama/carry?days=30",Root_URL];
+    }
     [JMHTTPManager requestWithType:RequestTypeGET WithURLString:urlString WithParaments:nil WithSuccess:^(id responseObject) {
         if (!responseObject)return ;
         [self.dataSource removeAllObjects];
@@ -170,7 +192,7 @@
     }];
 }
 - (void)dataAnalysis:(NSDictionary *)dic {
-    self.valueLabel.text = [NSString stringWithFormat:@"%.2f",([dic[@"total"] floatValue] / 100.f)];
+//    self.valueLabel.text = [NSString stringWithFormat:@"%.2f",([dic[@"total"] floatValue] / 100.f)];
     _nextUrlString = dic[@"next"];
     NSArray *results = dic[@"results"];
     if (results.count > 0) {

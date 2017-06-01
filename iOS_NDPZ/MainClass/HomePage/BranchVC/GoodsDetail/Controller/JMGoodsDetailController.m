@@ -120,7 +120,7 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
 - (CSSharePopController *)sharPopVC {
     if (!_sharPopVC) {
         _sharPopVC = [[CSSharePopController alloc] init];
-        _sharPopVC.popViewHeight = kAppShareViewHeight;
+        _sharPopVC.popViewHeight = kAppShareEarningViewHeight;
     }
     return _sharPopVC;
 }
@@ -352,7 +352,7 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
         
     }
 
-    self.topImageArray = detailContentDic[@"head_imgs"];
+//    self.topImageArray = detailContentDic[@"head_imgs"];
     //    [self.goodsScrollView jm_reloadData];
     [self.pageView reloadData];
     NSDictionary *comparison = goodsDetailDic[@"comparison"];
@@ -534,7 +534,7 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
         
         return 150;
     }else if (indexPath.section == 1) {
-        return 150;
+        return 160;
     }else if (indexPath.section == 2) {
         JMDescLabelModel *model = self.attributeArray[indexPath.row];
         return model.cellHeight;

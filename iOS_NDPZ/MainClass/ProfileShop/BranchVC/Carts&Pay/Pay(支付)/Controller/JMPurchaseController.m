@@ -268,14 +268,14 @@ static BOOL isAgreeTerms = YES;
         self.purchaseFooterView.termsButton.selected = NO;
     }
     
-    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
-    if (![NSString isStringEmpty:vipStatus]) {
-        if (purchasePopIndex == 0 && [vipStatus isEqual:@"15"]) {
-            [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] dismiss:^{
-            }];
-            purchasePopIndex += 1;
-        }
-    }
+//    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
+//    if (![NSString isStringEmpty:vipStatus]) {
+//        if (purchasePopIndex == 0 && [vipStatus isEqual:@"15"]) {
+//            [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] dismiss:^{
+//            }];
+//            purchasePopIndex += 1;
+//        }
+//    }
     
     
 }

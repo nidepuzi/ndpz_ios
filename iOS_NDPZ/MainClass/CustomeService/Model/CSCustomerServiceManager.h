@@ -8,10 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
-@interface CSCustomerServiceManager : NSObject
+typedef void(^popCustomerServiceBlock)();
+
+
+@interface CSCustomerServiceManager : NSObject 
 
 + (instancetype)defaultManager;
 
+// 清除缓存回调
+@property (nonatomic, copy) popCustomerServiceBlock popBlock;
+
+- (void)showCustomerService:(UIViewController *)vc;
 - (void)registerUserInfo:(NSDictionary *)dic;
 
 

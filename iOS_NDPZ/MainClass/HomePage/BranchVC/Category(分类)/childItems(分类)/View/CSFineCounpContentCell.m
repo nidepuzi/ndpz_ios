@@ -80,7 +80,7 @@
     
     UIButton *lookWirter = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.contentView addSubview:lookWirter];
-    [lookWirter setTitle:@"分享素材" forState:UIControlStateNormal];
+    [lookWirter setTitle:@"产品介绍" forState:UIControlStateNormal];
     [lookWirter setTitleColor:[UIColor buttonTitleColor] forState:UIControlStateNormal];
     lookWirter.titleLabel.font = [UIFont systemFontOfSize:13.];
     [lookWirter setImage:[UIImage imageNamed:@"copyWenan"] forState:UIControlStateNormal];
@@ -197,12 +197,19 @@
 - (void)setModel:(JMFineCouponModel *)model {
     _model = model;
     NSString *picString = model.head_img;
+    
+    if ([NSString isStringEmpty:model.watermark_op]) {
+        picString = [picString imageGoodsOrderCompression];
+    } else{
+        picString = [NSString stringWithFormat:@"%@|%@",[picString imageGoodsOrderCompression],model.watermark_op];
+    }
+    
     NSMutableString *newImageUrl = [NSMutableString stringWithString:picString];
     if ([picString hasPrefix:@"http:"] || [picString hasPrefix:@"https:"]) {
     }else {
         [newImageUrl insertString:@"http:" atIndex:0];
     }
-    [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[[newImageUrl imageGoodsOrderCompression] JMUrlEncodedString]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"]];
+    [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[newImageUrl JMUrlEncodedString]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"]];
     self.titleLabel.text = model.name;
     self.PriceLabel.text = [NSString stringWithFormat:@"¥%.2f", [model.lowest_agent_price floatValue]];
     NSDictionary *profitDic = model.profit;

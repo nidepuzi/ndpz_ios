@@ -282,9 +282,19 @@
 		1F41E4161ED7D40700097DD8 /* CSInviteRecordingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F41E4151ED7D40700097DD8 /* CSInviteRecordingController.m */; };
 		1F41E4191ED8124A00097DD8 /* CSInviteRecordingListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F41E4181ED8124A00097DD8 /* CSInviteRecordingListController.m */; };
 		1F41E41C1ED817CD00097DD8 /* CSInviteRecordingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F41E41B1ED817CD00097DD8 /* CSInviteRecordingCell.m */; };
+		1F41E4301ED9088800097DD8 /* JMEarningListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F41E4201ED9088800097DD8 /* JMEarningListController.m */; };
+		1F41E4311ED9088800097DD8 /* JMTotalEarningController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F41E4221ED9088800097DD8 /* JMTotalEarningController.m */; };
+		1F41E4321ED9088800097DD8 /* CarryLogModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F41E4251ED9088800097DD8 /* CarryLogModel.m */; };
+		1F41E4331ED9088800097DD8 /* JMEarningModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F41E4271ED9088800097DD8 /* JMEarningModel.m */; };
+		1F41E4361ED9088800097DD8 /* JMEarningRecordCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F41E42D1ED9088800097DD8 /* JMEarningRecordCell.m */; };
+		1F41E4371ED9088800097DD8 /* JMEarningRecordTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F41E42F1ED9088800097DD8 /* JMEarningRecordTableView.m */; };
+		1F41E43A1ED90DD800097DD8 /* CSEarningManageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F41E4391ED90DD800097DD8 /* CSEarningManageController.m */; };
+		1F41E43E1ED92CA400097DD8 /* CarryLogHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F41E43C1ED92CA400097DD8 /* CarryLogHeaderView.m */; };
+		1F41E43F1ED92CA400097DD8 /* CarryLogHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F41E43D1ED92CA400097DD8 /* CarryLogHeaderView.xib */; };
 		1F55461B1ED2D48F00507F3F /* cs_qitianwuliyou@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F55461A1ED2D48F00507F3F /* cs_qitianwuliyou@2x.png */; };
 		1F55461D1ED2DFB400507F3F /* cs_bankname_chinabank@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F55461C1ED2DFB400507F3F /* cs_bankname_chinabank@2x.png */; };
 		1F5546201ED3C91D00507F3F /* CSLogisticsInformationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F55461F1ED3C91D00507F3F /* CSLogisticsInformationController.m */; };
+		1F5B7C581EDFE3200012AD69 /* cs_profileShop_joinVip@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F5B7C571EDFE3200012AD69 /* cs_profileShop_joinVip@2x.png */; };
 		1F6BF3DD1EC05DAD00FE3C28 /* cs_profile_bindPhone@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F6BF3DC1EC05DAD00FE3C28 /* cs_profile_bindPhone@2x.png */; };
 		1F6BF3DF1EC05E5F00FE3C28 /* cs_yaoqinghaoyou@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F6BF3DE1EC05E5F00FE3C28 /* cs_yaoqinghaoyou@2x.png */; };
 		1F6BF3E11EC073BF00FE3C28 /* cs_wenhaoIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F6BF3E01EC073BF00FE3C28 /* cs_wenhaoIcon@2x.png */; };
@@ -340,14 +350,6 @@
 		1F6BF4991EC2BE4100FE3C28 /* JMNowFansController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6BF48E1EC2BE4100FE3C28 /* JMNowFansController.m */; };
 		1F6BF49B1EC2BE4100FE3C28 /* JMFetureFansModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6BF4931EC2BE4100FE3C28 /* JMFetureFansModel.m */; };
 		1F6BF49C1EC2BE4100FE3C28 /* JMFetureFansCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6BF4961EC2BE4100FE3C28 /* JMFetureFansCell.m */; };
-		1F6BF4B01EC2BE7800FE3C28 /* JMEarningListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6BF4A01EC2BE7800FE3C28 /* JMEarningListController.m */; };
-		1F6BF4B11EC2BE7800FE3C28 /* JMTotalEarningController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6BF4A21EC2BE7800FE3C28 /* JMTotalEarningController.m */; };
-		1F6BF4B21EC2BE7800FE3C28 /* CarryLogModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6BF4A51EC2BE7800FE3C28 /* CarryLogModel.m */; };
-		1F6BF4B31EC2BE7800FE3C28 /* JMEarningModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6BF4A71EC2BE7800FE3C28 /* JMEarningModel.m */; };
-		1F6BF4B41EC2BE7800FE3C28 /* CarryLogHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6BF4AA1EC2BE7800FE3C28 /* CarryLogHeaderView.m */; };
-		1F6BF4B51EC2BE7800FE3C28 /* CarryLogHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F6BF4AB1EC2BE7800FE3C28 /* CarryLogHeaderView.xib */; };
-		1F6BF4B61EC2BE7800FE3C28 /* JMEarningRecordCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6BF4AD1EC2BE7800FE3C28 /* JMEarningRecordCell.m */; };
-		1F6BF4B71EC2BE7800FE3C28 /* JMEarningRecordTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6BF4AF1EC2BE7800FE3C28 /* JMEarningRecordTableView.m */; };
 		1F6BF4C21EC2BEBC00FE3C28 /* MaMaOrderListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6BF4BB1EC2BEBC00FE3C28 /* MaMaOrderListViewController.m */; };
 		1F6BF4C31EC2BEBC00FE3C28 /* MaMaOrderModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6BF4BE1EC2BEBC00FE3C28 /* MaMaOrderModel.m */; };
 		1F6BF4C41EC2BEBC00FE3C28 /* JMMaMaOrderListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6BF4C11EC2BEBC00FE3C28 /* JMMaMaOrderListCell.m */; };
@@ -1306,10 +1308,28 @@
 		1F41E4181ED8124A00097DD8 /* CSInviteRecordingListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSInviteRecordingListController.m; sourceTree = "<group>"; };
 		1F41E41A1ED817CD00097DD8 /* CSInviteRecordingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSInviteRecordingCell.h; sourceTree = "<group>"; };
 		1F41E41B1ED817CD00097DD8 /* CSInviteRecordingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSInviteRecordingCell.m; sourceTree = "<group>"; };
+		1F41E41F1ED9088800097DD8 /* JMEarningListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMEarningListController.h; sourceTree = "<group>"; };
+		1F41E4201ED9088800097DD8 /* JMEarningListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMEarningListController.m; sourceTree = "<group>"; };
+		1F41E4211ED9088800097DD8 /* JMTotalEarningController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMTotalEarningController.h; sourceTree = "<group>"; };
+		1F41E4221ED9088800097DD8 /* JMTotalEarningController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMTotalEarningController.m; sourceTree = "<group>"; };
+		1F41E4241ED9088800097DD8 /* CarryLogModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CarryLogModel.h; sourceTree = "<group>"; };
+		1F41E4251ED9088800097DD8 /* CarryLogModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CarryLogModel.m; sourceTree = "<group>"; };
+		1F41E4261ED9088800097DD8 /* JMEarningModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMEarningModel.h; sourceTree = "<group>"; };
+		1F41E4271ED9088800097DD8 /* JMEarningModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMEarningModel.m; sourceTree = "<group>"; };
+		1F41E42C1ED9088800097DD8 /* JMEarningRecordCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMEarningRecordCell.h; sourceTree = "<group>"; };
+		1F41E42D1ED9088800097DD8 /* JMEarningRecordCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMEarningRecordCell.m; sourceTree = "<group>"; };
+		1F41E42E1ED9088800097DD8 /* JMEarningRecordTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMEarningRecordTableView.h; sourceTree = "<group>"; };
+		1F41E42F1ED9088800097DD8 /* JMEarningRecordTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMEarningRecordTableView.m; sourceTree = "<group>"; };
+		1F41E4381ED90DD800097DD8 /* CSEarningManageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSEarningManageController.h; sourceTree = "<group>"; };
+		1F41E4391ED90DD800097DD8 /* CSEarningManageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSEarningManageController.m; sourceTree = "<group>"; };
+		1F41E43B1ED92CA400097DD8 /* CarryLogHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CarryLogHeaderView.h; sourceTree = "<group>"; };
+		1F41E43C1ED92CA400097DD8 /* CarryLogHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CarryLogHeaderView.m; sourceTree = "<group>"; };
+		1F41E43D1ED92CA400097DD8 /* CarryLogHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CarryLogHeaderView.xib; sourceTree = "<group>"; };
 		1F55461A1ED2D48F00507F3F /* cs_qitianwuliyou@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cs_qitianwuliyou@2x.png"; sourceTree = "<group>"; };
 		1F55461C1ED2DFB400507F3F /* cs_bankname_chinabank@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cs_bankname_chinabank@2x.png"; sourceTree = "<group>"; };
 		1F55461E1ED3C91D00507F3F /* CSLogisticsInformationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSLogisticsInformationController.h; sourceTree = "<group>"; };
 		1F55461F1ED3C91D00507F3F /* CSLogisticsInformationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSLogisticsInformationController.m; sourceTree = "<group>"; };
+		1F5B7C571EDFE3200012AD69 /* cs_profileShop_joinVip@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cs_profileShop_joinVip@2x.png"; sourceTree = "<group>"; };
 		1F6BF3DC1EC05DAD00FE3C28 /* cs_profile_bindPhone@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cs_profile_bindPhone@2x.png"; sourceTree = "<group>"; };
 		1F6BF3DE1EC05E5F00FE3C28 /* cs_yaoqinghaoyou@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cs_yaoqinghaoyou@2x.png"; sourceTree = "<group>"; };
 		1F6BF3E01EC073BF00FE3C28 /* cs_wenhaoIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cs_wenhaoIcon@2x.png"; sourceTree = "<group>"; };
@@ -1388,21 +1408,6 @@
 		1F6BF4931EC2BE4100FE3C28 /* JMFetureFansModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMFetureFansModel.m; sourceTree = "<group>"; };
 		1F6BF4951EC2BE4100FE3C28 /* JMFetureFansCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMFetureFansCell.h; sourceTree = "<group>"; };
 		1F6BF4961EC2BE4100FE3C28 /* JMFetureFansCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMFetureFansCell.m; sourceTree = "<group>"; };
-		1F6BF49F1EC2BE7800FE3C28 /* JMEarningListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMEarningListController.h; sourceTree = "<group>"; };
-		1F6BF4A01EC2BE7800FE3C28 /* JMEarningListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMEarningListController.m; sourceTree = "<group>"; };
-		1F6BF4A11EC2BE7800FE3C28 /* JMTotalEarningController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMTotalEarningController.h; sourceTree = "<group>"; };
-		1F6BF4A21EC2BE7800FE3C28 /* JMTotalEarningController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMTotalEarningController.m; sourceTree = "<group>"; };
-		1F6BF4A41EC2BE7800FE3C28 /* CarryLogModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CarryLogModel.h; sourceTree = "<group>"; };
-		1F6BF4A51EC2BE7800FE3C28 /* CarryLogModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CarryLogModel.m; sourceTree = "<group>"; };
-		1F6BF4A61EC2BE7800FE3C28 /* JMEarningModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMEarningModel.h; sourceTree = "<group>"; };
-		1F6BF4A71EC2BE7800FE3C28 /* JMEarningModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMEarningModel.m; sourceTree = "<group>"; };
-		1F6BF4A91EC2BE7800FE3C28 /* CarryLogHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CarryLogHeaderView.h; sourceTree = "<group>"; };
-		1F6BF4AA1EC2BE7800FE3C28 /* CarryLogHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CarryLogHeaderView.m; sourceTree = "<group>"; };
-		1F6BF4AB1EC2BE7800FE3C28 /* CarryLogHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CarryLogHeaderView.xib; sourceTree = "<group>"; };
-		1F6BF4AC1EC2BE7800FE3C28 /* JMEarningRecordCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMEarningRecordCell.h; sourceTree = "<group>"; };
-		1F6BF4AD1EC2BE7800FE3C28 /* JMEarningRecordCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMEarningRecordCell.m; sourceTree = "<group>"; };
-		1F6BF4AE1EC2BE7800FE3C28 /* JMEarningRecordTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMEarningRecordTableView.h; sourceTree = "<group>"; };
-		1F6BF4AF1EC2BE7800FE3C28 /* JMEarningRecordTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMEarningRecordTableView.m; sourceTree = "<group>"; };
 		1F6BF4BA1EC2BEBC00FE3C28 /* MaMaOrderListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaMaOrderListViewController.h; sourceTree = "<group>"; };
 		1F6BF4BB1EC2BEBC00FE3C28 /* MaMaOrderListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MaMaOrderListViewController.m; sourceTree = "<group>"; };
 		1F6BF4BD1EC2BEBC00FE3C28 /* MaMaOrderModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaMaOrderModel.h; sourceTree = "<group>"; };
@@ -3594,6 +3599,51 @@
 			path = InviteRecording;
 			sourceTree = "<group>";
 		};
+		1F41E41D1ED9088800097DD8 /* EarningManage */ = {
+			isa = PBXGroup;
+			children = (
+				1F41E41E1ED9088800097DD8 /* Controller */,
+				1F41E4231ED9088800097DD8 /* Model */,
+				1F41E4281ED9088800097DD8 /* View */,
+			);
+			path = EarningManage;
+			sourceTree = "<group>";
+		};
+		1F41E41E1ED9088800097DD8 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				1F41E4381ED90DD800097DD8 /* CSEarningManageController.h */,
+				1F41E4391ED90DD800097DD8 /* CSEarningManageController.m */,
+				1F41E41F1ED9088800097DD8 /* JMEarningListController.h */,
+				1F41E4201ED9088800097DD8 /* JMEarningListController.m */,
+				1F41E4211ED9088800097DD8 /* JMTotalEarningController.h */,
+				1F41E4221ED9088800097DD8 /* JMTotalEarningController.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		1F41E4231ED9088800097DD8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				1F41E4241ED9088800097DD8 /* CarryLogModel.h */,
+				1F41E4251ED9088800097DD8 /* CarryLogModel.m */,
+				1F41E4261ED9088800097DD8 /* JMEarningModel.h */,
+				1F41E4271ED9088800097DD8 /* JMEarningModel.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		1F41E4281ED9088800097DD8 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				1F41E42C1ED9088800097DD8 /* JMEarningRecordCell.h */,
+				1F41E42D1ED9088800097DD8 /* JMEarningRecordCell.m */,
+				1F41E42E1ED9088800097DD8 /* JMEarningRecordTableView.h */,
+				1F41E42F1ED9088800097DD8 /* JMEarningRecordTableView.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		1F6BF4071EC19B6C00FE3C28 /* ProfileShopWithDraw */ = {
 			isa = PBXGroup;
 			children = (
@@ -3853,52 +3903,6 @@
 			children = (
 				1F6BF4951EC2BE4100FE3C28 /* JMFetureFansCell.h */,
 				1F6BF4961EC2BE4100FE3C28 /* JMFetureFansCell.m */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		1F6BF49D1EC2BE7800FE3C28 /* gainRecording(收益记录) */ = {
-			isa = PBXGroup;
-			children = (
-				1F6BF49E1EC2BE7800FE3C28 /* Controller */,
-				1F6BF4A31EC2BE7800FE3C28 /* Model */,
-				1F6BF4A81EC2BE7800FE3C28 /* View */,
-			);
-			path = "gainRecording(收益记录)";
-			sourceTree = "<group>";
-		};
-		1F6BF49E1EC2BE7800FE3C28 /* Controller */ = {
-			isa = PBXGroup;
-			children = (
-				1F6BF49F1EC2BE7800FE3C28 /* JMEarningListController.h */,
-				1F6BF4A01EC2BE7800FE3C28 /* JMEarningListController.m */,
-				1F6BF4A11EC2BE7800FE3C28 /* JMTotalEarningController.h */,
-				1F6BF4A21EC2BE7800FE3C28 /* JMTotalEarningController.m */,
-			);
-			path = Controller;
-			sourceTree = "<group>";
-		};
-		1F6BF4A31EC2BE7800FE3C28 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				1F6BF4A41EC2BE7800FE3C28 /* CarryLogModel.h */,
-				1F6BF4A51EC2BE7800FE3C28 /* CarryLogModel.m */,
-				1F6BF4A61EC2BE7800FE3C28 /* JMEarningModel.h */,
-				1F6BF4A71EC2BE7800FE3C28 /* JMEarningModel.m */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		1F6BF4A81EC2BE7800FE3C28 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				1F6BF4A91EC2BE7800FE3C28 /* CarryLogHeaderView.h */,
-				1F6BF4AA1EC2BE7800FE3C28 /* CarryLogHeaderView.m */,
-				1F6BF4AB1EC2BE7800FE3C28 /* CarryLogHeaderView.xib */,
-				1F6BF4AC1EC2BE7800FE3C28 /* JMEarningRecordCell.h */,
-				1F6BF4AD1EC2BE7800FE3C28 /* JMEarningRecordCell.m */,
-				1F6BF4AE1EC2BE7800FE3C28 /* JMEarningRecordTableView.h */,
-				1F6BF4AF1EC2BE7800FE3C28 /* JMEarningRecordTableView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -4502,10 +4506,10 @@
 		1F99A8931EBD683800782F9F /* BranchVC */ = {
 			isa = PBXGroup;
 			children = (
+				1F41E41D1ED9088800097DD8 /* EarningManage */,
 				1F6BF4DE1EC2BF5E00FE3C28 /* todayVisitor(今日访客) */,
 				1F6BF4C51EC2BEF900FE3C28 /* releassProduct(发布产品) */,
 				1F6BF4B81EC2BEBC00FE3C28 /* order Record(订单记录) */,
-				1F6BF49D1EC2BE7800FE3C28 /* gainRecording(收益记录) */,
 				1F6BF4871EC2BE4100FE3C28 /* Fanse(我的粉丝) */,
 				1F6BF4771EC2B5D300FE3C28 /* Address(地址) */,
 				1F6BF45E1EC2B27900FE3C28 /* Coupon(优惠券) */,
@@ -4783,6 +4787,9 @@
 		1F99A8E71EBD683900782F9F /* View */ = {
 			isa = PBXGroup;
 			children = (
+				1F41E43B1ED92CA400097DD8 /* CarryLogHeaderView.h */,
+				1F41E43C1ED92CA400097DD8 /* CarryLogHeaderView.m */,
+				1F41E43D1ED92CA400097DD8 /* CarryLogHeaderView.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -5635,6 +5642,7 @@
 		1FFF3A3B1EAF4E29001066D0 /* ProfileShop */ = {
 			isa = PBXGroup;
 			children = (
+				1F5B7C571EDFE3200012AD69 /* cs_profileShop_joinVip@2x.png */,
 				1F6BF5351EC2C32600FE3C28 /* pushingDays_saveImage@2x.png */,
 				1F6BF5361EC2C32600FE3C28 /* pushingDays_shareImage@2x.png */,
 				1F6BF5371EC2C32600FE3C28 /* shizhong.png */,
@@ -5929,6 +5937,7 @@
 				1F6BF5A91EC4744900FE3C28 /* share_wechaPengyouquanImage@2x.png in Resources */,
 				1F6BF5481EC2C36B00FE3C28 /* left_line_selected@2x.png in Resources */,
 				1F6BF5871EC2C6CC00FE3C28 /* emptyStoreUp@2x.png in Resources */,
+				1F41E43F1ED92CA400097DD8 /* CarryLogHeaderView.xib in Resources */,
 				1FFF3A9D1EAF4E29001066D0 /* SortingWithDefault_Nomarl@2x.png in Resources */,
 				1FCA857D1EB31FAC00290821 /* share_weiboImage@2x.png in Resources */,
 				1FB157A81EB0C49900C6D979 /* data_empty@2x.png in Resources */,
@@ -5978,7 +5987,6 @@
 				1F2716901EAF30720076F10D /* Assets.xcassets in Resources */,
 				1F2728381EAF3F9B0076F10D /* UMSCommentDetailController.xib in Resources */,
 				1F27284D1EAF3F9B0076F10D /* ios-social-sdk-comment-quick.html in Resources */,
-				1F6BF4B51EC2BE7800FE3C28 /* CarryLogHeaderView.xib in Resources */,
 				1F6BF4481EC2B13600FE3C28 /* appUpDataImage@2x.png in Resources */,
 				1F6BF52F1EC2C26200FE3C28 /* mamajiang.png in Resources */,
 				1F20CB4E1EBC552600749286 /* order_address@2x.png in Resources */,
@@ -6066,6 +6074,7 @@
 				1FFF3AA51EAF4E2A001066D0 /* tabBar_homeRoot_shop@2x.png in Resources */,
 				1FFF3A6E1EAF4E29001066D0 /* iPhone4S@2x.png in Resources */,
 				1F2728521EAF3F9B0076F10D /* ios-social-sdk-share-detail.html in Resources */,
+				1F5B7C581EDFE3200012AD69 /* cs_profileShop_joinVip@2x.png in Resources */,
 				1FFF3A971EAF4E29001066D0 /* cs_profile_jianrong@2x.png in Resources */,
 				1F20CB521EBC552600749286 /* order_sheng@2x.png in Resources */,
 				1FCA857C1EB31FAC00290821 /* share_wechaImage@2x.png in Resources */,
@@ -6149,6 +6158,7 @@
 			files = (
 				1F6BF47F1EC2B5D300FE3C28 /* JMAddressViewController.m in Sources */,
 				1F3F902B1EC97B520043627D /* JMCategoryListController.m in Sources */,
+				1F41E4361ED9088800097DD8 /* JMEarningRecordCell.m in Sources */,
 				1F2727F41EAF3F9B0076F10D /* UdeskFAQViewController.m in Sources */,
 				1F2727BB1EAF3F9A0076F10D /* JMRefreshLoadView.m in Sources */,
 				1F99AA241EBD683900782F9F /* CSOnlineTestController.m in Sources */,
@@ -6180,9 +6190,7 @@
 				1F99AA151EBD683900782F9F /* JMUserCouponController.m in Sources */,
 				1F272CE51EAF3FB10076F10D /* UIView+RGSize.m in Sources */,
 				1F99AA141EBD683900782F9F /* JMPayCouponController.m in Sources */,
-				1F6BF4B01EC2BE7800FE3C28 /* JMEarningListController.m in Sources */,
 				1F2728231EAF3F9B0076F10D /* UdeskChatAlertController.m in Sources */,
-				1F6BF4B61EC2BE7800FE3C28 /* JMEarningRecordCell.m in Sources */,
 				1F99AA2C1EBD683900782F9F /* CSSalesCellModel.m in Sources */,
 				1F2728211EAF3F9B0076F10D /* UdeskSDKStyleBlue.m in Sources */,
 				1F2728591EAF3F9B0076F10D /* WKWebViewJavascriptBridge.m in Sources */,
@@ -6220,7 +6228,6 @@
 				1F272CE21EAF3FB10076F10D /* UILabel+CustomLabel.m in Sources */,
 				1F99A95A1EBD683900782F9F /* JMRepopView.m in Sources */,
 				1F272CF11EAF3FB10076F10D /* UUID.m in Sources */,
-				1F6BF4B31EC2BE7800FE3C28 /* JMEarningModel.m in Sources */,
 				1F99AA3C1EBD683900782F9F /* JMRegisterJS.m in Sources */,
 				1F3F90301EC97B520043627D /* JMCategoryListCell.m in Sources */,
 				1F99AB1A1EC0100900782F9F /* CSPopViewAnimationSpring.m in Sources */,
@@ -6259,6 +6266,7 @@
 				1F2728271EAF3F9B0076F10D /* UdeskDateFormatter.m in Sources */,
 				1F272CD81EAF3FB10076F10D /* NSString+Base64.m in Sources */,
 				1F6BF5C01EC58D1B00FE3C28 /* CSSharePopController.m in Sources */,
+				1F41E4301ED9088800097DD8 /* JMEarningListController.m in Sources */,
 				1F2728031EAF3F9B0076F10D /* UdeskTipsCell.m in Sources */,
 				1FB3C2FA1ECD356F00695B04 /* CSFineCounpContentCell.m in Sources */,
 				1F6BF5B71EC55EBC00FE3C28 /* CSFansTotalRevenueCell.m in Sources */,
@@ -6269,6 +6277,7 @@
 				1F2727D91EAF3F9B0076F10D /* MD5DataSigner.m in Sources */,
 				1F99AA311EBD683900782F9F /* CSProfileShopModel.m in Sources */,
 				1F6BF5A21EC2F48A00FE3C28 /* CSWithDrawPopView.m in Sources */,
+				1F41E4311ED9088800097DD8 /* JMTotalEarningController.m in Sources */,
 				1F99A9371EBD683900782F9F /* JMGoodsAttributeCell.m in Sources */,
 				1FB3C3271ED287EB00695B04 /* CSWithdrawRecordingModel.m in Sources */,
 				1F2728201EAF3F9B0076F10D /* UdeskSDKStyle.m in Sources */,
@@ -6355,12 +6364,15 @@
 				1F99AA0B1EBD683900782F9F /* CSAccountSecurityController.m in Sources */,
 				1F3F902C1EC97B520043627D /* JMChildViewController.m in Sources */,
 				1F99A95F1EBD683900782F9F /* JMSelecterButton.m in Sources */,
+				1F41E4331ED9088800097DD8 /* JMEarningModel.m in Sources */,
 				1F27280D1EAF3F9B0076F10D /* UdeskAgentMenuViewController.m in Sources */,
 				1F2728561EAF3F9B0076F10D /* WebViewJavascriptBridge.m in Sources */,
+				1F41E4321ED9088800097DD8 /* CarryLogModel.m in Sources */,
 				1F99AAE71EBD6D0000782F9F /* JMRefundStatusModel.m in Sources */,
 				1F99AAF31EBD6D0000782F9F /* JMChooseLogisticsController.m in Sources */,
 				1F99AA461EBD6BFA00782F9F /* JMOrderListController.m in Sources */,
 				1F99AACB1EBD6D0000782F9F /* ShenQingTuikuanController.m in Sources */,
+				1F41E43A1ED90DD800097DD8 /* CSEarningManageController.m in Sources */,
 				1F2727EC1EAF3F9B0076F10D /* LGTextViewDelegateObject.m in Sources */,
 				1F272CEE1EAF3FB10076F10D /* JMMiPushManager.m in Sources */,
 				1F2727B01EAF3F9A0076F10D /* JMBorwesScrollView.m in Sources */,
@@ -6399,13 +6411,13 @@
 				1F99A95C1EBD683900782F9F /* JMUpdataAppPopView.m in Sources */,
 				1F2728151EAF3F9B0076F10D /* NSArray+UdeskSDK.m in Sources */,
 				1F272CD51EAF3FB10076F10D /* AESEncryption.m in Sources */,
+				1F41E4371ED9088800097DD8 /* JMEarningRecordTableView.m in Sources */,
 				1F99A9551EBD683900782F9F /* JMHomeCategoryCell.m in Sources */,
 				1F6BF4851EC2BDA400FE3C28 /* JMMaMaCenterModel.m in Sources */,
 				1F2727E41EAF3F9B0076F10D /* UIColor+FSPalette.m in Sources */,
 				1F2727A71EAF3F9A0076F10D /* JMPageControl.m in Sources */,
 				1F99AAD61EBD6D0000782F9F /* JMContinuePayModel.m in Sources */,
 				1F99AAC81EBD6D0000782F9F /* JMRefundController.m in Sources */,
-				1F6BF4B71EC2BE7800FE3C28 /* JMEarningRecordTableView.m in Sources */,
 				1F6BF4701EC2B27900FE3C28 /* CSPopDescriptionController.m in Sources */,
 				1F2728021EAF3F9B0076F10D /* UdeskProductCell.m in Sources */,
 				1F2728281EAF3F9B0076F10D /* UdeskImageUtil.m in Sources */,
@@ -6421,12 +6433,10 @@
 				1F6BF49B1EC2BE4100FE3C28 /* JMFetureFansModel.m in Sources */,
 				1FFF3B6B1EAF56F1001066D0 /* CSBaseViewController.m in Sources */,
 				1F99AAF91EBD6D0000782F9F /* JMReGoodsAddView.m in Sources */,
-				1F6BF4B21EC2BE7800FE3C28 /* CarryLogModel.m in Sources */,
 				1F99AB051EBDD0FE00782F9F /* CSJoinVipPopView.m in Sources */,
 				1F2727AB1EAF3F9A0076F10D /* Tool_FMDBGetDatabase.m in Sources */,
 				1F99AAD81EBD6D0000782F9F /* JMEditAddressModel.m in Sources */,
 				1F99A9311EBD683900782F9F /* JMBuyNumberView.m in Sources */,
-				1F6BF4B11EC2BE7800FE3C28 /* JMTotalEarningController.m in Sources */,
 				1F272CE71EAF3FB10076F10D /* ImageUtils.m in Sources */,
 				1F6D3F311EC701A3003BCA3A /* JMWithDrawDetailCell.m in Sources */,
 				1F2727F91EAF3F9B0076F10D /* UdeskAgentSurvey.m in Sources */,
@@ -6544,8 +6554,8 @@
 				1F27282F1EAF3F9B0076F10D /* UdeskHpple.m in Sources */,
 				1F99AB171EC00F8A00782F9F /* CSPopViewAnimationSlide.m in Sources */,
 				1F99A9531EBD683900782F9F /* JMRootGoodsModel.m in Sources */,
+				1F41E43E1ED92CA400097DD8 /* CarryLogHeaderView.m in Sources */,
 				1F99A9591EBD683900782F9F /* JMPageContentView.m in Sources */,
-				1F6BF4B41EC2BE7800FE3C28 /* CarryLogHeaderView.m in Sources */,
 				1F99A9481EBD683900782F9F /* JMHomeFirstController.m in Sources */,
 				1F2727E01EAF3F9B0076F10D /* FMDatabasePool.m in Sources */,
 				1F2727CD1EAF3F9B0076F10D /* CountdownView.m in Sources */,

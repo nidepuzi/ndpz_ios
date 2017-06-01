@@ -71,12 +71,12 @@
     if (self.isMaMaWithDraw) {
         [self loadCashoutPolicyData];
     }
-    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
-    if (![NSString isStringEmpty:vipStatus]) {
-        if ([vipStatus isEqual:@"15"]) { // 试用期 弹出框
-            [self performSelector:@selector(popWithdrawView) withObject:nil afterDelay:0.5];
-        }
-    }
+//    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
+//    if (![NSString isStringEmpty:vipStatus]) {
+//        if ([vipStatus isEqual:@"15"]) { // 试用期 弹出框
+//            [self performSelector:@selector(popWithdrawView) withObject:nil afterDelay:0.5];
+//        }
+//    }
     
     UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cs_wenhao_alpha"]];

@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSInteger, profileStatus) {
+    profileStatusShiyong,
+    profileStatusZhengshi
+};
+
 @class CSProfileShopFooterView;
 @protocol CSProfileShopFooterViewDelegte <NSObject>
 
@@ -17,7 +22,10 @@
 
 @interface CSProfileShopFooterView : UIView
 
+- (instancetype)initWithFrame:(CGRect)frame Type:(profileStatus)type;
+
 @property (nonatomic, weak) id <CSProfileShopFooterViewDelegte> delegate;
 @property (nonatomic, strong) NSNumber *accountMoney;
+@property (nonatomic, assign) profileStatus statusType;
 
 @end

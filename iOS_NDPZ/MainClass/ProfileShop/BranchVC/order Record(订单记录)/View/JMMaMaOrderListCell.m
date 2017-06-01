@@ -114,8 +114,8 @@
     UILabel *incomeLabel = [[UILabel alloc] init];
     [self.contentView addSubview:incomeLabel];
     self.incomeLabel = incomeLabel;
-    self.incomeLabel.textColor = [UIColor timeLabelColor];
-    self.incomeLabel.font = [UIFont systemFontOfSize:12.];
+    self.incomeLabel.textColor = [UIColor buttonEnabledBackgroundColor];
+    self.incomeLabel.font = [UIFont systemFontOfSize:16.];
     
     UILabel *deductLabel = [[UILabel alloc] init];
     [self.contentView addSubview:deductLabel];
@@ -160,7 +160,7 @@
         make.left.equalTo(weakSelf.isAPP.mas_right).offset(10);
     }];
     [self.incomeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(weakSelf.actualPay.mas_right).offset(5);
+        make.right.equalTo(weakSelf.contentView).offset(-10);
         make.centerY.equalTo(weakSelf.actualPay.mas_centerY);
     }];
     [self.deductLabel mas_makeConstraints:^(MASConstraintMaker *make) {

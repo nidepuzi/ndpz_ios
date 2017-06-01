@@ -12,6 +12,7 @@
 #import "CSFansTotalRevenueController.h"
 #import "CSInviteViewController.h"
 #import "CSInviteRecordingController.h"
+#import "MaMaOrderListViewController.h"
 
 
 @interface CSPerformanceManagerController () <UITableViewDelegate, UITableViewDataSource> {
@@ -151,7 +152,20 @@
             CSInviteRecordingController *vc = [[CSInviteRecordingController alloc] init];
             [self.navigationController pushViewController:vc animated:YES];
         }
-            
+            break;
+        case 2: {
+            MaMaOrderListViewController *order = [[MaMaOrderListViewController alloc] init];
+//            order.orderRecord = _orderRecordToday;
+            order.orderListType = orderListWithSelfBuy;
+            [self.navigationController pushViewController:order animated:YES];
+        }
+            break;
+        case 3: {
+            MaMaOrderListViewController *order = [[MaMaOrderListViewController alloc] init];
+//            order.orderRecord = _orderRecordToday;
+            order.orderListType = orderListWithShare;
+            [self.navigationController pushViewController:order animated:YES];
+        }
             break;
         default:
             break;

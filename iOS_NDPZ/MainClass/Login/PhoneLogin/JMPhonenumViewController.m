@@ -16,6 +16,7 @@
 #import "JMRootTabBarController.h"
 #import "AppDelegate.h"
 #import "WebViewController.h"
+#import "CSCustomerServiceManager.h"
 
 
 #define rememberPwdKey @"rememberPwd"
@@ -201,21 +202,21 @@
     loginBtn.titleLabel.font = CS_UIFontSize(14.);
     [loginBtn addTarget:self action:@selector(loginBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     
-    CGFloat registW = [@"如何注册?" widthWithHeight:20. andFont:13.].width + 20;
-    self.registeredButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.maskScrollView addSubview:self.registeredButton];
-    self.registeredButton.frame = CGRectMake((SCREENWIDTH - registW) / 2, loginBtn.cs_max_Y + 20, registW, 20);
-    //设置按钮文字的下划线
-    NSMutableAttributedString *muTitle = [[NSMutableAttributedString alloc] initWithString:@"如何注册?"];
-    NSRange titleRange2 = {0,[muTitle length]};
-    [self.registeredButton setTitle:@"如何注册?" forState:UIControlStateNormal];
-    [muTitle addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInteger:NSUnderlineStyleSingle] range:titleRange2];
-    [self.registeredButton setAttributedTitle:muTitle forState:UIControlStateNormal];
-    [self.registeredButton.titleLabel setFont:[UIFont systemFontOfSize:13.]];
-    self.registeredButton.titleLabel.textColor = [UIColor redColor];
-    [self.registeredButton addTarget:self action:@selector(registeredButtonClicked) forControlEvents:UIControlEventTouchUpInside];
+//    CGFloat registW = [@"如何注册?" widthWithHeight:20. andFont:13.].width + 20;
+//    self.registeredButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    [self.maskScrollView addSubview:self.registeredButton];
+//    self.registeredButton.frame = CGRectMake((SCREENWIDTH - registW) / 2, loginBtn.cs_max_Y + 20, registW, 20);
+//    //设置按钮文字的下划线
+//    NSMutableAttributedString *muTitle = [[NSMutableAttributedString alloc] initWithString:@"如何注册?"];
+//    NSRange titleRange2 = {0,[muTitle length]};
+//    [self.registeredButton setTitle:@"如何注册?" forState:UIControlStateNormal];
+//    [muTitle addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInteger:NSUnderlineStyleSingle] range:titleRange2];
+//    [self.registeredButton setAttributedTitle:muTitle forState:UIControlStateNormal];
+//    [self.registeredButton.titleLabel setFont:[UIFont systemFontOfSize:13.]];
+//    self.registeredButton.titleLabel.textColor = [UIColor redColor];
+//    [self.registeredButton addTarget:self action:@selector(registeredButtonClicked) forControlEvents:UIControlEventTouchUpInside];
     
-    self.maskScrollView.contentSize = CGSizeMake(SCREENWIDTH, self.registeredButton.cs_max_Y + 20);
+    self.maskScrollView.contentSize = CGSizeMake(SCREENWIDTH, self.loginBtn.cs_max_Y + 20);
     
 //    kWeakSelf
     
@@ -357,6 +358,14 @@
      4. 用户没有绑定手机, 且不是精英妈妈. ---> 提示用户需要注册成为会员
      */
     [[JMGlobal global] upDataLoginStatusSuccess:^(id responseObject) {
+        
+        if ([responseObject[@"check_xiaolumm"] integerValue] != 1) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+            [JMNotificationCenter postNotificationName:@"WeChatLoginSuccess" object:nil];
+            [MBProgressHUD hideHUD];
+            return ;
+        }
+        
         BOOL kIsBindPhone = [NSString isStringEmpty:[responseObject objectForKey:@"mobile"]];
         BOOL kIsVIP = [JMUserDefaults boolForKey:kISNDPZVIP];
         
@@ -492,15 +501,24 @@
     }
 }
 - (void)registeredButtonClicked {
-    NSString *urlString = @"https://m.nidepuzi.com/mall/boutiqueinvite";
-    NSString *active = @"myInvite";
-    NSString *titleName = @"我的邀请";
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    [dict setValue:@8 forKey:@"activity_id"];
-    [dict setValue:urlString forKey:@"web_url"];
-    [dict setValue:active forKey:@"type_title"];
-    [dict setValue:titleName forKey:@"name_title"];
-    [self pushWebView:dict ShowNavBar:YES ShowRightShareBar:YES Title:nil];
+    // 点击进入客服
+    kWeakSelf
+    [[CSCustomerServiceManager defaultManager] showCustomerService:self];
+    [CSCustomerServiceManager defaultManager].popBlock = ^() {
+        [weakSelf.navigationController popViewControllerAnimated:NO];
+    };
+    
+    
+    
+//    NSString *urlString = @"https://m.nidepuzi.com/mall/boutiqueinvite";
+//    NSString *active = @"myInvite";
+//    NSString *titleName = @"我的邀请";
+//    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+//    [dict setValue:@8 forKey:@"activity_id"];
+//    [dict setValue:urlString forKey:@"web_url"];
+//    [dict setValue:active forKey:@"type_title"];
+//    [dict setValue:titleName forKey:@"name_title"];
+//    [self pushWebView:dict ShowNavBar:YES ShowRightShareBar:YES Title:nil];
     
 }
 - (void)pushWebView:(NSMutableDictionary *)dict ShowNavBar:(BOOL)isShowNavBar ShowRightShareBar:(BOOL)isShowRightShareBar Title:(NSString *)title {

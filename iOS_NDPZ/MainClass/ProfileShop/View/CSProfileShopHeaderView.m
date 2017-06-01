@@ -184,11 +184,11 @@
     if (nickName.length > 0 || [nickName class] != [NSNull null]) {
         self.userNameLabel.text = [userInfoDic objectForKey:@"nick"];
     }
-    if ([[userInfoDic objectForKey:@"xiaolumm"] isKindOfClass:[NSDictionary class]]) {
-        NSDictionary *vipDic = userInfoDic[@"xiaolumm"];
-        self.userShopDescLabel.text = [NSString stringWithFormat:@"店铺名 : %@ / 店铺序号 : %@",@"你的铺子",[vipDic objectForKey:@"id"]];
-    }else {
+    NSDictionary *vipDic = userInfoDic[@"xiaolumm"];
+    if (vipDic.count == 0) {
         self.userShopDescLabel.text = [NSString stringWithFormat:@"店铺名 : %@ / 店铺序号 : %@",@"你的铺子",[userInfoDic objectForKey:@"user_id"]];
+    }else {
+        self.userShopDescLabel.text = [NSString stringWithFormat:@"店铺名 : %@ / 店铺序号 : %@",@"你的铺子",[vipDic objectForKey:@"id"]];
     }
     
     

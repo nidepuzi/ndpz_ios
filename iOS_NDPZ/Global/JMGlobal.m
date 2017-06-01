@@ -223,11 +223,23 @@ static NSString *userCustomerID;
             NSString *last = [NSString stringWithFormat:@"%@",xlmmDict[@"last_renew_type"]];
             [JMUserDefaults setValue:last forKey:kUserVipStatus];
             kIsVIP = [xlmmDict[@"status"] isEqual:@"effect"] ? YES : NO;
+        }else {
+            NSMutableDictionary *dic = [responseObject mutableCopy];
+            dic[@"xiaolumm"] = @{};
+            responseObject = [dic copy];
         }
         [JMUserDefaults setBool:kIsVIP forKey:kISNDPZVIP];
         [JMUserDefaults setBool:kIsLoginStatus forKey:kIsLogin];
         [JMUserDefaults synchronize];
         
+        if (![[responseObject objectForKey:@"user_budget"] isKindOfClass:[NSDictionary class]]) {
+            NSMutableDictionary *dic = [responseObject mutableCopy];
+            dic[@"user_budget"] = @{};
+            responseObject = [dic copy];
+        }
+        if ([JMStoreManager isFileExist:@"userProfile"]) {
+            [JMStoreManager removeFileByFileName:@"userProfile"];
+        }
         [JMStoreManager saveDataFromDictionary:@"userProfile" WithData:responseObject];
         NSLog(@"%@",[JMStoreManager getDataDictionary:@"userProfile"]);
         

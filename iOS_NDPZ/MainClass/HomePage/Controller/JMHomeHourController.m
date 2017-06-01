@@ -144,7 +144,7 @@
 #pragma mark JMHomeHourCellDelegate 点击事件
 - (void)composeHourCell:(JMHomeHourCell *)cell Model:(JMHomeHourModel *)model ButtonClick:(UIButton *)button {
     NSInteger mobClickIndex = button.tag - 100;
-    NSArray *itemArr = @[@"分享素材",@"单品分享",@"店铺分享"];
+    NSArray *itemArr = @[@"产品介绍",@"单品分享",@"店铺分享"];
     NSDictionary *tempDict = @{@"code" : [NSString stringWithFormat:@"%@",itemArr[mobClickIndex]]};
     [MobClick event:@"JMHomeHourCell_ButtonClickIndex" attributes:tempDict];
     

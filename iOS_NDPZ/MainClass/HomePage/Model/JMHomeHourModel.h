@@ -20,6 +20,7 @@
 @property (nonatomic, copy) NSString *activity_id;
 @property (nonatomic, copy) NSString *selling_num;
 @property (nonatomic, copy) NSString *stock;
+@property (nonatomic, copy) NSString *watermark_op;
 
 
 @end
@@ -42,6 +43,8 @@
  "selling_num" = 87;
  "start_time" = "2017-05-17T21:00:00";
  stock = 0;
+ "watermark_op" = "watermark/1/image/aHR0cDovL29wMDR5eGV0ci5ia3QuY2xvdWRkbi5jb20vNjEucG5nP2ltYWdlTW9ncjIvc3RyaXAvZm9ybWF0L3BuZy9xdWFsaXR5LzkwL2ludGVybGFjZS8xL3RodW1ibmFpbC8yMDAv/dissovle/50/gravity/Center/dx/0/dy/0/ws/1";
+ 
  }
  );
  }

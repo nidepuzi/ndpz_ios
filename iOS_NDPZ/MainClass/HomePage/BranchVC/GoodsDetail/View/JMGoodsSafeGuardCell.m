@@ -45,6 +45,7 @@ NSString *const JMGoodsSafeGuardCellIdentifier = @"JMGoodsSafeGuardCellIdentifie
     [button mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(guaranteeView.mas_bottom).offset(1);
         make.width.mas_equalTo(@(SCREENWIDTH));
+        make.height.mas_offset(@45);
         make.centerX.equalTo(weakSelf.contentView.mas_centerX);
     }];
     
@@ -82,11 +83,10 @@ NSString *const JMGoodsSafeGuardCellIdentifier = @"JMGoodsSafeGuardCellIdentifie
     
     
     
-    NSInteger count = 4;
     CGFloat accountH = 90;
-    NSArray *accountArr = @[@"天天上新",@"100%正品",@"全国包邮",@"七天退货"];
-    NSArray *imageArr = @[@"tiantian.png",@"zhengpin.png",@"quabguobaoyou.png",@"qitiantuihuo.png"];
-    for (int i = 0; i < count; i++) {
+    NSArray *accountArr = @[@"天天上新",@"100%正品",@"全国包邮"];
+    NSArray *imageArr = @[@"tiantian.png",@"zhengpin.png",@"quabguobaoyou.png"];
+    for (int i = 0; i < accountArr.count; i++) {
         UIView *accountV = [UIView new];
         [guaranteeView addSubview:accountV];
         [accountV mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -94,7 +94,7 @@ NSString *const JMGoodsSafeGuardCellIdentifier = @"JMGoodsSafeGuardCellIdentifie
 //            make.left.right.equalTo(guaranteeView);
             make.height.mas_equalTo(@(accountH));
             make.centerY.equalTo(guaranteeView.mas_centerY);
-            make.centerX.equalTo(guaranteeView.mas_right).multipliedBy(((CGFloat)i + 0.5) / ((CGFloat)count + 0));
+            make.centerX.equalTo(guaranteeView.mas_right).multipliedBy(((CGFloat)i + 0.5) / ((CGFloat)accountArr.count + 0));
         }];
         UIImageView *accountLabel = [UIImageView new];
         [accountV addSubview:accountLabel];

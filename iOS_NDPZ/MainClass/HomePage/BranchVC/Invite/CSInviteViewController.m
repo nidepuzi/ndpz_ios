@@ -99,15 +99,15 @@
         make.width.mas_equalTo(SCREENWIDTH - 20);
     }];
     
-    UIButton *invetButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [headerImageView addSubview:invetButton];
-    invetButton.backgroundColor = [UIColor colorWithHex:0xff5000];
-    invetButton.layer.cornerRadius = 2.;
-    [invetButton addTarget:self action:@selector(inviteClick) forControlEvents:UIControlEventTouchUpInside];
-    
-    [invetButton setTitle:@"邀请方式二  30天试用掌柜" forState:UIControlStateNormal];
-    invetButton.titleLabel.font = CS_UIFontSize(13.);
-    [invetButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//    UIButton *invetButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    [headerImageView addSubview:invetButton];
+//    invetButton.backgroundColor = [UIColor colorWithHex:0xff5000];
+//    invetButton.layer.cornerRadius = 2.;
+//    [invetButton addTarget:self action:@selector(inviteClick) forControlEvents:UIControlEventTouchUpInside];
+//    
+//    [invetButton setTitle:@"邀请方式二  30天试用掌柜" forState:UIControlStateNormal];
+//    invetButton.titleLabel.font = CS_UIFontSize(13.);
+//    [invetButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
     UIButton *invetZhengshiButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [headerImageView addSubview:invetZhengshiButton];
@@ -115,23 +115,23 @@
     invetZhengshiButton.layer.cornerRadius = 2.;
     [invetZhengshiButton addTarget:self action:@selector(inviteZhengshiClick) forControlEvents:UIControlEventTouchUpInside];
     
-    [invetZhengshiButton setTitle:@"邀请方式一  365天正式掌柜" forState:UIControlStateNormal];
+    [invetZhengshiButton setTitle:@"邀请好友成为掌柜" forState:UIControlStateNormal];
     invetZhengshiButton.titleLabel.font = CS_UIFontSize(13.);
     [invetZhengshiButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
     
     [invetZhengshiButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(titleLabel1.mas_bottom).offset(25);
+        make.top.equalTo(titleLabel1.mas_bottom).offset(30);
         make.width.mas_equalTo(@(SCREENWIDTH - 40));
         make.height.mas_equalTo(@(40));
         make.centerX.equalTo(weakSelf.view.mas_centerX);
     }];
-    [invetButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(invetZhengshiButton.mas_bottom).offset(15);
-        make.width.mas_equalTo(@(SCREENWIDTH - 40));
-        make.height.mas_equalTo(@(40));
-        make.centerX.equalTo(weakSelf.view.mas_centerX);
-    }];
+//    [invetButton mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(invetZhengshiButton.mas_bottom).offset(15);
+//        make.width.mas_equalTo(@(SCREENWIDTH - 40));
+//        make.height.mas_equalTo(@(40));
+//        make.centerX.equalTo(weakSelf.view.mas_centerX);
+//    }];
     
  
 

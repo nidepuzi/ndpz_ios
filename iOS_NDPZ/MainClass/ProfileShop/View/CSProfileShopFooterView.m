@@ -11,17 +11,21 @@
 @interface CSProfileShopFooterView ()
 
 @property (nonatomic, strong) UILabel *ableBlanceValueLabel;
+@property (nonatomic, strong) UIView *sectionView2;
+@property (nonatomic, strong) UIView *bottomView;
 
 @end
 
 @implementation CSProfileShopFooterView
 
-- (instancetype)initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame Type:(profileStatus)type {
     if (self = [super initWithFrame:frame]) {
+        self.statusType = type;
         [self createUI];
     }
     return self;
 }
+
 - (void)createUI {
     UIView *lineView1 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 15)];
     lineView1.backgroundColor = [UIColor lineGrayColor];
@@ -154,6 +158,7 @@
     UIView *sectionView2 = [[UIView alloc] initWithFrame:CGRectMake(0, lineView2.cs_max_Y, SCREENWIDTH, 50)];
     sectionView2.backgroundColor = [UIColor whiteColor];
     [self addSubview:sectionView2];
+    self.sectionView2 = sectionView2;
     
     UILabel *orderGuanliLabel = [UILabel new];
     orderGuanliLabel.textColor = [UIColor buttonTitleColor];
@@ -198,32 +203,88 @@
         make.height.mas_equalTo(@15);
     }];
 
+    UIView *bottomView = [UIView new];
+    [self addSubview:bottomView];
+    bottomView.backgroundColor = [UIColor whiteColor];
+    self.bottomView = bottomView;
     
-    NSArray *section2Title = @[@"待付款",@"待发货",@"退款退货"];
-    NSArray *section2Image = @[@"cs_profileShop_orderWaitPay",@"cs_profileShop_orderWaitFahuo",@"cs_profileShop_orderWancheng"];
+    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(self.mas_centerX);
+        make.top.equalTo(sectionView2.mas_bottom);
+        make.width.mas_equalTo(SCREENWIDTH);
+        make.height.mas_equalTo(80);
+    }];
+    
+    
+    NSArray *section2Title = nil;
+    NSArray *section2Image = nil;
+    if (self.statusType == profileStatusShiyong) {
+        [self.bottomView mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.height.mas_equalTo(160);
+        }];
+        section2Title = @[@"待付款",@"待发货",@"退款退货",@"加入正式掌柜"];
+        section2Image = @[@"cs_profileShop_orderWaitPay",@"cs_profileShop_orderWaitFahuo",@"cs_profileShop_orderWancheng",@"cs_profileShop_joinVip"];
+        [self sectionViewBottom:sectionView2 TitleArr:section2Title ImageArr:section2Image ItemHeight:itemHeight];
+    }else {
+        [self.bottomView mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.height.mas_equalTo(80);
+        }];
+        section2Title = @[@"待付款",@"待发货",@"退款退货"];
+        section2Image = @[@"cs_profileShop_orderWaitPay",@"cs_profileShop_orderWaitFahuo",@"cs_profileShop_orderWancheng"];
+        [self sectionViewBottom:sectionView2 TitleArr:section2Title ImageArr:section2Image ItemHeight:itemHeight];
+    }
+    
+}
+- (void)setStatusType:(profileStatus)statusType {
+    _statusType = statusType;
+    if (self.bottomView) {
+        [self.bottomView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    }else {
+        return;
+    }
+    if (statusType == profileStatusShiyong) {
+        [self.bottomView mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.height.mas_equalTo(160);
+        }];
+        NSArray *section2Title = @[@"待付款",@"待发货",@"退款退货",@"加入正式掌柜"];
+        NSArray *section2Image = @[@"cs_profileShop_orderWaitPay",@"cs_profileShop_orderWaitFahuo",@"cs_profileShop_orderWancheng",@"cs_profileShop_joinVip"];
+        [self sectionViewBottom:self.sectionView2 TitleArr:section2Title ImageArr:section2Image ItemHeight:80];
+    }else {
+        [self.bottomView mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.height.mas_equalTo(80);
+        }];
+        NSArray *section2Title = @[@"待付款",@"待发货",@"退款退货"];
+        NSArray *section2Image = @[@"cs_profileShop_orderWaitPay",@"cs_profileShop_orderWaitFahuo",@"cs_profileShop_orderWancheng"];
+        [self sectionViewBottom:self.sectionView2 TitleArr:section2Title ImageArr:section2Image ItemHeight:80];
+    }
+    
+}
+
+
+- (void)sectionViewBottom:(UIView *)view TitleArr:(NSArray *)titleArr ImageArr:(NSArray *)imageArr ItemHeight:(CGFloat)itemHeight {
     CGFloat spaceLine2 = SCREENWIDTH / 3;
-    for (int i = 0; i < section2Title.count; i++) {
+    for (int i = 0; i < titleArr.count; i++) {
         if (i % 3 == 0) {
-            UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(5, sectionView2.cs_max_Y + (i / 3) * itemHeight, SCREENWIDTH - 10, 1)];
+            UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(5,  (i / 3) * itemHeight, SCREENWIDTH - 10, 1)];
             lineView.backgroundColor = [UIColor lineGrayColor];
-            [self addSubview:lineView];
+            [self.bottomView addSubview:lineView];
         }
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.backgroundColor = [UIColor whiteColor];
-        [self addSubview:button];
+        [self.bottomView addSubview:button];
         button.tag = 106 + i;
         [button addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
-        button.frame = CGRectMake(spaceLine2 * (i % 3), sectionView2.cs_max_Y + (i / 3) * itemHeight + 1, spaceLine2, itemHeight);
+        button.frame = CGRectMake(spaceLine2 * (i % 3), (i / 3) * itemHeight + 1, spaceLine2, itemHeight);
         
         if ((i % 3 == 0) || (i % 3 == 1)) {
             UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(spaceLine2 - 1, 10, 1, itemHeight - 20)];
             lineView.backgroundColor = [UIColor lineGrayColor];
             [button addSubview:lineView];
-        }        
+        }
         
         UIImageView *iconImage = [UIImageView new];
         [button addSubview:iconImage];
-        iconImage.image = [UIImage imageNamed:section2Image[i]];
+        iconImage.image = [UIImage imageNamed:imageArr[i]];
         [iconImage mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(button.mas_centerX);
             make.centerY.equalTo(button.mas_centerY).offset(-10);
@@ -231,7 +292,7 @@
         }];
         UILabel *titleLabel = [UILabel new];
         [button addSubview:titleLabel];
-        titleLabel.text = section2Title[i];
+        titleLabel.text = titleArr[i];
         titleLabel.font = [UIFont systemFontOfSize:12.];
         titleLabel.textColor = [UIColor buttonTitleColor];
         [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -239,25 +300,24 @@
             make.centerX.equalTo(iconImage.mas_centerX);
         }];
         
-        UIView *lineV = [UIView new];
-        [self addSubview:lineV];
-        lineV.backgroundColor = [UIColor lineGrayColor];
-        kWeakSelf
-        [lineV mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.right.equalTo(weakSelf);
-            make.top.equalTo(sectionView2.mas_bottom).offset(80);
-            make.height.mas_equalTo(@1);
-        }];
-        
     }
+    UIView *lineV = [UIView new];
+    [self.bottomView addSubview:lineV];
+    lineV.backgroundColor = [UIColor lineGrayColor];
+    kWeakSelf
+    [lineV mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(weakSelf.bottomView);
+        //            make.top.equalTo(sectionView2.mas_bottom).offset(80);
+        make.bottom.equalTo(weakSelf.bottomView).offset(-1);
+        make.height.mas_equalTo(@1);
+    }];
     
-    
-    
-    
-    
-    
-
 }
+
+
+
+
+
 - (void)setAccountMoney:(NSNumber *)accountMoney {
     _accountMoney = accountMoney;
     self.ableBlanceValueLabel.text = [NSString stringWithFormat:@"%.2f",[accountMoney floatValue]];

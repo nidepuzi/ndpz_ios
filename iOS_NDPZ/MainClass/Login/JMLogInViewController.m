@@ -203,15 +203,15 @@
     //        make.height.mas_equalTo(140);
     //    }];
     
-    [self.phoneNumBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(weakSelf.wechatBtn.mas_top).offset(-20);
+    [self.wechatBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(weakSelf.phoneNumBtn.mas_top).offset(-20);
         make.centerX.equalTo(weakSelf.headView.mas_centerX);
         make.height.mas_equalTo(@40);
         make.width.mas_equalTo(SCREENWIDTH - 40);
     }];
     
-    [self.wechatBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(weakSelf.headView).offset(-80);
+    [self.phoneNumBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(weakSelf.headView).offset(-90);
         make.centerX.equalTo(weakSelf.headView.mas_centerX);
         make.height.mas_equalTo(@40);
         make.width.mas_equalTo(SCREENWIDTH - 40);
@@ -355,6 +355,12 @@
      */
 
     [[JMGlobal global] upDataLoginStatusSuccess:^(id responseObject) {
+        if ([responseObject[@"check_xiaolumm"] integerValue] != 1) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+            [JMNotificationCenter postNotificationName:@"WeChatLoginSuccess" object:nil];
+            [MBProgressHUD hideHUD];
+            return ;
+        }
         BOOL kIsBindPhone = [NSString isStringEmpty:[responseObject objectForKey:@"mobile"]];
         BOOL kIsVIP = [JMUserDefaults boolForKey:kISNDPZVIP];
         

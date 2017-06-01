@@ -284,14 +284,14 @@
     [popupController presentInViewController:self];
 }
 - (void)sectionButtonClick:(UIButton *)button {
-    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
-    if (![NSString isStringEmpty:vipStatus]) {
-        if ([vipStatus isEqual:@"15"]) { // 试用期 弹出框
-            [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] dismiss:^{
-            }];
-            return;
-        }
-    }
+//    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
+//    if (![NSString isStringEmpty:vipStatus]) {
+//        if ([vipStatus isEqual:@"15"]) { // 试用期 弹出框
+//            [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] dismiss:^{
+//            }];
+//            return;
+//        }
+//    }
     CSCreateBankCardController *vc = [[CSCreateBankCardController alloc] init];
     vc.accountMoney = self.accountMoney;
     [self.navigationController pushViewController:vc animated:YES];

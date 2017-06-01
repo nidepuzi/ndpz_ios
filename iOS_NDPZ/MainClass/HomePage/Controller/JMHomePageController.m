@@ -112,23 +112,23 @@
     [JumpUtils jumpToLocation:[notification.userInfo objectForKey:@"target_url"] viewController:self];
 }
 - (void)showNewFeatureView {
-    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
-    if (![NSString isStringEmpty:vipStatus]) {
-        if (![vipStatus isEqual:@"15"]) { // 试用期 弹出框
-            return;
-        }
-    }
-    NSString *timeString = [JMUserDefaults objectForKey:@"huiyuanshijian"];
-    NSString *currentTime = [NSString getCurrentTime];
-    
-    if (![NSString isStringEmpty:timeString]) {
-        _shengyushijian = [NSString numberOfDaysWithFromDate:currentTime ToData:timeString];
-        _shengyushijian = [NSString stringWithFormat:@"%ld",[_shengyushijian integerValue] + 1];
-        NSLog(@"%@",_shengyushijian);
-    }
-    if (![_shengyushijian isEqualToString:@"0"]) {
-        [self performSelector:@selector(joinVipPopView) withObject:self afterDelay:0.5];
-    }
+//    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
+//    if (![NSString isStringEmpty:vipStatus]) {
+//        if (![vipStatus isEqual:@"15"]) { // 试用期 弹出框
+//            return;
+//        }
+//    }
+//    NSString *timeString = [JMUserDefaults objectForKey:@"huiyuanshijian"];
+//    NSString *currentTime = [NSString getCurrentTime];
+//    
+//    if (![NSString isStringEmpty:timeString]) {
+//        _shengyushijian = [NSString numberOfDaysWithFromDate:currentTime ToData:timeString];
+//        _shengyushijian = [NSString stringWithFormat:@"%ld",[_shengyushijian integerValue] + 1];
+//        NSLog(@"%@",_shengyushijian);
+//    }
+//    if (![_shengyushijian isEqualToString:@"0"]) {
+//        [self performSelector:@selector(joinVipPopView) withObject:self afterDelay:0.5];
+//    }
     
 }
 #pragma mark 视图生命周期

@@ -36,6 +36,8 @@
 #import "CSBankWithdrawRecordingController.h"
 #import "NSArray+Reverse.h"
 #import "JMMaMaFansController.h"
+#import "CSEarningManageController.h"
+#import "WebViewController.h"
 
 #define Max_OffsetY  50
 #define  Statur_HEIGHT   [[UIApplication sharedApplication] statusBarFrame].size.height
@@ -54,6 +56,8 @@
     NSString *_earningsRecord;          // 收益记录
     NSString *_earningsRecordToday;     // 今日收益记录
     NSString *_visitorsToday;           // 今日访客
+    
+    NSDictionary *extraFiguresDic;      //
     
 }
 
@@ -152,6 +156,7 @@
     self.proHeaderView.mamaCenterModel = self.mamaCenterModel;
     _orderRecord = [NSString stringWithFormat:@"%@", self.mamaCenterModel.order_num];
     _earningsRecord = [NSString stringWithFormat:@"%.2f", [self.mamaCenterModel.carry_value floatValue]];
+    extraFiguresDic = self.mamaCenterModel.extra_figures;
     
 }
 // 折线图数据请求
@@ -205,6 +210,22 @@
     }
     self.proHeaderView.userInfoDic = dic;
     self.proFooterView.accountMoney = _accountMoney;
+    
+    CGFloat itemHeight = 160;
+    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
+    if (![NSString isStringEmpty:vipStatus]) {
+        if ([vipStatus isEqual:@"15"]) { // 试用期 弹出框
+            itemHeight = 240;
+        }
+    }
+    self.proFooterView.mj_h = 130 + itemHeight;
+    if (itemHeight == 160) {
+        self.proFooterView.statusType = profileStatusZhengshi;
+    }else {
+        self.proFooterView.statusType = profileStatusShiyong;
+    }
+    self.tableView.tableFooterView = self.proFooterView;
+    
 }
 
 #pragma ========== UI处理 ==========
@@ -220,7 +241,18 @@
     self.proHeaderView.delegate = self;
     self.tableView.tableHeaderView = self.proHeaderView;
     
-    self.proFooterView = [[CSProfileShopFooterView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 130 + 160)];
+    CGFloat itemHeight = 160;
+    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
+    if (![NSString isStringEmpty:vipStatus]) {
+        if ([vipStatus isEqual:@"15"]) { // 试用期 弹出框
+            itemHeight = 240;
+        }
+    }
+    if (itemHeight == 160) {
+        self.proFooterView = [[CSProfileShopFooterView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 130 + itemHeight) Type:profileStatusZhengshi];
+    }else {
+        self.proFooterView = [[CSProfileShopFooterView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 130 + itemHeight) Type:profileStatusShiyong];
+    }
     self.proFooterView.delegate = self;
     self.tableView.tableFooterView = self.proFooterView;
     
@@ -334,6 +366,7 @@
         case 101: {
             MaMaOrderListViewController *order = [[MaMaOrderListViewController alloc] init];
             order.orderRecord = _orderRecordToday;
+            order.orderListType = orderListWithToday;
             [self.navigationController pushViewController:order animated:YES];
             
         }
@@ -369,7 +402,7 @@
 /**
  *  99  --> 提现记录
  *  100 --> 提现
- *  101 --> 累计收益
+ *  101 --> 收益管理
  *  102 --> 业绩管理
  *  103 --> 优惠券
  *  104 --> 收货地址
@@ -383,7 +416,7 @@
         [[JMGlobal global] showLoginViewController];
         return;
     }
-    NSArray *itemArr = @[@"提现记录",@"提现",@"收益管理",@"业绩管理",@"优惠券",@"收货地址",@"全部订单",@"待付款",@"待发货",@"退款退货"];
+    NSArray *itemArr = @[@"提现记录",@"提现",@"收益管理",@"业绩管理",@"优惠券",@"收货地址",@"全部订单",@"待付款",@"待发货",@"退款退货",@"加入正式掌柜"];
     NSDictionary *tempDict = @{@"code" : [NSString stringWithFormat:@"%@",itemArr[button.tag - 99]]};
     [MobClick event:@"CSProfileShopController_ButtonClick" attributes:tempDict];
     
@@ -432,9 +465,10 @@
         }
             break;
         case 101: {
-            JMEarningListController *vc = [[JMEarningListController alloc] init];
-//            vc.totalStatus = TotalWithTodayTypeTotal;
-//            vc.earningsRecord = _earningsRecord;
+            CSEarningManageController *vc = [[CSEarningManageController alloc] init];
+            vc.totalEarning = _earningsRecord;
+            vc.weekEarning = [NSString stringWithFormat:@"%.2f",[extraFiguresDic[@"week_duration_total"] floatValue]];
+            vc.monthEarning = [NSString stringWithFormat:@"%.2f",[extraFiguresDic[@"month_duration_total"] floatValue]];
             [self.navigationController pushViewController:vc animated:YES];
         }
             break;
@@ -479,10 +513,36 @@
         }
             
             break;
+        case 109: {
+            NSLog(@"加入正式掌柜");
+            NSString *urlString = @"https://m.nidepuzi.com/mall/boutiqueinvite";
+            NSString *active = @"myInvite";
+            NSString *titleName = @"我的邀请";
+            NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+            [dict setValue:@8 forKey:@"activity_id"];
+            [dict setValue:urlString forKey:@"web_url"];
+            [dict setValue:active forKey:@"type_title"];
+            [dict setValue:titleName forKey:@"name_title"];
+            [self pushWebView:dict ShowNavBar:YES ShowRightShareBar:YES Title:nil];
+            
+        }
+            break;
         default:
             break;
     }
 }
+- (void)pushWebView:(NSMutableDictionary *)dict ShowNavBar:(BOOL)isShowNavBar ShowRightShareBar:(BOOL)isShowRightShareBar Title:(NSString *)title {
+    WebViewController *activity = [[WebViewController alloc] init];
+    if (title != nil) {
+        activity.titleName = title;
+    }
+    activity.webDiction = dict;
+    activity.isShowNavBar = isShowNavBar;
+    activity.isShowRightShareBtn = isShowRightShareBar;
+    [self.navigationController pushViewController:activity animated:YES];
+}
+
+
 - (void)pushOrderIndexVC:(NSInteger)index {
     JMOrderListController *order = [[JMOrderListController alloc] init];
     order.currentIndex = index;
