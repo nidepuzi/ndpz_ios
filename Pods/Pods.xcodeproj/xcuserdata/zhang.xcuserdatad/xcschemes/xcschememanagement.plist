@@ -9,7 +9,17 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>FMDB.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>HappyDNS.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>LKDBHelper.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -44,7 +54,7 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>RESideMenu.xcscheme</key>
+		<key>ReactiveCocoa.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -62,7 +72,17 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>3F36667F168FEB0CC49FF7F37E9C6B1D</key>
+		<key>20AD0374CEB903F71C8ACD670CF5ECC7</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>3528FA1DBE3E5C6AB799FC7BEA473755</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>4BDCAFE85F6F9F4BDD627FF8E32CCDD8</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -77,17 +97,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>7516B38F592765522F5FE736B8C99C58</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>778BF42A90768E00F1233FABD5BEC9B8</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>8BB034E2D6BAD1FDE9542FA563A49881</key>
+		<key>90440EF35E8F609F953B7753CADAEDF0</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -102,17 +112,27 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>9F12FB4A63E20F601CFB2E64A65B57C1</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C3D384F0892D27298BEDDF72E81052E5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D023315D6C6F388F3AE63B9414939863</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>D058B89EB3B3DF45457A2DCD3971AFFE</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>D0EA7BD0DF7B64D1D22AE99C93B3613D</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>E28D6C4FFEE0331D9152358EE6A61659</key>
 		<dict>
 			<key>primary</key>
 			<true/>

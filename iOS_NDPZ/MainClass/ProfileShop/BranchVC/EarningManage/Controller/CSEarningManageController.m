@@ -8,8 +8,14 @@
 
 #import "CSEarningManageController.h"
 #import "JMEarningListController.h"
+#import "JMMaMaCenterModel.h"
+
 
 @interface CSEarningManageController ()
+
+@property (nonatomic, copy) NSString *totalEarning;
+@property (nonatomic, copy) NSString *weekEarning;
+@property (nonatomic, copy) NSString *monthEarning;
 
 @end
 
@@ -29,7 +35,12 @@
     
     
 }
-
+- (void)setModel:(JMMaMaCenterModel *)model {
+    _model = model;
+    self.totalEarning = [NSString stringWithFormat:@"%.2f", [model.carry_value floatValue]];
+    self.weekEarning = [NSString stringWithFormat:@"%.2f",[model.extra_figures.week_duration_total floatValue]];
+    self.monthEarning = [NSString stringWithFormat:@"%.2f",[model.extra_figures.month_duration_total floatValue]];
+}
 #pragma mark ---- 创建UI
 - (void)createUI {
     UIScrollView *scrView = [[UIScrollView alloc] initWithFrame:self.view.bounds];

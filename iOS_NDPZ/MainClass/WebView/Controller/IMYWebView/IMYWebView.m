@@ -98,8 +98,8 @@
     _realWebView = webView;
 }
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    NSLog(@"new == %@",change[@"new"]);
-    NSLog(@"old == %@",change[@"old"]);
+//    NSLog(@"new == %@",change[@"new"]);
+//    NSLog(@"old == %@",change[@"old"]);
     if([keyPath isEqualToString:@"estimatedProgress"]) {
         self.estimatedProgress = [change[NSKeyValueChangeNewKey] doubleValue];
         if (_progressBlock) {

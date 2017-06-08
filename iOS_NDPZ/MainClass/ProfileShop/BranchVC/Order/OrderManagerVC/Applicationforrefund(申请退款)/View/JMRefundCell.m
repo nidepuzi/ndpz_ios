@@ -7,6 +7,8 @@
 //
 
 #import "JMRefundCell.h"
+#import "JMOrderDetailModel.h"
+
 
 @interface JMRefundCell ()
 
@@ -67,10 +69,10 @@
     
     
 }
-- (void)configWithModel:(JMAppForRefundModel *)model Index:(NSInteger)index {
+- (void)configWithModel:(CSOrderDetailChannels *)model Index:(NSInteger)index {
     
     self.nameLabel.text = model.name;
-    self.decLabel.text = model.desc;
+    self.decLabel.text = model.msg;
     
     if (index == 0) {
         self.iconImage.image = [UIImage imageNamed:@"refund_xiaolutuikuanImage"];
@@ -81,7 +83,7 @@
     }
     
 }
-- (void)configWithPayModel:(JMContinuePayModel *)model Index:(NSInteger)index {
+- (void)configWithPayModel:(CSOrderDetailChannels *)model Index:(NSInteger)index {
     self.nameLabel.text = model.name;
     self.decLabel.text = model.msg;
     if (index == 0) {

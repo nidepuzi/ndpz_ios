@@ -41,21 +41,8 @@
 
 
 @interface JMOrderDetailController ()<NSURLConnectionDataDelegate,UIAlertViewDelegate,UITableViewDelegate,UITableViewDataSource,JMOrderDetailHeaderViewDelegate,JMBaseGoodsCellDelegate,JMRefundViewDelegate,JMOrderPayOutdateViewDelegate,JMPopLogistcsControllerDelegate,JMOrderDetailSectionViewDelegate,JMRefundControllerDelegate> {
-    NSMutableArray *_refundStatusArray;        //退款状态
-    NSMutableArray *_refundStatusDisplayArray; // 退款状态描述
-    NSMutableArray *_orderStatusDisplay;
-    NSMutableArray *_orderStatus;
-    NSDictionary *_orderDic;
-    NSString *_packageStr;                     // 判断是否分包
-    NSDictionary *_refundDic;
-    NSString *tid;
-    NSString *_orderTid;
-    NSString *_addressGoodsID;
-    BOOL _isTimeLineView;
     BOOL _isPopChoiseRefundWay;                // 是否弹出选择退款方式
     BOOL _isTeamBuy;                           // 是否为团购订单
-    NSArray *_choiseRefundArr;                 // 退款方式数组
-    NSDictionary *_choiseRefundDict;           // 退款方式
     
     NSInteger _sectionCount;
     NSInteger _rowCount;
@@ -81,14 +68,7 @@
  *  订单详情模型
  */
 @property (nonatomic,strong) JMOrderDetailModel *orderDetailModel;
-/**
- *  订单中商品信息模型
- */
-@property (nonatomic,strong) JMOrderGoodsModel *orderGoodsModel;
-/**
- *  收货地址Model
- */
-@property (nonatomic,strong) JMEditAddressModel *addressModel;
+
 /**
  *  包裹信息模型
  */
@@ -118,6 +98,8 @@
 
 @property (nonatomic, strong) JMShareModel *shareModel;
 @property (nonatomic, strong) CSSharePopController *sharPopVC;
+
+@property (nonatomic, strong) CSOrderDetailChannels *channelsModel;
 
 @end
 
@@ -193,20 +175,7 @@
 //    [self createTableFooterView];
 }
 
-- (void)setAllOrderModel:(JMAllOrderModel *)allOrderModel {
-    _allOrderModel = allOrderModel;
-    NSArray *arr = allOrderModel.orders;
-    NSDictionary *dic = [arr[0] mj_keyValues];
-    NSInteger countNum = [dic[@"status"] integerValue];
-    NSInteger refundNum = [dic[@"refund_status"] integerValue];
-    BOOL isCountNum = !(countNum == ORDER_STATUS_REFUND_CLOSE || countNum == ORDER_STATUS_TRADE_CLOSE);
-    BOOL isRefundNum = (refundNum == REFUND_STATUS_NO_REFUND || refundNum == REFUND_STATUS_REFUND_CLOSE);
-    if (isCountNum && isRefundNum) {
-        _isTimeLineView = YES;
-    }else {
-        _isTimeLineView = NO;
-    }
-}
+
 #pragma mrak 刷新界面
 - (void)createPullHeaderRefresh {
     kWeakSelf
@@ -240,31 +209,11 @@
     self.outDateView = outDateView;
     self.outDateView.delegate = self;
     
-//    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(weakSelf.view);
-//        make.top.equalTo(weakSelf.view).offset(64);
-//        make.width.mas_equalTo(@(SCREENWIDTH));
-//        make.bottom.equalTo(weakSelf.outDateView.mas_top);
-//    }];
-//    [self.outDateView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.bottom.equalTo(weakSelf.view);
-//        make.width.mas_equalTo(@(SCREENWIDTH));
-//        make.height.mas_equalTo(@(60));
-//    }];
-    
-    
-    
 }
 - (void)createTableHeaderView {
-//    CGFloat _timeLineHeight = 0.;
-//    if (_isTimeLineView) {
-//        _timeLineHeight = 60.;
-//    }else {
-//    }
     JMOrderDetailHeaderView *orderDetailHeaderView = [[JMOrderDetailHeaderView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 390)];
     self.orderDetailHeaderView = orderDetailHeaderView;
     self.orderDetailHeaderView.delegate = self;
-//    self.orderDetailHeaderView.isTimeLineView = _isTimeLineView;
     self.tableView.tableHeaderView = self.orderDetailHeaderView;
 }
 - (void)createTableFooterView {
@@ -296,8 +245,6 @@
 }
 #pragma mark 请求数据
 - (void)loadDataSource {
-//    NSMutableDictionary *params = [NSMutableDictionary dictionary];
-//    params[@"device"] = @"app";  http://m.xiaolumeimei.com/rest/v2/trades/订单商品id?device=app
     [JMHTTPManager requestWithType:RequestTypeGET WithURLString:self.urlString WithParaments:nil WithSuccess:^(id responseObject) {
         if (!responseObject) return ;
         [self.orderGoodsDataSource removeAllObjects];
@@ -314,102 +261,57 @@
     }];
 }
 - (void)refetchData:(NSDictionary *)dicJson {
-    _orderDic = dicJson;
-    _orderStatus = [NSMutableArray array];
-    _orderStatusDisplay = [NSMutableArray array];
-    _refundStatusArray = [NSMutableArray array];
-    _refundStatusDisplayArray = [NSMutableArray array];
-    if ([dicJson objectForKey:@"order_type"]) {  
-        if ([dicJson[@"order_type"] integerValue] == 3) {  // 这里是判断是否为开团订单,默认NO.开团为YES
-            _isTeamBuy = YES;
-        }
-        _isCanRefund = [dicJson[@"can_refund"] boolValue];
+    JMOrderDetailModel *orderDetailModel = [JMOrderDetailModel mj_objectWithKeyValues:dicJson];
+    self.orderDetailModel = orderDetailModel;
+    if ([orderDetailModel.order_type integerValue] == 3) {
+        _isTeamBuy = YES;
     }
+    _isCanRefund = orderDetailModel.can_refund;
     
-    _refundDic = dicJson[@"extras"];
-    tid = [dicJson objectForKey:@"id"];
-    _orderTid = dicJson[@"tid"];
-//    [self loadShareRedpage:_orderTid]; // 暂时没有红包数据
-    // ===== 订单详情主数据源模型 =======
-    self.orderDetailModel = [JMOrderDetailModel mj_objectWithKeyValues:dicJson];
-    // ===== 订单详情收货地址数据源模型 =======
-    NSDictionary *addressDic = dicJson[@"user_adress"];
-    self.addressModel = [JMEditAddressModel mj_objectWithKeyValues:addressDic];
-    _addressGoodsID = addressDic[@"id"];
-    // ===== 订单详情商品信息数据源模型 =======
-    NSArray *goodsArr = dicJson[@"orders"];
-    for (NSDictionary *goodsDic in goodsArr) {
-        self.orderGoodsModel = [JMOrderGoodsModel mj_objectWithKeyValues:goodsDic];
-        [self.orderGoodsDataSource addObject:self.orderGoodsModel];
-        [_orderStatus addObject:goodsDic[@"status"]];
-        [_orderStatusDisplay addObject:goodsDic[@"status_display"]];
-        [_refundStatusArray addObject:goodsDic[@"refund_status"]];
-        [_refundStatusDisplayArray addObject:goodsDic[@"refund_status_display"]];
-    }
-    // ===== 这里修改物流视图赋值 =====
-    self.showViewVC.goodsID = _addressGoodsID;
-    self.showViewVC.logisticsStr = tid;
-    
-    // ===== 订单详情包裹分包数据源模型 =======
-    NSArray *packArr = dicJson[@"package_orders"];
-    NSLog(@"%@",packArr);
-    for (NSDictionary *packDic in packArr) {
-        self.packageModel = [JMPackAgeModel mj_objectWithKeyValues:packDic];
-        [self.logisticsArr addObject:self.packageModel];
-    }
-    NSLog(@"%@",self.logisticsArr);
+    self.showViewVC.logisticsStr = self.orderDetailModel.goodsID;
+    self.showViewVC.goodsID = self.orderDetailModel.user_adress.userAddressID;
     // ===== 订单退款选择是否弹出选择退款方式 ===== //
-    _choiseRefundArr = [NSArray array];
-    _choiseRefundArr = _refundDic[@"refund_choices"];
-    if (_choiseRefundArr.count < 2) {
+    if (self.orderDetailModel.extras.channels.count < 2) {
         _isPopChoiseRefundWay = NO;
     }else {
         _isPopChoiseRefundWay = YES;
     }
+    self.orderGoodsDataSource = self.orderDetailModel.orders;
+    self.logisticsArr = self.orderDetailModel.package_orders;
+    
     // 这里对数据进行赋值,当订单详情为团购的时候,底部不显示继续支付或者分享红包,只显示查看进度
     self.orderDetailHeaderView.orderDetailModel = self.orderDetailModel;
 //    self.orderDetailFooterView.orderDetailModel = self.orderDetailModel;
-    NSInteger statusCount = [dicJson[@"status"] integerValue];
+    NSInteger statusCount = [self.orderDetailModel.status integerValue];
     self.outDateView.statusCount = statusCount;
     if (statusCount >= 6) {
         self.tableView.cs_h = SCREENHEIGHT - 64;
         self.outDateView.cs_h = 0.;
     }else if (statusCount == 1) {
-        self.outDateView.createTimeStr = dicJson[@"created"];
+        self.outDateView.createTimeStr = self.orderDetailModel.created;
     }
-//    self.outDateView.isTeamBuy = _isTeamBuy;
     
-    
-//    if (statusCount == ORDER_STATUS_WAITPAY) {
-//        self.outDateView.hidden = NO;
-//    }else {
-//        self.outDateView.hidden = YES;
-//    }
-    // == 包裹信息的分包判断 == //
-//    NSInteger count = [self.orderDetailModel.status integerValue];
-//    NSString *statusDes = self.orderDetailModel.status_display;
     NSInteger statusCode = [self.orderDetailModel.status integerValue];
-    bool isCanChangeAddress = [self.orderDetailModel.can_change_address boolValue];
+    bool isCanChangeAddress = self.orderDetailModel.can_change_address;
     if (statusCode == 2 && isCanChangeAddress) {
         self.orderDetailHeaderView.addressView.userInteractionEnabled = YES;
-//        self.orderDetailHeaderView.logisticsView.userInteractionEnabled = YES;
         isChakanWuliu = YES;
     }else {
         isChakanWuliu = NO;
     }
-    NSDictionary *goodsDict = goodsArr[0];
+    JMOrderGoodsModel *goodsModel = self.orderDetailModel.orders[0];
+    NSInteger goodsCount = self.orderDetailModel.orders.count;
     NSInteger number = 0;
-    NSString *package = goodsDict[@"package_order_id"];
-    _packageStr = package;
+    NSString *package = goodsModel.package_order_id;
     NSMutableArray *dataArr = [NSMutableArray array];
-    for (int i = 0; i < goodsArr.count; i++) {
+    for (int i = 0; i < goodsCount; i++) {
         [dataArr addObject:self.orderGoodsDataSource[number]];
         number ++;
-        if (number == goodsArr.count) {
+        if (number == goodsCount) {
             [self.dataSource addObject:dataArr];
         }else {
-            NSDictionary *dict2 = goodsArr[number];
-            NSString *package2 = dict2[@"package_order_id"];
+            JMOrderGoodsModel *goodsModel = self.orderDetailModel.orders[number];
+            NSString *package2 = goodsModel.package_order_id;
             if ([package isEqual:package2]) {
             }else {
                 package = package2;
@@ -418,7 +320,8 @@
             }
         }
     }
-    _checkTeamBuy = [NSString stringWithFormat:@"%@/mall/order/spell/group/%@?from_page=order_detail",Root_URL,_orderTid];
+    _checkTeamBuy = [NSString stringWithFormat:@"%@/mall/order/spell/group/%@?from_page=order_detail",Root_URL,self.orderDetailModel.tid];
+    
 }
 #pragma mark tableHeaderView点击事件 ->修改地址/物流
 - (void)composeHeaderTapView:(JMOrderDetailHeaderView *)headerView TapClick:(NSInteger)index {
@@ -428,7 +331,7 @@
         editVC.orderEditAddress = YES;
         editVC.cartsPayInfoLevel = 1;
         editVC.addressLevel = 1;
-        editVC.orderDict = (NSMutableDictionary *)[NSDictionary dictionaryWithDictionary:_orderDic];
+        editVC.orderAddressModel = self.orderDetailModel.user_adress;
         [self.navigationController pushViewController:editVC animated:YES];
     }else {
         // 修改物流  (如果需要判断是否可以更改物流在这里弹出一个提示)
@@ -455,8 +358,7 @@
     if (!cell) {
         cell = [[JMBaseGoodsCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:JMBaseGoodsCellIdentifier];
     }
-    self.orderGoodsModel = [[JMOrderGoodsModel alloc] init];
-    self.orderGoodsModel = self.dataSource[indexPath.section][indexPath.row];
+    JMOrderGoodsModel *orderGoodsMOdel = self.dataSource[indexPath.section][indexPath.row];
     if (self.logisticsArr.count == 0) {
         self.packageModel = nil;
     }else {
@@ -465,7 +367,7 @@
     cell.isTeamBuy = _isTeamBuy;
     cell.isCanRefund = _isCanRefund;
 //    [cell configWithModel:self.orderGoodsModel PackageModel:self.packageModel SectionCount:indexPath.section RowCount:indexPath.row];
-    [cell configWithModel:self.orderGoodsModel SectionCount:indexPath.section RowCount:indexPath.row];
+    [cell configWithModel:orderGoodsMOdel SectionCount:indexPath.section RowCount:indexPath.row];
     cell.delegate = self;
 //    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];//刷新行
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -511,16 +413,6 @@
     sectionView.layer.borderColor = [UIColor lineGrayColor].CGColor;
     sectionView.layer.borderWidth = 1.;
 
-//    UIButton *xiangqingButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    [sectionView addSubview:xiangqingButton];
-//    xiangqingButton.frame = CGRectMake(SCREENWIDTH - 80, 7, 60, 25);
-//    xiangqingButton.layer.cornerRadius = 2.;
-//    xiangqingButton.layer.borderColor = [UIColor dingfanxiangqingColor].CGColor;
-//    xiangqingButton.layer.borderWidth = 0.5f;
-//    xiangqingButton.titleLabel.font = CS_UIFontSize(12.);
-//    [xiangqingButton setTitleColor:[UIColor buttonTitleColor] forState:UIControlStateNormal];
-//    xiangqingButton.tag = 1 + section;
-    
     UIButton *settingButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [sectionView addSubview:settingButton];
     settingButton.frame = CGRectMake(SCREENWIDTH - 80, 7, 60, 25);
@@ -531,31 +423,18 @@
     [settingButton setTitleColor:[UIColor buttonTitleColor] forState:UIControlStateNormal];
     settingButton.tag = 1 + section;
     
-//    [xiangqingButton setTitle:@"申请售后" forState:UIControlStateNormal];
     [settingButton setTitle:@"查看物流" forState:UIControlStateNormal];
-//    [xiangqingButton addTarget:self action:@selector(sectionFooterClick:) forControlEvents:UIControlEventTouchUpInside];
     [settingButton addTarget:self action:@selector(settingButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    
     return sectionView;
 }
 // 查看物流
 - (void)settingButtonClick:(UIButton *)button {
     NSInteger sectionIndex = button.tag - 1;
     if (isChakanWuliu) {
-        NSLog(@"可以查看物流");
         [self queryLogInfo:sectionIndex];
     }else {
-        NSLog(@"不可以查看物流");
     }
 }
-//// 申请售后
-//- (void)settingButtonClick:(UIButton *)button {
-//    NSInteger sectionIndex = button.tag - 1000;
-//    if (_isCanRefund && ) {
-//        
-//    }
-//}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSInteger section = indexPath.section;
     [self queryLogInfo:section];
@@ -588,22 +467,15 @@
     JMOrderGoodsModel *model = arr[row];
     if (button.tag == 100) {
         self.packageModel = self.logisticsArr.count > 0 ? self.logisticsArr[section] : nil;
-//        NSDictionary *dcit = [self.packageModel mj_keyValues];
-//        NSInteger statusCode = [self.orderDetailModel.status integerValue];
-//        BOOL isWarehouseOrder = (self.packageModel.book_time != nil && self.packageModel.assign_time == nil && self.packageModel.weight_time == nil && statusCode == 2);
-//        if (isWarehouseOrder) {
-//            [self createClassPopView:@"提示" Message:orderDetailAlreadyOrder Index:3];
-//        }else { // 如果只有一种退款方式不弹出选择框
-            if (_isPopChoiseRefundWay) {
-                self.refundVC.ordergoodsModel = model;
-                self.refundVC.refundDic = _refundDic;
-                [[JMGlobal global] showpopBoxType:popViewTypeBox Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, 260) ViewController:self.refundVC WithBlock:^(UIView *maskView) {
-                }];
-            }else {
-                [self refundEntry];
-//                [self createClassPopView:@"铺子退款说明" Message:orderDetailReturnMoney Index:1];
-            }
-//        }
+        if (_isPopChoiseRefundWay) {
+            self.refundVC.ordergoodsModel = model;
+            self.refundVC.channelsArr = self.orderDetailModel.extras.channels;
+            self.refundVC.isRefund = YES;
+            [[JMGlobal global] showpopBoxType:popViewTypeBox Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, 260) ViewController:self.refundVC WithBlock:^(UIView *maskView) {
+            }];
+        }else {
+            [self refundEntry];
+        }
     }else if (button.tag == 101) {
         NSString *string = [NSString stringWithFormat:@"%@/rest/v1/order/%@/confirm_sign", Root_URL, model.orderGoodsID];
         NSLog(@"url string = %@", string);
@@ -628,7 +500,7 @@
         ShenQingTuiHuoController *tuiHuoVC = [[ShenQingTuiHuoController alloc] initWithNibName:@"ShenQingTuiHuoController" bundle:nil];
         tuiHuoVC.refundPrice = [model.payment floatValue];
         tuiHuoVC.dingdanModel = model;
-        tuiHuoVC.tid = tid;
+        tuiHuoVC.tid = self.orderDetailModel.goodsID;
         tuiHuoVC.oid = model.orderGoodsID;
         tuiHuoVC.status = model.status_display;
         tuiHuoVC.button = button;
@@ -639,9 +511,9 @@
 /**
  *  选择退款方式 -> 极速退款 审核退款
  */
-- (void)Clickrefund:(JMRefundController *)click OrderGoods:(JMOrderGoodsModel *)goodsModel Refund:(NSDictionary *)refundDic {
-    _choiseRefundDict = refundDic;
+- (void)Clickrefund:(JMRefundController *)click OrderGoods:(JMOrderGoodsModel *)goodsModel Refund:(CSOrderDetailChannels *)channelsModel {
 //    [self createClassPopView:@"铺子退款说明" Message:orderDetailReturnMoney Index:1];
+    self.channelsModel = channelsModel;
     [self refundEntry];
 }
 #pragma mark 订单倒计时点击时间
@@ -649,7 +521,8 @@
     if (index == 100) { // 取消支付
         [self createClassPopView:@"你的铺子" Message:orderDetailCancelOrder Index:2];
     }else if (index == 101) { // 继续支付
-        self.refundVC.continuePayDic = _refundDic;
+        self.refundVC.channelsArr = self.orderDetailModel.extras.channels;
+        self.refundVC.isRefund = NO;
         [[JMGlobal global] showpopBoxType:popViewTypeBox Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, 260) ViewController:self.refundVC WithBlock:^(UIView *maskView) {
         }];
     }else if (index == 102) {
@@ -658,53 +531,14 @@
         [CSCustomerServiceManager defaultManager].popBlock = ^() {
             [weakSelf.navigationController popViewControllerAnimated:YES];
         };
-        
-        
-        // 联系客服
-//        [[CSCustomerServiceManager defaultManager] registerUserInfo:[JMStoreManager getDataDictionary:@"userProfile"]];
-//        QYSource *source = [[QYSource alloc] init];
-//        source.title =  @"你的铺子";
-//        source.urlString = @"https://m.nidepuzi.com";
-//        
-//        QYSessionViewController *sessionViewController = [[QYSDK sharedSDK] sessionViewController];
-////        sessionViewController.delegate = self;
-//        sessionViewController.sessionTitle = @"你的铺子";
-//        sessionViewController.source = source;
-//        
-//        sessionViewController.navigationController.navigationBar.translucent = NO;
-//        NSDictionary * dict = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
-//        sessionViewController.navigationController.navigationBar.titleTextAttributes = dict;
-//        [sessionViewController.navigationController.navigationBar setBarTintColor:[UIColor colorWithHex:0x62a8ea]];
-//        sessionViewController.navigationItem.leftBarButtonItem =
-//        [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain
-//                                        target:self action:@selector(onBack)];
-//        [self.navigationController pushViewController:sessionViewController animated:YES];
-        
-        //分享红包
-//        if (redPageNumber > 0) {
-//            [[JMGlobal global] showpopBoxType:popViewTypeShare Frame:CGRectMake(0, SCREENHEIGHT, SCREENWIDTH, kAppShareViewHeight) ViewController:self.shareView WithBlock:^(UIView *maskView) {
-//            }];
-//        }else {
-//           [self createClassPopView:@"分享提示" Message:redPageShareNotEnough Index:4];
-//        }
-    }else {  // 查看拼团进展
-//        NSDictionary *diction = [NSMutableDictionary dictionary];
-//        [diction setValue:_checkTeamBuy forKey:@"web_url"];
-//        [diction setValue:@"teamBuySuccessNo" forKey:@"type_title"];
-//        WebViewController *webView = [[WebViewController alloc] init];
-//        webView.webDiction = [NSMutableDictionary dictionaryWithDictionary:diction];
-//        webView.isShowNavBar = true;
-//        webView.isShowRightShareBtn = false;
-//        [self.navigationController pushViewController:webView animated:YES];
-        
-        
+    }else {
     }
 }
 
 
 - (void)Clickrefund:(JMRefundController *)click ContinuePay:(NSDictionary *)continueDic {
     [MBProgressHUD showLoading:@"支付处理中....."];
-    NSString *urlStr = [NSString stringWithFormat:@"%@/rest/v2/trades/%@",Root_URL,tid];
+    NSString *urlStr = [NSString stringWithFormat:@"%@/rest/v2/trades/%@",Root_URL,self.orderDetailModel.goodsID];
     NSMutableString *string = [[NSMutableString alloc] initWithString:urlStr];
     [string appendString:@"/charge"];
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
@@ -744,7 +578,7 @@
 }
 - (void)pushShareVC {
     JMPayShareController *payShareVC = [[JMPayShareController alloc] init];
-    payShareVC.ordNum = tid;
+    payShareVC.ordNum = self.orderDetailModel.goodsID;
     [self.navigationController pushViewController:payShareVC animated:YES];
 }
 - (void)popToview {
@@ -815,19 +649,7 @@
     [self.view addSubview:self.classPopView];
     [self showClassPopVoew];
     if (index == 0) {
-//        self.classPopView.block = ^(NSInteger index) {
-//            [weakSelf hideClassPopView];
-//            if (index == 101) {
-//                [weakSelf createChangeLogisticsView];
-//            }else { }
-//        };
     }else if (index == 1) {
-//        self.classPopView.block = ^(NSInteger index) {
-//            [weakSelf hideClassPopView];
-//            if (index == 101) {
-//                [weakSelf refundEntry];
-//            }
-//        };
     }else if (index == 2) {
         self.classPopView.block = ^(NSInteger index) {
             [weakSelf hideClassPopView];
@@ -836,11 +658,6 @@
             }
         };
     }else if (index == 3) {
-//        self.classPopView.block = ^(NSInteger index) {
-//            [weakSelf hideClassPopView];
-//            if (index == 101) {
-//            }
-//        };
     }else if (index == 4) {
         self.classPopView.block = ^(NSInteger index) {
             [weakSelf hideClassPopView];
@@ -862,36 +679,15 @@
     if (_isPopChoiseRefundWay == YES) {
         JMApplyForRefundController *refundVC = [[JMApplyForRefundController alloc] init];
         refundVC.dingdanModel = model;
-        refundVC.refundDic = _choiseRefundDict;
-        refundVC.tid = tid;
+        refundVC.channelsModel = self.channelsModel;
         [self.navigationController pushViewController:refundVC animated:YES];
-        
-//        ShenQingTuikuanController *tuikuanVC = [[ShenQingTuikuanController alloc] initWithNibName:@"ShenQingTuikuanController" bundle:nil];
-//        tuikuanVC.dingdanModel = model;
-//        tuikuanVC.refundDic = _choiseRefundDict;
-//        tuikuanVC.tid = tid;
-//        tuikuanVC.oid = model.orderGoodsID;
-//        tuikuanVC.status = model.status_display;
-//        [self.navigationController pushViewController:tuikuanVC animated:YES];
     }else {
         JMApplyForRefundController *refundVC = [[JMApplyForRefundController alloc] init];
         refundVC.dingdanModel = model;
-        if (_choiseRefundArr.count > 0) {
-            refundVC.refundDic = _choiseRefundArr[0];
+        if (self.orderDetailModel.extras.channels.count > 0) {
+            refundVC.channelsModel = self.orderDetailModel.extras.channels[0];
         }
-        refundVC.tid = tid;
         [self.navigationController pushViewController:refundVC animated:YES];
-        
-        
-//        ShenQingTuikuanController *tuikuanVC = [[ShenQingTuikuanController alloc] initWithNibName:@"ShenQingTuikuanController" bundle:nil];
-//        tuikuanVC.dingdanModel = model;
-//        if (_choiseRefundArr.count > 0) {
-//            tuikuanVC.refundDic = _choiseRefundArr[0];
-//        }
-//        tuikuanVC.tid = tid;
-//        tuikuanVC.oid = model.orderGoodsID;
-//        tuikuanVC.status = model.status_display;
-//        [self.navigationController pushViewController:tuikuanVC animated:YES];
     }
 }
 #pragma mark 取消待支付订单

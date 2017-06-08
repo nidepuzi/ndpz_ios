@@ -10,6 +10,7 @@
 #import "QYPOPSDK.h"
 #import "JMStoreManager.h"
 #import "WebViewController.h"
+#import "CSUserProfileModel.h"
 
 
 @interface CSCustomerServiceManager () <QYConversationManagerDelegate, QYSessionViewDelegate>
@@ -29,14 +30,14 @@
 
 - (void)showCustomerService:(UIViewController *)vc {
     [[[QYSDK sharedSDK] conversationManager] setDelegate:self];
-    NSDictionary *dic = [JMStoreManager getDataDictionary:@"userProfile"];
-    if (dic == nil || dic.count == 0) {
+//    NSDictionary *dic = [JMStoreManager getDataDictionary:@"userProfile"];
+    if ([CSUserProfileModel sharInstance] == nil) {
         [[QYSDK sharedSDK] customUIConfig].rightBarButtonItemColorBlackOrWhite = NO;
         QYUserInfo *userInfo = [[QYUserInfo alloc] init];
         userInfo.userId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
         [[QYSDK sharedSDK] setUserInfo:userInfo];
     }else {
-        [self registerUserInfo:dic];
+        [self registerUserInfo:[CSUserProfileModel sharInstance]];
     }
     
     QYSource *source = [[QYSource alloc] init];
@@ -75,31 +76,28 @@
 }
 
 
-- (void)registerUserInfo:(NSDictionary *)dic {
-    if (dic == nil || dic.count == 0) {
-        return;
-    }
-    [[QYSDK sharedSDK] customUIConfig].customerHeadImageUrl = dic[@"thumbnail"];
+- (void)registerUserInfo:(CSUserProfileModel *)model {
+    [[QYSDK sharedSDK] customUIConfig].customerHeadImageUrl = model.thumbnail;
     [[QYSDK sharedSDK] customUIConfig].rightBarButtonItemColorBlackOrWhite = NO;
     QYUserInfo *userInfo = [[QYUserInfo alloc] init];
-    userInfo.userId = dic[@"id"];
+    userInfo.userId = model.profileID;
     NSArray *userArr = @[@{
                              @"key":@"real_name",
-                             @"value":dic[@"nick"]
+                             @"value":model.nick
                              },
                          @{
                              @"key":@"mobile_phone",
-                             //                             @"hidden":@false
+                             @"value":model.mobile
                              },
                          @{
                              @"key":@"email",
-                             @"value":dic[@"email"]
+                             @"value":model.email
                              },
                          @{
                              @"index":@0,
                              @"key":@"account",
                              @"label":@"账号",
-                             @"value":dic[@"mobile"]
+                             @"value":model.mobile
                              },
                          @{
                              @"index":@1,
@@ -111,7 +109,7 @@
                              @"index":@5,
                              @"key":@"reg_date",
                              @"label":@"注册日期",
-                             @"value":dic[@"created"]
+                             @"value":model.created
                              },
                          @{
                              @"index":@6,
@@ -149,13 +147,13 @@
  *  点击聊天窗口右边或左边会话列表按钮回调
  */
 - (void)onTapSessionListEntrance {
-    NSLog(@"\n 点击聊天窗口右边或左边会话列表按钮回调");
+//    NSLog(@"\n 点击聊天窗口右边或左边会话列表按钮回调");
 }
 - (void)onReceiveMessage:(QYMessageInfo *)message {
-    NSLog(@"%@",message);
+//    NSLog(@"%@",message);
 }
 - (void)onSessionListChanged:(NSArray<QYSessionInfo*> *)sessionList {
-    NSLog(@"%@",sessionList);
+//    NSLog(@"%@",sessionList);
 }
 
 

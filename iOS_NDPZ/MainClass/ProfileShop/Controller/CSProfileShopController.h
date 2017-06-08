@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+UIKIT_EXTERN const CGFloat CSMaxScrollOffserY;
+
 @interface CSProfileShopController : UIViewController
 
 @end

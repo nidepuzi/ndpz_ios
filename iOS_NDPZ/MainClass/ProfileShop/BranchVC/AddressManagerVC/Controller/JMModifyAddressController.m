@@ -14,6 +14,7 @@
 #import <Photos/Photos.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "JMRichTextTool.h"
+#import "JMOrderDetailModel.h"
 
 
 #define iOS7Later ([UIDevice currentDevice].systemVersion.floatValue >= 7.0f)
@@ -92,9 +93,8 @@
     if (self.isAdd) {
         titleString = @"新增收货地址";
     }
-    
-    addressID = self.orderDict[@"user_adress"][@"id"];
-    logistic_company_code = self.orderDict[@"logistic_company_code"];
+    addressID = self.orderAddressModel.userAddressID;
+//    logistic_company_code = self.orderDict[@"logistic_company_code"];
     
     [self createNavigationBarWithTitle:titleString selecotr:@selector(backClick)];
     self.view.backgroundColor = [UIColor countLabelColor];
@@ -374,15 +374,15 @@
     if (self.isAdd) {
     }else {
         if (self.orderEditAddress) {
-            NSMutableDictionary *addressDict = [NSMutableDictionary dictionary];
-            addressDict = self.orderDict[@"user_adress"];
-            self.consigneeField.text = addressDict[@"receiver_name"];
-            self.phoneNumField.text = addressDict[@"receiver_mobile"];
-            self.addressTextView.text = addressDict[@"receiver_address"];
+//            NSMutableDictionary *addressDict = [NSMutableDictionary dictionary];
+//            addressDict = self.orderDict[@"user_adress"];
+            self.consigneeField.text = self.orderAddressModel.receiver_name;
+            self.phoneNumField.text = self.orderAddressModel.receiver_mobile;
+            self.addressTextView.text = self.orderAddressModel.receiver_address;
             self.idCardField.text = _addressModel.identification_no;
-            province = addressDict[@"receiver_state"];
-            city = addressDict[@"receiver_city"];
-            county = addressDict[@"receiver_district"];
+            province = self.orderAddressModel.receiver_state;
+            city = self.orderAddressModel.receiver_city;
+            county = self.orderAddressModel.receiver_district;
             self.areaField.text = [NSString stringWithFormat:@"%@%@%@",province,city,county];
             
         }else {
@@ -827,7 +827,7 @@
     }
     if (self.orderEditAddress) {
         parame[@"logistic_company_code"] = [NSNull null];
-        parame[@"referal_trade_id"] = self.orderDict[@"id"];
+        parame[@"referal_trade_id"] = self.orderAddressModel.userAddressID;
     }
     return parame;
 }

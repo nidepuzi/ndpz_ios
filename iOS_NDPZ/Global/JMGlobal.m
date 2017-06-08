@@ -18,6 +18,9 @@
 #import "AppDelegate.h"
 #import "CSNetFailView.h"
 #import <sys/sysctl.h>
+#import "CSUserProfileModel.h"
+#import "CSUserProfileManager.h"
+#import "CSDataBase.h"
 
 
 static BOOL isNetPrompt;
@@ -211,71 +214,26 @@ static NSString *userCustomerID;
     NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/users/profile", Root_URL];
     [JMHTTPManager requestWithType:RequestTypeGET WithURLString:urlString WithParaments:nil WithSuccess:^(id responseObject) {
         if (!responseObject) return ;
-        BOOL kIsLoginStatus = ([responseObject objectForKey:@"id"] != nil)  && ([[responseObject objectForKey:@"id"] integerValue] != 0);
-        BOOL kIsXLMMStatus = [[responseObject objectForKey:@"xiaolumm"] isKindOfClass:[NSDictionary class]];
+        CSUserProfileModel *profileModel = [CSUserProfileModel mj_objectWithKeyValues:responseObject];
+        [[CSUserProfileManager sharInstance] saveUserInfoWithModel:profileModel];
         
+        BOOL kIsLoginStatus = ![NSString isStringEmpty:profileModel.profileID] && [profileModel.profileID integerValue] != 0;
         BOOL kIsVIP = NO;
-        if (kIsXLMMStatus) {
-            NSDictionary *xlmmDict = responseObject[@"xiaolumm"];
-            if (![NSString isStringEmpty:xlmmDict[@"renew_time"]]) {
-                [JMUserDefaults setValue:xlmmDict[@"renew_time"] forKey:@"huiyuanshijian"];
-            }
-            NSString *last = [NSString stringWithFormat:@"%@",xlmmDict[@"last_renew_type"]];
-            [JMUserDefaults setValue:last forKey:kUserVipStatus];
-            kIsVIP = [xlmmDict[@"status"] isEqual:@"effect"] ? YES : NO;
-        }else {
-            NSMutableDictionary *dic = [responseObject mutableCopy];
-            dic[@"xiaolumm"] = @{};
-            responseObject = [dic copy];
+        if (profileModel.xiaolumm.UserVipID) {
+//            NSString *last = [NSString stringWithFormat:@"%@",profileModel.xiaolumm.last_renew_type];
+//            [JMUserDefaults setValue:last forKey:kUserVipStatus];
+            kIsVIP = [profileModel.xiaolumm.status isEqual:@"effect"] ? YES : NO;
         }
         [JMUserDefaults setBool:kIsVIP forKey:kISNDPZVIP];
         [JMUserDefaults setBool:kIsLoginStatus forKey:kIsLogin];
         [JMUserDefaults synchronize];
         
-        if (![[responseObject objectForKey:@"user_budget"] isKindOfClass:[NSDictionary class]]) {
-            NSMutableDictionary *dic = [responseObject mutableCopy];
-            dic[@"user_budget"] = @{};
-            responseObject = [dic copy];
-        }
-        if ([JMStoreManager isFileExist:@"userProfile"]) {
-            [JMStoreManager removeFileByFileName:@"userProfile"];
-        }
-        [JMStoreManager saveDataFromDictionary:@"userProfile" WithData:responseObject];
-        NSLog(@"%@",[JMStoreManager getDataDictionary:@"userProfile"]);
-        
-        
-//        if (!responseObject){
-//            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kIsLogin];
-//            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kISXLMM];
-//            [[NSUserDefaults standardUserDefaults] synchronize];
-//            return;
-//        }
-//        if (([responseObject objectForKey:@"id"] != nil)  && ([[responseObject objectForKey:@"id"] integerValue] != 0)) {
-//            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kIsLogin];
-//            if (![userCustomerID isEqual:responseObject[@"id"]]) {
-//                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"isRefreshFine"];
-//            }
-//            userCustomerID = responseObject[@"id"];
-//        }else {
-//            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kIsLogin];
-//        }
-//        if([[responseObject objectForKey:@"xiaolumm"] isKindOfClass:[NSDictionary class]]){
-//            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kISXLMM];
-//        }else {
-//            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kISXLMM];
-//        }
-//        [[NSUserDefaults standardUserDefaults] synchronize];
-//        [JMStoreManager removeFileByFileName:@"usersInfo.plist"];
-//        [JMStoreManager saveDataFromDictionary:@"usersInfo.plist" WithData:responseObject];
         if (success) {
             success(responseObject);
         }
     } WithFail:^(NSError *error) {
         NSInteger statusCode = 200;
-//        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kISXLMM];
-//        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kIsLogin];
-//        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"isRefreshFine"];
-//        [[NSUserDefaults standardUserDefaults] synchronize];
+        
         NSHTTPURLResponse *response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey];
         if (response) {
             if (response.statusCode) {

@@ -25,7 +25,7 @@ typedef NS_ENUM(NSInteger, profileStatus) {
 - (instancetype)initWithFrame:(CGRect)frame Type:(profileStatus)type;
 
 @property (nonatomic, weak) id <CSProfileShopFooterViewDelegte> delegate;
-@property (nonatomic, strong) NSNumber *accountMoney;
+@property (nonatomic, copy) NSString *accountMoney;
 @property (nonatomic, assign) profileStatus statusType;
 
 @end

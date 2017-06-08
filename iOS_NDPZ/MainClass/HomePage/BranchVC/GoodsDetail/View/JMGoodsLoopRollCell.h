@@ -8,10 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+@class CSGoodsDetailContentModel;
 @interface JMGoodsLoopRollCell : UICollectionViewCell
 
-
-@property (nonatomic, copy) NSString *imageString;
-
+- (void)refreshScrollViewWithModel:(CSGoodsDetailContentModel *)model Index:(NSInteger)index;
 
 @end

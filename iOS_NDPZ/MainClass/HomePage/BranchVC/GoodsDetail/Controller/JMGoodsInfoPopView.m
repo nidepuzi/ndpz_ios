@@ -68,28 +68,43 @@
         UIView *bottomView = [UIView new];
         bottomView.frame = CGRectMake(0, self.mj_h - 60, SCREENWIDTH, 60);
         [self addSubview:bottomView];
-        bottomView.layer.borderWidth = 1.;
-        bottomView.layer.borderColor = [UIColor lineGrayColor].CGColor;
+        bottomView.backgroundColor = [UIColor whiteColor];
+//        bottomView.layer.borderWidth = 1.;
+//        bottomView.layer.borderColor = [UIColor titleDarkGrayColor].CGColor;
         
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        [bottomView addSubview:button];
-        [button setTitle:@"确定" forState:UIControlStateNormal];
-        [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        button.backgroundColor = [UIColor buttonEnabledBackgroundColor];
-        button.titleLabel.font = [UIFont systemFontOfSize:16.];
-        button.layer.cornerRadius = 20.;
-        [button addTarget:self action:@selector(sureButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 1)];
+        lineView.backgroundColor = [UIColor buttonDisabledBorderColor];
+        [bottomView addSubview:lineView];
         
         
-        self.sureButton = button;
-        [button mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerY.equalTo(bottomView.mas_centerY);
-            make.centerX.equalTo(bottomView.mas_centerX);
-            make.width.mas_equalTo(@(SCREENWIDTH - 30));
-            make.height.mas_equalTo(@40);
+        UIButton *addCartButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [bottomView addSubview:addCartButton];
+        [addCartButton setTitle:@"加入购物车" forState:UIControlStateNormal];
+        [addCartButton setTitleColor:[UIColor buttonEnabledBackgroundColor] forState:UIControlStateNormal];
+        addCartButton.titleLabel.font = [UIFont systemFontOfSize:16.];
+        [addCartButton addTarget:self action:@selector(sureButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        addCartButton.tag = 10;
+        
+        UIButton *buyNowButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [bottomView addSubview:buyNowButton];
+        buyNowButton.backgroundColor = [UIColor buttonEnabledBackgroundColor];
+        [buyNowButton setTitle:@"立即购买" forState:UIControlStateNormal];
+        [buyNowButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        buyNowButton.titleLabel.font = [UIFont systemFontOfSize:16.];
+        [buyNowButton addTarget:self action:@selector(sureButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        buyNowButton.tag = 11;
+        
+        [addCartButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.bottom.equalTo(bottomView);
+            make.height.mas_equalTo(60);
+            make.width.mas_equalTo(@(SCREENWIDTH * 0.5));
+        }];
+        [buyNowButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.right.bottom.equalTo(bottomView);
+            make.height.mas_equalTo(60);
+            make.width.mas_equalTo(@(SCREENWIDTH * 0.5));
         }];
         
-        //        [self createHeaderView];
         
         
         
@@ -433,16 +448,20 @@
 }
 
 - (void)sureButtonClick:(UIButton *)button {
-    button.enabled = NO;
     NSMutableDictionary *paramer = [NSMutableDictionary dictionary];
     paramer[@"item_id"] = [NSString stringWithFormat:@"%ld",(long)_goodsColorID];
     paramer[@"sku_id"] = [NSString stringWithFormat:@"%ld",(long)_goodsSizeID];
     paramer[@"num"] = [NSString stringWithFormat:@"%ld",(long)_goodsNum];
-    if (_delegate && [_delegate respondsToSelector:@selector(composeGoodsInfoView:AttrubuteDic:)]) {
-        [_delegate composeGoodsInfoView:self AttrubuteDic:paramer];
+    if (_delegate && [_delegate respondsToSelector:@selector(composeGoodsInfoView:Button:AttrubuteDic:)]) {
+        [_delegate composeGoodsInfoView:self Button:button AttrubuteDic:paramer];
     }
     
 }
+
+
+
+
+
 @end
 
 

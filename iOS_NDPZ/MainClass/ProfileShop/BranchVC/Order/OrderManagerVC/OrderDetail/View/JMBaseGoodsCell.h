@@ -29,7 +29,9 @@ extern NSString *const JMBaseGoodsCellIdentifier;
 
 @property (nonatomic, assign) BOOL isTeamBuy;
 @property (nonatomic, assign) bool isCanRefund;
-@property (nonatomic, strong) UIButton *earningButton;
+
+@property (nonatomic, strong) UILabel *zhuanLabel;
+@property (nonatomic, strong) UILabel *zhuanValueLabel;
 
 - (void)configWithAllOrder:(JMOrderGoodsModel *)goodsModel;
 
@@ -37,6 +39,8 @@ extern NSString *const JMBaseGoodsCellIdentifier;
 //- (void)configWithModel:(JMOrderGoodsModel *)goodsModel PackageModel:(JMPackAgeModel *)packageModel SectionCount:(NSInteger)sectionCount RowCount:(NSInteger)rowCount;
 
 - (void)configPurchaseModel:(CartListModel *)cartModel;
+
+- (void)configWithLogistics:(JMOrderGoodsModel *)goodsModel;
 
 @property (nonatomic, weak) id<JMBaseGoodsCellDelegate>delegate;
 

@@ -180,7 +180,7 @@
  */
 + (BOOL)isStringEmpty:(NSString *)string {
 //    return [self length] > 0 ? NO : YES;
-    return [string isKindOfClass:[NSNull class]] || string == nil || [string isEqual:@""];
+    return [string isKindOfClass:[NSNull class]] || string == nil || [string isEqualToString:@""];
 }
 /**
  *  判断字符串是否为纯数字

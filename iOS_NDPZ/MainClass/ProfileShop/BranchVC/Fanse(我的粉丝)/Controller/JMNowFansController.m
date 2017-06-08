@@ -45,7 +45,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    [self createNavigationBarWithTitle:@"我的粉丝" selecotr:@selector(backBtnClicked:)];
+    [self createNavigationBarWithTitle:@"我的掌柜" selecotr:@selector(backBtnClicked:)];
     
     [self createTableView];
     [self createButton];
@@ -145,7 +145,7 @@
 }
 - (JMReloadEmptyDataView *)reload {
     if (!_reload) {
-        __block JMReloadEmptyDataView *reload = [[JMReloadEmptyDataView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) Title:@"您还没有粉丝哦..." DescTitle:@"分享您的精选给好友就会获得粉丝哦~" ButtonTitle:@"快去分享" Image:@"data_empty" ReloadBlcok:^{
+        __block JMReloadEmptyDataView *reload = [[JMReloadEmptyDataView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) Title:@"您还没有邀请掌柜哦" DescTitle:@"分享您的精选给好友就可以啦~" ButtonTitle:@"快去邀请" Image:@"data_empty" ReloadBlcok:^{
             [self.navigationController popViewControllerAnimated:YES];
         }];
         _reload = reload;

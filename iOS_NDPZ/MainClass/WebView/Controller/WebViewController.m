@@ -262,8 +262,9 @@
     }
     _shareImage = [UIImage imageNamed:@"icon-xiaolu.png"];
     _content = @"你的铺子";
-
-
+    
+    
+    
 }
 
 

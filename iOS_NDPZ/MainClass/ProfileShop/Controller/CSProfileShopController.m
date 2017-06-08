@@ -13,51 +13,42 @@
 #import "MaMaOrderListViewController.h"
 #import "JMEarningListController.h"
 #import "TodayVisitorViewController.h"
-#import "JMNowFansController.h"
 #import "CSDevice.h"
 #import "Account1ViewController.h"
 #import "JMCouponController.h"
 #import "JMOrderListController.h"
 #import "JMRefundBaseController.h"
-#import "JMAddressViewController.h"
 #import "CSPerformanceManagerController.h"
 #import "JMCartViewController.h"
-#import "CSMineMessageController.h"
 #import "JMMaMaCenterModel.h"
-#import "CSSalesManagerController.h"
 #import "CSAddressManagerController.h"
 #import "JMWithdrawCashController.h"
 #import "CSInviteViewController.h"
 #import "CSPersonalInfoController.h"
-#import "CSWithDrawPopView.h"
-#import "CSPopAnimationViewController.h"
 #import "JMTotalEarningController.h"
-#import "CSCreateBankCardController.h"
 #import "CSBankWithdrawRecordingController.h"
-#import "NSArray+Reverse.h"
 #import "JMMaMaFansController.h"
 #import "CSEarningManageController.h"
 #import "WebViewController.h"
+#import "CSUserProfileModel.h"
 
-#define Max_OffsetY  50
-#define  Statur_HEIGHT   [[UIApplication sharedApplication] statusBarFrame].size.height
-#define  NAVIBAR_HEIGHT  (self.navigationController.navigationBar.frame.size.height)
-#define  INVALID_VIEW_HEIGHT (Statur_HEIGHT + NAVIBAR_HEIGHT)
+const CGFloat CSMaxScrollOffserY = 50.0;
+
+#define Statur_HEIGHT   [[UIApplication sharedApplication] statusBarFrame].size.height
+#define NAVIBAR_HEIGHT  (self.navigationController.navigationBar.frame.size.height)
+#define INVALID_VIEW_HEIGHT (Statur_HEIGHT + NAVIBAR_HEIGHT)
 
 @interface CSProfileShopController () <UITableViewDelegate, UITableViewDataSource, CSProfileShopHeaderViewDelegte, CSProfileShopFooterViewDelegte> {
     BOOL _isPullDown;
     BOOL isShowRefresh;
     
-    NSString *_orderRecord;             // 订单记录
+    
     NSString *_orderRecordToday;        // 今日订单记录
     NSString *_fansWebUrl;              // 关于粉丝入口
-    NSDictionary *_persinCenterDict;    // 用户信息
-    NSNumber *_accountMoney;            // 零钱
-    NSString *_earningsRecord;          // 收益记录
+    NSString *_accountMoney;            // 零钱
     NSString *_earningsRecordToday;     // 今日收益记录
     NSString *_visitorsToday;           // 今日访客
     
-    NSDictionary *extraFiguresDic;      //
     
 }
 
@@ -67,20 +58,10 @@
 @property (nonatomic, strong) UIView *naviBarView;
 
 @property (nonatomic, strong) JMMaMaCenterModel *mamaCenterModel;
-@property (nonatomic, strong) CSWithDrawPopView *popView;
 
 @end
 
 @implementation CSProfileShopController
-
-- (CSWithDrawPopView *)popView {
-    if (_popView == nil) {
-        _popView = [CSWithDrawPopView defaultWithdrawPopView];
-        _popView.typeStatus = popTypeStatusWithdraw;
-        _popView.parentVC = self;
-    }
-    return _popView;
-}
 
 #pragma mark -- 视图生命周期
 - (void)viewWillAppear:(BOOL)animated {
@@ -154,9 +135,6 @@
     NSDictionary *fortuneDic = dic[@"mama_fortune"];
     self.mamaCenterModel = [JMMaMaCenterModel mj_objectWithKeyValues:fortuneDic];
     self.proHeaderView.mamaCenterModel = self.mamaCenterModel;
-    _orderRecord = [NSString stringWithFormat:@"%@", self.mamaCenterModel.order_num];
-    _earningsRecord = [NSString stringWithFormat:@"%.2f", [self.mamaCenterModel.carry_value floatValue]];
-    extraFiguresDic = self.mamaCenterModel.extra_figures;
     
 }
 // 折线图数据请求
@@ -180,11 +158,10 @@
 
 - (void)setUserInfo {
     [[JMGlobal global] upDataLoginStatusSuccess:^(id responseObject) {
-        [self updateUserInfo:responseObject];
+        [self updateUserInfo];
         [self endRefresh];
     } failure:^(NSInteger errorCode) {
-        _accountMoney = @0.00;
-        self.proHeaderView.userInfoDic = @{};
+        _accountMoney = @"0.00";
         self.proFooterView.accountMoney = _accountMoney;
         if (errorCode == 403) {
             //            [self quitLogin];
@@ -196,27 +173,21 @@
     }];
     
 }
-- (void)updateUserInfo:(NSDictionary *)dic {
-    _persinCenterDict = dic;
+- (void)updateUserInfo {
     [self loadDataSource];
     [self loadfoldLineData];
     //判断是否为0
-    if ([[dic objectForKey:@"user_budget"] isKindOfClass:[NSNull class]]) {
-        _accountMoney = [NSNumber numberWithFloat:0.00];
+    if ([CSUserProfileModel sharInstance].user_budget == nil) {
+        _accountMoney = @"0.00";
     }else {
-        NSDictionary *xiaolumeimei = [dic objectForKey:@"user_budget"];
-        NSNumber *num = [xiaolumeimei objectForKey:@"budget_cash"];
-        _accountMoney = num;
+        _accountMoney = [NSString stringWithFormat:@"%.2f",[[CSUserProfileModel sharInstance].user_budget.budget_cash floatValue]];
     }
-    self.proHeaderView.userInfoDic = dic;
+    self.proHeaderView.userModel = [CSUserProfileModel sharInstance];
     self.proFooterView.accountMoney = _accountMoney;
     
     CGFloat itemHeight = 160;
-    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
-    if (![NSString isStringEmpty:vipStatus]) {
-        if ([vipStatus isEqual:@"15"]) { // 试用期 弹出框
-            itemHeight = 240;
-        }
+    if ([[CSUserProfileModel sharInstance].xiaolumm.last_renew_type isEqualToString:@"15"]) {
+        itemHeight = 240;
     }
     self.proFooterView.mj_h = 130 + itemHeight;
     if (itemHeight == 160) {
@@ -242,11 +213,8 @@
     self.tableView.tableHeaderView = self.proHeaderView;
     
     CGFloat itemHeight = 160;
-    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
-    if (![NSString isStringEmpty:vipStatus]) {
-        if ([vipStatus isEqual:@"15"]) { // 试用期 弹出框
-            itemHeight = 240;
-        }
+    if ([[CSUserProfileModel sharInstance].xiaolumm.last_renew_type isEqualToString:@"15"]) {
+        itemHeight = 240;
     }
     if (itemHeight == 160) {
         self.proFooterView = [[CSProfileShopFooterView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 130 + itemHeight) Type:profileStatusZhengshi];
@@ -269,13 +237,6 @@
     [self.view addSubview:naviView];
     naviView.backgroundColor = [UIColor clearColor];
 
-//    UIButton *messageButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    [messageButton setImage:[UIImage imageNamed:@"navigation_message_image"] forState:UIControlStateNormal];
-//    [messageButton setImage:[UIImage imageNamed:@"navigation_message_image"] forState:UIControlStateHighlighted];
-//    messageButton.tag = 10;
-//    [messageButton addTarget:self action:@selector(navigationBarButton:) forControlEvents:UIControlEventTouchUpInside];
-//    [naviView addSubview:messageButton];
-    
     UIButton *shopCartButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [shopCartButton setImage:[UIImage imageNamed:@"cs_profileShop_shopCart"] forState:UIControlStateNormal];
     [shopCartButton setImage:[UIImage imageNamed:@"cs_profileShop_shopCart"] forState:UIControlStateHighlighted];
@@ -296,11 +257,6 @@
     naviTitleLabel.font = CS_UIFontBoldSize(18.);
     [naviView addSubview:naviTitleLabel];
     
-//    [messageButton mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.centerY.equalTo(naviView.mas_centerY).offset(10);
-//        make.left.equalTo(naviView);
-//        make.width.height.mas_equalTo(@(44));
-//    }];
     [shopCartButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(naviView.mas_centerY).offset(10);
         make.right.equalTo(settingButton.mas_left);
@@ -336,7 +292,7 @@
  *  101 --> 今日订单
  *  102 --> 累计销量
  *  103 --> 累计访问
- *  104 --> 粉丝人数
+ *  104 --> 掌柜人数
  */
 - (void)composeProfileShopHeaderTap:(CSProfileShopHeaderView *)headerView { // 邀请好友
     NSDictionary *tempDict = @{@"code" : [NSString stringWithFormat:@"%@",@"邀请好友"]};
@@ -351,14 +307,13 @@
         return;
     }
     NSInteger currentIndex = button.tag;
-    NSArray *itemArr = @[@"头像",@"今日订单",@"今日收益",@"今日访客",@"今日粉丝"];
+    NSArray *itemArr = @[@"头像",@"今日订单",@"今日收益",@"今日访客",@"今日掌柜"];
     NSDictionary *tempDict = @{@"code" : [NSString stringWithFormat:@"%@",itemArr[currentIndex - 100]]};
     [MobClick event:@"CSProfileShopController_ButtonClick" attributes:tempDict];
     
     switch (currentIndex) {
         case 100: {
             CSPersonalInfoController *vc = [[CSPersonalInfoController alloc] init];
-            vc.profileInfo = _persinCenterDict;
             [self.navigationController pushViewController:vc animated:YES];
         }
             
@@ -422,59 +377,25 @@
     
     switch (button.tag) {
         case 99: {
-            
-            
-            
-//            CSBankWithdrawRecordingController *vc = [[CSBankWithdrawRecordingController alloc] init];
-//            vc.accountMoney = [NSString stringWithFormat:@"%.2f",[_accountMoney floatValue]];
-//            [self.navigationController pushViewController:vc animated:YES];
             Account1ViewController *account = [[Account1ViewController alloc] init];
-//            account.accountMoney = _accountMoney;
-//            account.personCenterDict = _persinCenterDict;
             [self.navigationController pushViewController:account animated:YES];
         }
             break;
         case 100: {
-//            NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
-//            if (![NSString isStringEmpty:vipStatus]) {
-//                if ([vipStatus isEqual:@"15"]) { // 试用期 弹出框
-//                    [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] dismiss:^{
-//                    }];
-//                    return;
-//                }
-//            }
-//            CSCreateBankCardController *vc = [[CSCreateBankCardController alloc] init];
-//            vc.accountMoney = [NSString stringWithFormat:@"%.2f",[_accountMoney floatValue]];
-//            [self.navigationController pushViewController:vc animated:YES];
-            
             CSBankWithdrawRecordingController *vc = [[CSBankWithdrawRecordingController alloc] init];
-            vc.accountMoney = [NSString stringWithFormat:@"%.2f",[_accountMoney floatValue]];
+            vc.accountMoney = _accountMoney;
             [self.navigationController pushViewController:vc animated:YES];
-            
-            
-//            JMWithdrawCashController *drawCash = [[JMWithdrawCashController alloc] init];
-//            drawCash.personCenterDict = _persinCenterDict;
-//            drawCash.isMaMaWithDraw = NO;
-//            [self.navigationController pushViewController:drawCash animated:YES];
-            
-            
-//            Account1ViewController *account = [[Account1ViewController alloc] init];
-//            account.accountMoney = _accountMoney;
-//            account.personCenterDict = _persinCenterDict;
-//            [self.navigationController pushViewController:account animated:YES];
         }
             break;
         case 101: {
             CSEarningManageController *vc = [[CSEarningManageController alloc] init];
-            vc.totalEarning = _earningsRecord;
-            vc.weekEarning = [NSString stringWithFormat:@"%.2f",[extraFiguresDic[@"week_duration_total"] floatValue]];
-            vc.monthEarning = [NSString stringWithFormat:@"%.2f",[extraFiguresDic[@"month_duration_total"] floatValue]];
+            vc.model = self.mamaCenterModel;
             [self.navigationController pushViewController:vc animated:YES];
         }
             break;
         case 102: {
             CSPerformanceManagerController *product = [[CSPerformanceManagerController alloc] init];
-            product.profileInfo = _persinCenterDict;
+            product.model = self.mamaCenterModel;
             [self.navigationController pushViewController:product animated:YES];
         }
             
@@ -487,10 +408,8 @@
             break;
         case 104: {
             CSAddressManagerController *addressVC = [[CSAddressManagerController alloc] init];
-            //            addressVC.isSelected = NO;
             [self.navigationController pushViewController:addressVC animated:YES];
         }
-            
             break;
         case 105: {
             [self pushOrderIndexVC:0];
@@ -564,11 +483,6 @@
     [MobClick event:@"CSProfileShopController_ButtonClick" attributes:tempDict];
     
     switch (button.tag) {
-//        case 10: {
-//            CSMineMessageController *messageVC = [[CSMineMessageController alloc] init];
-//            [self.navigationController pushViewController:messageVC animated:YES];
-//        }
-//            break;
         case 11: {
             JMCartViewController *cartVC = [[JMCartViewController alloc] init];
             cartVC.cartType = @"0";
@@ -577,7 +491,6 @@
             break;
         case 12: {
             CSProfilerSettingController *settingVC = [[CSProfilerSettingController alloc] init];
-            settingVC.profileInfo = _persinCenterDict;
             [self.navigationController pushViewController:settingVC animated:YES];
         }
             break;
@@ -588,11 +501,9 @@
 }
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGFloat offset_Y = scrollView.contentOffset.y;
-    if (offset_Y > Max_OffsetY) {
-        CGFloat alpha = MIN(1, 1 - ((Max_OffsetY + INVALID_VIEW_HEIGHT - offset_Y) / INVALID_VIEW_HEIGHT));
-//        self.naviView.backgroundColor = [UIColor buttonEnabledBackgroundColor];
+    if (offset_Y > CSMaxScrollOffserY) {
+        CGFloat alpha = MIN(1, 1 - ((CSMaxScrollOffserY + INVALID_VIEW_HEIGHT - offset_Y) / INVALID_VIEW_HEIGHT));
         self.naviBarView.alpha = alpha;
-//        self.navigationItem.title = alpha > 0.8 ? @"我的店铺" : @"";
     }else {
         self.naviBarView.alpha = 0;
     }

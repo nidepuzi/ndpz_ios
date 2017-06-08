@@ -16,6 +16,7 @@
 #import "JMLogInViewController.h"
 #import "CSNewFeatureController.h"
 #import "RootNavigationController.h"
+#import "CSDataBase.h"
 
 
 #define login @"login"
@@ -162,7 +163,9 @@
     [JMNotificationCenter addObserver:self selector:@selector(openPushMessage) name:@"openPushMessageSwitch" object:nil];
     [JMNotificationCenter addObserver:self selector:@selector(showNewFeatureView) name:@"showNewFeatureView" object:nil];
     
-    [[JMDevice defaultDecice] getServerIP];
+    // 创建数据库表
+    CSDataBase *db = [[CSDataBase alloc] init];
+    [db initDatabase];
     /**
      *  检测是否是第一次打开  -- 并且记录打开的次数
      */

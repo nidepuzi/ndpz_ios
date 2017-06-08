@@ -18,6 +18,7 @@
 #import "JMToolMacro.h"
 #import "XlmmMall.h"
 #import "JMPromptMessage.h"
+#import "ReactiveCocoa.h"
 
 
 

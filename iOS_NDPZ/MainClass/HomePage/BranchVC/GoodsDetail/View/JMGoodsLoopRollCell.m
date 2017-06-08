@@ -7,6 +7,8 @@
 //
 
 #import "JMGoodsLoopRollCell.h"
+#import "CSGoodsDetailModel.h"
+
 
 @interface JMGoodsLoopRollCell ()
 
@@ -37,8 +39,9 @@
         make.height.mas_equalTo(SCREENWIDTH);
     }];
 }
-- (void)setImageString:(NSString *)imageString {
-    _imageString = imageString;
+- (void)refreshScrollViewWithModel:(CSGoodsDetailContentModel *)model Index:(NSInteger)index {
+    NSString *imageString = model.head_imgs[index];
+    imageString = [NSString isStringEmpty:model.watermark_op] ? [imageString imageNormalCompression] : [NSString stringWithFormat:@"%@|%@",[imageString imageNormalCompression],model.watermark_op];
     [self.imageView sd_setImageWithURL:[NSURL URLWithString:[imageString JMUrlEncodedString]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"] options:SDWebImageProgressiveDownload];
 }
 

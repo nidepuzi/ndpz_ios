@@ -8,10 +8,15 @@
 
 #import "JMGoodsExplainCell.h"
 #import "JMCountDownView.h"
+#import "JMRichTextTool.h"
+#import "CSGoodsDetailModel.h"
+
 
 NSString *const JMGoodsExplainCellIdentifier = @"JMGoodsExplainCellIdentifier";
 
-@interface JMGoodsExplainCell ()//<JMCountDownViewDelegate>
+/// <JMCountDownViewDelegate>
+
+@interface JMGoodsExplainCell ()
 
 @property (nonatomic, strong) UIView *maskView;
 @property (nonatomic, strong) UILabel *nameTitle;
@@ -29,6 +34,18 @@ NSString *const JMGoodsExplainCellIdentifier = @"JMGoodsExplainCellIdentifier";
 @property (nonatomic, strong) UIView *promptView;
 @property (nonatomic, strong) UILabel *promptLabel;
 
+@property (nonatomic, strong) UIView *limitHeaderView;           // 特卖商品内容视图
+
+@property (nonatomic, strong) UILabel *hourLabel;   // 时间 -> 时
+@property (nonatomic, strong) UILabel *minuteLabel; // 时间 -> 分
+@property (nonatomic, strong) UILabel *secLabel;    // 时间 -> 秒
+
+@property (nonatomic, strong) UILabel *limitPriceLabel;  // 特卖商品 价格
+@property (nonatomic, strong) UILabel *limitProfitLabel; // 特卖商品 赚
+@property (nonatomic, strong) UILabel *saleNumAndstockLabel;     // 在售人数..
+@property (nonatomic, strong) UILabel *curreLabel;               // '/'
+
+
 @end
 
 @implementation JMGoodsExplainCell
@@ -40,158 +57,300 @@ NSString *const JMGoodsExplainCellIdentifier = @"JMGoodsExplainCellIdentifier";
     }
     return self;
 }
-- (void)setDetailContentDic:(NSDictionary *)detailContentDic {
-    _detailContentDic = detailContentDic;
-    self.nameTitle.text = detailContentDic[@"name"];
-    self.PriceLabel.text = [NSString stringWithFormat:@"¥%.2f",[detailContentDic[@"lowest_agent_price"] floatValue]];
-    self.oldPriceLabel.text = [NSString stringWithFormat:@"%.2f",[detailContentDic[@"lowest_std_sale_price"] floatValue]];
-//    self.timerLabel.text = detailContentDic[@"offshelf_time"];
-
-    NSArray *itemMask = detailContentDic[@"item_marks"];
+- (void)setDetailModel:(CSGoodsDetailModel *)detailModel {
+    _detailModel = detailModel;
+    CSGoodsDetailContentModel *detailContentModel = detailModel.detail_content;
+    NSDictionary *profitDic = detailModel.profit;
+    
+    if (detailModel.is_flashsale) {
+        [self.nameTitle mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.contentView).offset(75);
+        }];
+        self.limitHeaderView.hidden = NO;
+        self.PriceLabel.hidden = YES;
+        self.curreLabel.hidden = YES;
+        self.oldPriceLabel.hidden = YES;
+        
+        self.limitPriceLabel.attributedText = [JMRichTextTool cs_changeFontAndColorWithSubFont:[UIFont systemFontOfSize:18] AllString:[NSString stringWithFormat:@"¥%.2f",[detailContentModel.lowest_agent_price floatValue]] SubStringArray:@[@"¥"]];
+        self.limitProfitLabel.text = [NSString stringWithFormat:@"赚:%.1f",[profitDic[@"min"] floatValue]];
+    }else {
+        self.limitHeaderView.hidden = YES;
+        self.PriceLabel.attributedText = [JMRichTextTool cs_changeFontAndColorWithSubFont:[UIFont systemFontOfSize:18] AllString:[NSString stringWithFormat:@"¥%.2f",[detailContentModel.lowest_agent_price floatValue]] SubStringArray:@[@"¥"]];
+        self.oldPriceLabel.text = [NSString stringWithFormat:@"赚:%.1f",[profitDic[@"min"] floatValue]];
+    }
+    self.nameTitle.text = detailContentModel.name;
+    
+    NSInteger kucunNum = [detailModel.stock integerValue];
+    if (kucunNum < 0) {
+        kucunNum = 0;
+    }
+    NSInteger zaishouNum = [detailModel.selling_num integerValue];
+    self.saleNumAndstockLabel.text = [NSString stringWithFormat:@"在售人数%ld        库存%ld",zaishouNum,kucunNum];
+    //    self.timerLabel.text = detailContentDic[@"offshelf_time"];
+    
+    NSArray *itemMask = detailContentModel.item_marks;
     NSString *itemString = @"包邮";
     if (itemMask.count == 0) {
         return ;
     }else {
         itemString = itemMask[0];
-    
+        
     }
     [self.itemMask setTitle:itemString forState:UIControlStateNormal];
-//    self.itemMask.text = [NSString stringWithFormat:@"%@",itemString];
+    //    self.itemMask.text = [NSString stringWithFormat:@"%@",itemString];
     NSDictionary *dic = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:14] forKey:NSFontAttributeName];
     CGSize size = [itemString sizeWithAttributes:dic];
     [self.itemMask mas_updateConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(@(size.width + 10));
     }];
-//    self.itemMask.textAlignment = NSTextAlignmentCenter;
+    //    self.itemMask.textAlignment = NSTextAlignmentCenter;
+    
+    
+    
+    
     
     // === 处理结束时间 === //
-
+    
     NSString *endTime = @"";
-    NSString *timeString = detailContentDic[@"offshelf_time"];
+    NSString *timeString = detailContentModel.offshelf_time;
     if ([NSString isStringEmpty:timeString]) {
-        self.timerLabel.text = @"即将上架";
+        //        self.timerLabel.text = @"即将上架";
     }else {
-        endTime = [NSString jm_deleteTimeWithT:detailContentDic[@"offshelf_time"]];
+        endTime = [NSString jm_deleteTimeWithT:timeString];
         int endSecond = [[JMGlobal global] secondOfCurrentTimeInEndTime:endTime];
         [JMCountDownView countDownWithCurrentTime:endSecond];
         kWeakSelf
         [JMCountDownView shareCountDown].timeBlock = ^(int second) {
-            weakSelf.timerLabel.text = second == -1 ? @"商品已下架" : [NSString TimeformatDHMSFromSeconds:second];
+            kStrongSelf
+            //            weakSelf.timerLabel.text = second == -1 ? @"商品已下架" : [NSString TimeformatDHMSFromSeconds:second];
+            if (second == -1) {
+                second = 0;
+            }
+            strongSelf.hourLabel.text = [NSString stringWithFormat:@"%02d",(second/(3600))%24];
+            strongSelf.minuteLabel.text = [NSString stringWithFormat:@"%02d",(second%3600)/60];
+            strongSelf.secLabel.text = [NSString stringWithFormat:@"%02d",second%60];
         };
     }
     
     
-    BOOL isXLMM = [JMUserDefaults boolForKey:kISNDPZVIP];
-    BOOL isLogin = [JMUserDefaults boolForKey:kIsLogin];
-    BOOL isShow = isXLMM && isLogin;
     
+    
+    
+}
 
-    
-    if (isShow) {
-        if (![detailContentDic[@"is_boutique"] boolValue]) {
-            [self changeFineGoodsViewStatus];
-        }
-    }else {
-        [self changeFineGoodsViewStatus];
-    }
 
-    
-    
-}
-- (void)setPromptIndex:(NSInteger)promptIndex {
-    _promptIndex = promptIndex;
-    if (promptIndex > 1) {
-        self.promptLabel.text = orderLevelInfo;
-        CGFloat promptLabelHeight = [orderLevelInfo heightWithWidth:SCREENWIDTH - 10 andFont:12.].height + 20;
-        [self.promptView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.height.mas_equalTo(@(promptLabelHeight));
-        }];
-        [self.promptLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.height.mas_equalTo(@(promptLabelHeight - 10));
-        }];
-    }else {
-//        kWeakSelf
-//        [self.fineGoodsView mas_updateConstraints:^(MASConstraintMaker *make) {
-//            make.top.equalTo(weakSelf.maskView.mas_bottom);
-//        }];
-    }
-    
-}
-- (void)changeFineGoodsViewStatus {
-    [self.fineGoodsView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(@(1));
-    }];
-    for (UILabel *label in self.fineGoodsView.subviews) {
-        [label removeFromSuperview];
-    }
-}
-- (void)setCustomInfoDic:(NSDictionary *)customInfoDic {
-    _customInfoDic = customInfoDic;
-    BOOL isSelected = [customInfoDic[@"is_favorite"] boolValue];
-    self.storeUpButton.selected = isSelected;
-}
 - (void)initUI {
     
-    UIView *contentView = [UIView new];
-    [self.contentView addSubview:contentView];
-    self.maskView = contentView;
+    UIView *headerView = [UIView new];
+    [self.contentView addSubview:headerView];
+    self.limitHeaderView = headerView;
+    
+    UIImageView *leftImageView = [UIImageView new];
+    [headerView addSubview:leftImageView];
+    leftImageView.image = [UIImage imageNamed:@"limitTimeSaleImage_left"];
+    leftImageView.contentMode = UIViewContentModeScaleAspectFill;
+    leftImageView.clipsToBounds = YES;
+    
+    UIImageView *rightImageView = [UIImageView new];
+    [headerView addSubview:rightImageView];
+    rightImageView.image = [UIImage imageNamed:@"limitTimeSaleImage_right"];
+    rightImageView.contentMode = UIViewContentModeScaleAspectFill;
+    rightImageView.clipsToBounds = YES;
+    
+    UIImageView *limitImage = [UIImageView new];
+    [leftImageView addSubview:limitImage];
+    limitImage.image = [UIImage imageNamed:@"limitTimeSaleImage_remind"];
+    limitImage.contentMode = UIViewContentModeScaleAspectFill;
+    limitImage.clipsToBounds = YES;
+    
+    UILabel *limitPriceLabel = [UILabel new];
+    limitPriceLabel.textColor = [UIColor whiteColor];
+    limitPriceLabel.font = CS_UIFontBoldSize(24);
+    [leftImageView addSubview:limitPriceLabel];
+    limitPriceLabel.text = @"¥0.00";
+    
+    UILabel *fengexianL = [UILabel new];
+    [leftImageView addSubview:fengexianL];
+    fengexianL.textColor = [UIColor whiteColor];
+    fengexianL.text = @"/";
+    fengexianL.font = CS_UIFontSize(20);
+    
+    UILabel *profitLabel = [UILabel new];
+    [leftImageView addSubview:profitLabel];
+    profitLabel.font = [UIFont systemFontOfSize:20.];
+    profitLabel.textColor = [UIColor whiteColor];
+    profitLabel.text = @"赚0.00";
+    
+    
+    UILabel *timeLabel = [UILabel new];
+    timeLabel.textColor = [UIColor buttonEnabledBackgroundColor];
+    timeLabel.font = CS_UIFontSize(14.);
+    [rightImageView addSubview:timeLabel];
+    timeLabel.text = @"距结束还剩 :";
+    
+    UILabel *hourLabel = [UILabel new];
+    hourLabel.textColor = [UIColor whiteColor];
+    hourLabel.backgroundColor = [UIColor buttonEnabledBackgroundColor];
+    hourLabel.font = CS_UIFontSize(12.);
+    hourLabel.textAlignment = NSTextAlignmentCenter;
+    [rightImageView addSubview:hourLabel];
+    hourLabel.text = @"99";
+    hourLabel.layer.cornerRadius = 5;
+    hourLabel.layer.masksToBounds = YES;
+    
+    UILabel *minuteLabel = [UILabel new];
+    minuteLabel.textColor = [UIColor whiteColor];
+    minuteLabel.backgroundColor = [UIColor buttonEnabledBackgroundColor];
+    minuteLabel.font = CS_UIFontSize(12.);
+    minuteLabel.textAlignment = NSTextAlignmentCenter;
+    [rightImageView addSubview:minuteLabel];
+    minuteLabel.text = @"99";
+    minuteLabel.layer.cornerRadius = 5;
+    minuteLabel.layer.masksToBounds = YES;
+    
+    UILabel *secLabel = [UILabel new];
+    secLabel.textColor = [UIColor whiteColor];
+    secLabel.backgroundColor = [UIColor buttonEnabledBackgroundColor];
+    secLabel.font = CS_UIFontSize(12.);
+    secLabel.textAlignment = NSTextAlignmentCenter;
+    [rightImageView addSubview:secLabel];
+    secLabel.text = @"99";
+    secLabel.layer.cornerRadius = 5;
+    secLabel.layer.masksToBounds = YES;
+    
+    UILabel *maohao1 = [UILabel new];
+    maohao1.textColor = [UIColor buttonEnabledBackgroundColor];
+    maohao1.font = CS_UIFontSize(14.);
+    [rightImageView addSubview:maohao1];
+    maohao1.text = @" : ";
+    
+    UILabel *maohao2 = [UILabel new];
+    maohao2.textColor = [UIColor buttonEnabledBackgroundColor];
+    maohao2.font = CS_UIFontSize(14.);
+    [rightImageView addSubview:maohao2];
+    maohao2.text = @" : ";
+    
+    self.hourLabel = hourLabel;
+    self.minuteLabel = minuteLabel;
+    self.secLabel = secLabel;
+    self.limitPriceLabel = limitPriceLabel;
+    self.limitProfitLabel = profitLabel;
+    
+    kWeakSelf
+    
+    CGFloat timeSpace = 1.;
+    
+    [headerView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(weakSelf.contentView).offset(0);
+        make.centerX.equalTo(weakSelf.mas_centerX);
+        make.width.mas_equalTo(SCREENWIDTH);
+        make.height.mas_equalTo(60);
+    }];
+    [leftImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.top.equalTo(headerView);
+        make.width.mas_equalTo(SCREENWIDTH * 0.65);
+        make.height.equalTo(headerView.mas_height);
+    }];
+    [limitImage mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(leftImageView).offset(15);
+        make.top.equalTo(leftImageView).offset(5);
+        make.width.mas_equalTo(72);
+        make.height.mas_equalTo(16);
+    }];
+    [limitPriceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(limitImage);
+        make.top.equalTo(limitImage.mas_bottom).offset(5);
+    }];
+    [fengexianL mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(limitPriceLabel.mas_centerY).offset(-2);
+        make.left.equalTo(limitPriceLabel.mas_right).offset(2);
+    }];
+    [profitLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(fengexianL.mas_right).offset(2);
+        make.centerY.equalTo(limitPriceLabel.mas_centerY);
+        
+    }];
+    
+    
+    [rightImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.top.equalTo(headerView);
+        make.width.mas_equalTo(SCREENWIDTH * 0.35);
+        make.height.equalTo(headerView.mas_height);
+    }];
+    [timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(rightImageView.mas_centerX);
+        make.top.equalTo(rightImageView).offset(10);
+    }];
+    [minuteLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(rightImageView.mas_centerX);
+        make.width.height.mas_equalTo(20);
+        make.top.equalTo(timeLabel.mas_bottom).offset(5);
+    }];
+    [maohao1 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(minuteLabel.mas_left).offset(-timeSpace);
+        make.centerY.equalTo(minuteLabel.mas_centerY);
+    }];
+    [maohao2 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(minuteLabel.mas_right).offset(timeSpace);
+        make.centerY.equalTo(minuteLabel.mas_centerY);
+    }];
+    [hourLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(maohao1.mas_left).offset(-timeSpace);
+        make.centerY.equalTo(minuteLabel.mas_centerY);
+        make.width.height.mas_equalTo(20);
+    }];
+    [secLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(maohao2.mas_right).offset(timeSpace);
+        make.centerY.equalTo(minuteLabel.mas_centerY);
+        make.width.height.mas_equalTo(20);
+    }];
+    
     
     UILabel *nameTitle = [UILabel new];
-    [contentView addSubview:nameTitle];
+    [self.contentView addSubview:nameTitle];
     nameTitle.font = [UIFont systemFontOfSize:16.];
     nameTitle.numberOfLines = 2;
     nameTitle.textColor = [UIColor buttonTitleColor];
     self.nameTitle = nameTitle;
     
     UILabel *PriceLabel = [UILabel new];
-    [contentView addSubview:PriceLabel];
-    PriceLabel.font = [UIFont systemFontOfSize:28.];
+    [self.contentView addSubview:PriceLabel];
+    PriceLabel.font = [UIFont systemFontOfSize:24.];
     PriceLabel.textColor = [UIColor buttonTitleColor];
     self.PriceLabel = PriceLabel;
     
     UILabel *curreLabel = [UILabel new];
-    [contentView addSubview:curreLabel];
+    [self.contentView addSubview:curreLabel];
     curreLabel.text = @"/";
     curreLabel.textColor = [UIColor dingfanxiangqingColor];
+    curreLabel.font = CS_UIFontSize(20);
+    self.curreLabel = curreLabel;
     
     UILabel *oldPriceLabel = [UILabel new];
-    [contentView addSubview:oldPriceLabel];
-    oldPriceLabel.font = [UIFont systemFontOfSize:13.];
-    oldPriceLabel.textColor = [UIColor dingfanxiangqingColor];
+    [self.contentView addSubview:oldPriceLabel];
+    oldPriceLabel.font = [UIFont systemFontOfSize:20.];
+    oldPriceLabel.textColor = [UIColor buttonEnabledBackgroundColor];
     self.oldPriceLabel = oldPriceLabel;
     
-    UILabel *deletLine = [UILabel new];
-    [contentView addSubview:deletLine];
-    deletLine.backgroundColor = [UIColor titleDarkGrayColor];
+    UILabel *saleNumAndstockLabel = [UILabel new];
+    [self.contentView addSubview:saleNumAndstockLabel];
+    saleNumAndstockLabel.font = [UIFont systemFontOfSize:13.];
+    saleNumAndstockLabel.textColor = [UIColor dingfanxiangqingColor];
+    self.saleNumAndstockLabel = saleNumAndstockLabel;
     
     
     UIButton *lookWirter = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.contentView addSubview:lookWirter];
-    [lookWirter setTitle:@"查看文案" forState:UIControlStateNormal];
+    [lookWirter setTitle:@"分享素材" forState:UIControlStateNormal];
     [lookWirter setTitleColor:[UIColor timeLabelColor] forState:UIControlStateNormal];
     lookWirter.titleLabel.font = [UIFont systemFontOfSize:14.];
-//    [lookWirter setImage:[UIImage imageNamed:@"copyWenan"] forState:UIControlStateNormal];
     lookWirter.layer.masksToBounds = YES;
     lookWirter.layer.borderWidth = 0.5f;
     lookWirter.layer.borderColor = [UIColor buttonDisabledBorderColor].CGColor;
     lookWirter.layer.cornerRadius = 5.f;
     lookWirter.tag = 100;
     [self.contentView addSubview:lookWirter];
-    
-    
-//    UIButton *shoucangButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    [contentView addSubview:shoucangButton];
-//    [shoucangButton setImage:[UIImage imageNamed:@"MyCollection_Nomal"] forState:UIControlStateNormal];
-//    [shoucangButton setImage:[UIImage imageNamed:@"MyCollection_Selected"] forState:UIControlStateSelected];
-//    [shoucangButton setTitle:@"加入收藏" forState:UIControlStateNormal];
-//    [shoucangButton setTitle:@"取消收藏" forState:UIControlStateSelected];
-//    [shoucangButton setTitleColor:[UIColor buttonTitleColor] forState:UIControlStateNormal];
-//    [shoucangButton setTitleColor:[UIColor buttonEnabledBackgroundColor] forState:UIControlStateSelected];
-//    shoucangButton.titleLabel.font = [UIFont systemFontOfSize:16.];
-//    [shoucangButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 20, 0, 0)];
     self.storeUpButton = lookWirter;
-//    shoucangButton.tag = 100;
-//    shoucangButton.selected = NO;
     [self.storeUpButton addTarget:self action:@selector(storeUpClick:) forControlEvents:UIControlEventTouchUpInside];
 
     
@@ -209,110 +368,29 @@ NSString *const JMGoodsExplainCellIdentifier = @"JMGoodsExplainCellIdentifier";
     [self.contentView addSubview:baoyouBUtton];
     self.itemMask = baoyouBUtton;
     
-    
-//    UILabel *baoyou = [UILabel new];
-//    [contentView addSubview:baoyou];
-//    baoyou.font = [UIFont systemFontOfSize:16.];
-//    baoyou.textColor = [UIColor buttonEnabledBackgroundColor];
-//    baoyou.textAlignment = NSTextAlignmentCenter;
-//    baoyou.layer.masksToBounds = YES;
-//    baoyou.layer.borderWidth = 1.0;
-//    baoyou.layer.borderColor = [UIColor buttonEnabledBackgroundColor].CGColor;
-//    baoyou.layer.cornerRadius = 5.;
-//    self.itemMask = baoyou;
-    
-    UIView *promptView = [UIView new];
-    promptView.backgroundColor = [UIColor sectionViewColor];
-    [self addSubview:promptView];
-    self.promptView = promptView;
-    
-    
-    UILabel *promptLabel = [UILabel new];
-    [promptView addSubview:promptLabel];
-    promptLabel = promptLabel;
-    promptLabel.font = [UIFont systemFontOfSize:12.];
-    promptLabel.textColor = [UIColor redColor];
-    promptLabel.numberOfLines = 0;
-    self.promptLabel = promptLabel;
-    //    self.promptLabel.textAlignment = NSTextAlignmentCenter;
-//    promptLabel.text = @"温馨提示：保税区和直邮根据海关要求需要提供身份证号码，保税区发货预计5到10个工作日到货，直邮预计10-20工作日到货";
-    
-    
-    
-//    UIView *currentView = [UIView new];
-//    [self.contentView addSubview:currentView];
-//    currentView.backgroundColor = [UIColor lineGrayColor];
-    
-    UIButton *fineGoodsView = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.contentView addSubview:fineGoodsView];
-    fineGoodsView.layer.borderWidth = 1.f;
-    fineGoodsView.layer.borderColor = [UIColor lineGrayColor].CGColor;
-    self.fineGoodsView = fineGoodsView;
-    [fineGoodsView addTarget:self action:@selector(storeUpClick:) forControlEvents:UIControlEventTouchUpInside];
-    fineGoodsView.tag = 101;
-    
-    UILabel *fineGoodsLeftL = [UILabel new];
-    [fineGoodsView addSubview:fineGoodsLeftL];
-    fineGoodsLeftL.textColor = [UIColor buttonTitleColor];
-    fineGoodsLeftL.font = [UIFont systemFontOfSize:14.];
-    fineGoodsLeftL.text = @"精品商品";
-    
-    UILabel *fineGoodsLeftR = [UILabel new];
-    [fineGoodsView addSubview:fineGoodsLeftR];
-    fineGoodsLeftR.textColor = [UIColor buttonEnabledBackgroundColor];
-    fineGoodsLeftR.font = [UIFont systemFontOfSize:14.];
-    fineGoodsLeftR.text = @"点击去购券>>";
-    
-    
-    UIView *timerView = [UIView new];
-    [self.contentView addSubview:timerView];
-    
-    UILabel *shengyuTimer = [UILabel new];
-    [timerView addSubview:shengyuTimer];
-    shengyuTimer.font = [UIFont systemFontOfSize:14.];
-    shengyuTimer.textColor = [UIColor buttonTitleColor];
-    shengyuTimer.text = @"剩余时间";
-    
-    UILabel *timerLabel = [UILabel new];
-    [timerView addSubview:timerLabel];
-    timerLabel.font = [UIFont systemFontOfSize:14.];
-    timerLabel.textColor = [UIColor buttonTitleColor];
-    self.timerLabel = timerLabel;
-    
-
-    kWeakSelf
-    
-    [contentView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.equalTo(weakSelf.contentView);
-        make.width.mas_equalTo(@(SCREENWIDTH));
-        make.height.mas_equalTo(@110);
-    }];
     [nameTitle mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.top.equalTo(contentView).offset(15);
+        make.left.top.equalTo(self.contentView).offset(15);
         make.width.mas_equalTo(@(SCREENWIDTH - 30));
     }];
-    [PriceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    
+    [saleNumAndstockLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(nameTitle);
-        make.bottom.equalTo(contentView.mas_bottom).offset(-15);
+        make.centerY.equalTo(baoyouBUtton.mas_centerY);
     }];
     
+    [PriceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(nameTitle);
+        make.centerY.equalTo(weakSelf.contentView.mas_centerY).offset(5);
+    }];
     [curreLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(PriceLabel.mas_bottom).offset(-5);
+        make.centerY.equalTo(PriceLabel.mas_centerY).offset(-2);
         make.left.equalTo(PriceLabel.mas_right);
-        make.height.mas_equalTo(@13);
     }];
     [oldPriceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(curreLabel.mas_right).offset(2);
-        //        make.bottom.equalTo(headerView.mas_bottom).offset(-15);
-        make.centerY.equalTo(curreLabel.mas_centerY);
+        make.centerY.equalTo(PriceLabel.mas_centerY);
     }];
 
-    [deletLine mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(oldPriceLabel.mas_centerY);
-        make.left.equalTo(oldPriceLabel).offset(-2);
-        make.right.equalTo(oldPriceLabel).offset(3);
-        make.height.mas_equalTo(@1.5);
-    }];
     
     [lookWirter mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(baoyouBUtton.mas_centerY);
@@ -323,79 +401,18 @@ NSString *const JMGoodsExplainCellIdentifier = @"JMGoodsExplainCellIdentifier";
     
     [baoyouBUtton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(weakSelf.contentView).offset(-5);
-        make.bottom.equalTo(contentView).offset(-10);
+        make.bottom.equalTo(self.contentView).offset(-10);
         make.width.mas_equalTo(@60);
         make.height.mas_equalTo(@30);
     }];
-    
-    
-    [promptView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(contentView.mas_bottom);
-        make.left.equalTo(weakSelf.contentView);
-        make.width.mas_equalTo(@(SCREENWIDTH));
-        make.height.mas_equalTo(@(0.5));
-    }];
-    [promptLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.equalTo(promptView).offset(5);
-        make.width.mas_equalTo(@(SCREENWIDTH - 10));
-        make.height.mas_equalTo(0.5);
-    }];
-    
-    [fineGoodsView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(promptView.mas_bottom);
-        make.left.equalTo(weakSelf.contentView);
-        make.width.mas_equalTo(@(SCREENWIDTH));
-        make.height.mas_equalTo(@(40));
-    }];
-//    [currentView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(contentView.mas_bottom);
-//        make.left.right.equalTo(weakSelf.contentView);
-//        make.height.mas_equalTo(@1);
-//    }];
-    
-    [fineGoodsLeftL mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(fineGoodsView).offset(10);
-        make.centerY.equalTo(fineGoodsView.mas_centerY);
-    }];
-    [fineGoodsLeftR mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(fineGoodsView).offset(-10);
-        make.centerY.equalTo(fineGoodsView.mas_centerY);
-    }];
-    
-    [timerView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.bottom.equalTo(weakSelf.contentView);
-        make.width.mas_equalTo(@(SCREENWIDTH));
-        make.height.mas_equalTo(@39);
-    }];
-    
-    [shengyuTimer mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(timerView).offset(10);
-        make.centerY.equalTo(timerView.mas_centerY);
-    }];
-    [self.timerLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(timerView).offset(-10);
-        make.centerY.equalTo(timerView.mas_centerY);
-    }];
-
 }
 
 - (void)storeUpClick:(UIButton *)button {
-//    button.selected = !button.selected;
     if (self.block) {
         self.block(button);
     }
     
 }
-//-(void)countDownStart:(NSString *)countDownTimeArr {
-//    self.timerLabel.text = countDownTimeArr;
-//}
-//
-//-(void)countDownEnd:(NSString *)countDownTimeArr {
-//    self.timerLabel.text = @"商品已下架";
-//}
-//
-
-
 
 - (CGFloat)promptInfoStrHeight:(NSString *)string {
     CGFloat contentW = [UIScreen mainScreen].bounds.size.width - 10;

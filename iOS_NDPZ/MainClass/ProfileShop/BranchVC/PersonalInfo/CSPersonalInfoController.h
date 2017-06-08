@@ -10,6 +10,5 @@
 
 @interface CSPersonalInfoController : UIViewController
 
-@property (nonatomic, strong) NSDictionary *profileInfo;
 
 @end

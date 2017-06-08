@@ -32,7 +32,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    [self createNavigationBarWithTitle:@"关于粉丝" selecotr:@selector(backBtnClicked:)];
+    [self createNavigationBarWithTitle:@"关于掌柜" selecotr:@selector(backBtnClicked:)];
     
     
     loadLink = @"https://m.nidepuzi.com/mall/mama/invited";

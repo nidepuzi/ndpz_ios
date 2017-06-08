@@ -7,9 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "JMMaMaCenterModel.h"
 
-@class CSProfileShopHeaderView;
+@class CSProfileShopHeaderView,CSUserProfileModel,JMMaMaCenterModel;
 @protocol CSProfileShopHeaderViewDelegte <NSObject>
 
 - (void)composeProfileShopHeader:(CSProfileShopHeaderView *)headerView ButtonActionClick:(UIButton *)button;
@@ -22,7 +21,7 @@
 @property (nonatomic, weak) id <CSProfileShopHeaderViewDelegte> delegate;
 @property (nonatomic, strong) JMMaMaCenterModel *mamaCenterModel;
 @property (nonatomic, strong) NSArray *mamaResults;
-@property (nonatomic, strong) NSDictionary *userInfoDic;
+@property (nonatomic, strong) CSUserProfileModel *userModel;
 
 @end
 

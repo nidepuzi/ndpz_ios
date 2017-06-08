@@ -14,7 +14,7 @@
 #import "JMOrderGoodsModel.h"
 #import "JMRefundView.h"
 #import "JMPopViewAnimationSpring.h"
-
+#import "JMOrderDetailModel.h"
 
 
 @interface JMApplyForRefundController () <UITextViewDelegate,UIActionSheetDelegate,UIScrollViewDelegate,JMRefundViewDelegate> {
@@ -108,12 +108,6 @@
 - (void)setDingdanModel:(JMOrderGoodsModel *)dingdanModel {
     _dingdanModel = dingdanModel;
 }
-- (void)setRefundDic:(NSDictionary *)refundDic {
-    _refundDic = refundDic;
-}
-- (void)setTid:(NSString *)tid {
-    _tid = tid;
-}
 
 
 
@@ -200,19 +194,18 @@
     [refundDescView addSubview:refundTitle];
     refundTitle.font = [UIFont systemFontOfSize:14.];
     refundTitle.textColor = [UIColor buttonTitleColor];
-    refundTitle.text = self.refundDic[@"name"];
+    refundTitle.text = self.channelsModel.name;
     
     UILabel *refundDescTitle = [UILabel new];
     [refundDescView addSubview:refundDescTitle];
     refundDescTitle.numberOfLines = 0;
     refundDescTitle.font = [UIFont systemFontOfSize:12.];
     refundDescTitle.textColor = [UIColor dingfanxiangqingColor];
-    NSString *descText = self.refundDic[@"desc"];
-    refundDescTitle.text = descText;
+    refundDescTitle.text = self.channelsModel.msg;
     
     
     
-    CGFloat stringHeight = [descText heightWithWidth:(SCREENWIDTH - 20) andFont:12.].height;
+    CGFloat stringHeight = [self.channelsModel.msg heightWithWidth:(SCREENWIDTH - 20) andFont:12.].height;
     
     [refundTitle mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.top.equalTo(refundDescView).offset(10);
@@ -555,7 +548,7 @@
 - (void)submitClick:(UIButton *)button {
     [self.refundDescTextView resignFirstResponder];
     [MBProgressHUD showLoading:@"退款处理中....."];
-    NSString *refundChannel = self.refundDic[@"refund_channel"];
+    NSString *refundChannel = self.channelsModel.channelsID;
     if ([refundChannel isEqualToString:@"budget"]) {
         [MobClick event:@"refundChannel_budget"];
     }else {

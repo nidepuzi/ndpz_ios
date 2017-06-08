@@ -8,7 +8,7 @@
 
 #import "JMInpotBoxBaseController.h"
 
-@class JMAddressModel;
+@class JMAddressModel,CSOrderDetailAddress;
 @interface JMModifyAddressController : JMInpotBoxBaseController
 
 @property (nonatomic, strong) JMAddressModel *addressModel;
@@ -18,6 +18,9 @@
 @property (nonatomic, assign) NSInteger addressLevel;
 
 @property (nonatomic, assign) BOOL orderEditAddress;         // 订单修改地址
-@property (nonatomic, strong) NSMutableDictionary *orderDict;
+//@property (nonatomic, strong) NSMutableDictionary *orderDict;
+@property (nonatomic, strong) CSOrderDetailAddress *orderAddressModel;
+
+
 
 @end

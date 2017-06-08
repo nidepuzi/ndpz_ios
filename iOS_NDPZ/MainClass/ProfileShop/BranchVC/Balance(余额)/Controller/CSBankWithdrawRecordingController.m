@@ -17,13 +17,17 @@
 #import "CSWithdrawRecordingCell.h"
 #import "CSWithdrawRecordingModel.h"
 #import "CSWithdrawDetailController.h"
+#import "Account1ViewController.h"
+#import "CSPopDescModel.h"
+#import "CSDescTitleListCell.h"
+#import "CSUserProfileModel.h"
+
 
 
 @interface CSBankWithdrawRecordingController ()  <UITableViewDelegate, UITableViewDataSource> {
     BOOL _isPullDown;       // 下拉刷新的标志
     BOOL _isLoadMore;       // 上拉加载的标志
     NSString *_nextPageUrl; // 下一页数据
-    BOOL navigationBarClick;
 }
 
 @property (nonatomic, strong) UITableView *tableView;
@@ -53,10 +57,6 @@
 #pragma mark ==== 生命周期函数 ====
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    if (!navigationBarClick) {
-        [self.tableView.mj_header beginRefreshing];
-    }
-    navigationBarClick = NO;
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -66,101 +66,28 @@
     self.view.backgroundColor = [UIColor whiteColor];
     [self createNavigationBarWithTitle:@"提现" selecotr:@selector(backClick)];
     
-    navigationBarClick = NO;
     [self createcustomizeUI];
-    [self createPullHeaderRefresh];
-    [self createPullFooterRefresh];
-    
     
 }
-
-#pragma mark ==== 下拉刷新,上拉加载 ====
-- (void)createPullHeaderRefresh {
-    kWeakSelf
-    self.tableView.mj_header = [MJAnimationHeader headerWithRefreshingBlock:^{  // MJAnimationHeader
-        _isPullDown = YES;
-        [self.tableView.mj_footer resetNoMoreData];
-        [weakSelf loadDataSource];
-    }];
-}
-- (void)createPullFooterRefresh {
-    kWeakSelf
-    self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-        _isLoadMore = YES;
-        [weakSelf loadMore];
-    }];
-}
-- (void)endRefresh {
-    if (_isPullDown) {
-        _isPullDown = NO;
-        [self.tableView.mj_header endRefreshing];
-    }
-    if (_isLoadMore) {
-        _isLoadMore = NO;
-        [self.tableView.mj_footer endRefreshing];
-    }
-}
-#pragma mark ==== 网络请求 ==== 
-- (void)loadDataSource {
-    NSString *url = [NSString stringWithFormat:@"%@/rest/v2/redenvelope", Root_URL];
-    [JMHTTPManager requestWithType:RequestTypeGET WithURLString:url WithParaments:nil WithSuccess:^(id responseObject) {
-        if (!responseObject)return;
-        [self.dataSource removeAllObjects];
-        [self dataAnalysis:responseObject];
-        [self endRefresh];
-    } WithFail:^(NSError *error) {
-        [self endRefresh];
-    } Progress:^(float progress) {
-        
-    }];
-}
-- (void)loadMore {
-    if ([NSString isStringEmpty:_nextPageUrl]) {
-        [self endRefresh];
-        [self.tableView.mj_footer endRefreshingWithNoMoreData];
-        return;
-    }
-    [JMHTTPManager requestWithType:RequestTypeGET WithURLString:_nextPageUrl WithParaments:nil WithSuccess:^(id responseObject) {
-        [self.tableView.mj_footer endRefreshing];
-        if (!responseObject)return;
-        [self dataAnalysis:responseObject];
-        [self endRefresh];
-    } WithFail:^(NSError *error) {
-        [self endRefresh];
-    } Progress:^(float progress) {
-        
-    }];
-}
-- (void)dataAnalysis:(NSDictionary *)data {
-    _nextPageUrl = data[@"next"];
-    NSArray *results = data[@"results"];
-    if (results.count != 0 ) {
-        for (NSDictionary *account in results) {
-            CSWithdrawRecordingModel *accountM = [CSWithdrawRecordingModel mj_objectWithKeyValues:account];
-            [self.dataSource addObject:accountM];
-        }
-    }
-    [self.tableView reloadData];
-}
-
 
 #pragma mark ==== 自定义UI ====
 - (void)createcustomizeUI {
-    UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     [self.view addSubview:tableView];
     tableView.backgroundColor = [UIColor countLabelColor];
     tableView.dataSource = self;
     tableView.delegate = self;
     tableView.showsVerticalScrollIndicator = NO;
-    tableView.tableFooterView = [UIView new];
-    tableView.separatorColor = [UIColor lineGrayColor];
-    tableView.separatorInset = UIEdgeInsetsMake(0, 15, 0, 0);
-    tableView.layoutMargins = UIEdgeInsetsZero;
-    [tableView registerClass:[CSWithdrawRecordingCell class] forCellReuseIdentifier:@"CSWithdrawRecordingCellIdentifier"];
+    tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [tableView registerClass:[CSDescTitleListCell class] forCellReuseIdentifier:@"CSDescTitleListCellIdentifier"];
     self.tableView = tableView;
     
-    UIButton *button1 = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
-    [button1 setImage:[UIImage imageNamed:@"cs_wenhao_alpha"] forState:UIControlStateNormal];
+    UIButton *button1 = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 80, 44)];
+//    [button1 setImage:[UIImage imageNamed:@"cs_wenhao_alpha"] forState:UIControlStateNormal];
+    [button1 setTitle:@"提现记录" forState:UIControlStateNormal];
+    [button1 setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    button1.titleLabel.font = CS_UIFontSize(14.);
+    button1.titleEdgeInsets = UIEdgeInsetsMake(0, 15, 0, -15);
     [button1 addTarget:self action:@selector(rightBarButtonAction) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:button1];
     self.navigationItem.rightBarButtonItem = rightItem;
@@ -221,7 +148,11 @@
     cellImageView.image = [UIImage imageNamed:@"cs_pushInImage"];
     iconImageView.image = [UIImage imageNamed:@"cs_withDraw_yinhangka"];
     
-    
+    NSArray *arr = [CSPopDescModel getWithdrawCellData];
+    for (NSDictionary *dic in arr) {
+        CSPopDescModel *model = [CSPopDescModel mj_objectWithKeyValues:dic];
+        [self.dataSource addObject:model];
+    }
     
 }
 
@@ -231,35 +162,33 @@
     return self.dataSource.count;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CSWithdrawRecordingCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CSWithdrawRecordingCellIdentifier"];
+    CSDescTitleListCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CSDescTitleListCellIdentifier"];
     if (!cell) {
-        cell = [[CSWithdrawRecordingCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"CSWithdrawRecordingCellIdentifier"];
+        cell = [[CSDescTitleListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"CSDescTitleListCellIdentifier"];
     }
-    cell.recordingModel = self.dataSource[indexPath.row];
-    cell.layoutMargins = UIEdgeInsetsZero;
+    cell.descModel = self.dataSource[indexPath.row];
+    
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 60;
+    CSPopDescModel *model = self.dataSource[indexPath.row];
+    return model.cellHeightP;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return 0.01;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-   return 60;
+   return 35;
 }
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    UIView *sectionView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 60)];
-    sectionView.layer.borderColor = [UIColor lineGrayColor].CGColor;
-    sectionView.layer.borderWidth = 1.;
-    UILabel *hengxianL = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 15)];
-    hengxianL.backgroundColor = [UIColor countLabelColor];
-    [sectionView addSubview:hengxianL];
-    UILabel *tixianjilu = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, SCREENWIDTH, 45)];
-    tixianjilu.backgroundColor = [UIColor whiteColor];
+    UIView *sectionView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 35)];
+    UILabel *tixianjilu = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, SCREENWIDTH - 20, 35)];
+    
     [sectionView addSubview:tixianjilu];
     tixianjilu.textColor = [UIColor buttonTitleColor];
-    tixianjilu.font = CS_UIFontSize(16.);
-    tixianjilu.textAlignment = NSTextAlignmentCenter;
-    tixianjilu.text = @"提现记录";
+    tixianjilu.font = CS_UIFontSize(14.);
+    tixianjilu.text = @"提现小知识";
     
     return sectionView;
 }
@@ -275,23 +204,23 @@
 
 #pragma mark ==== 自定义点击事件 ====
 - (void)rightBarButtonAction {
-    navigationBarClick = YES;
-    CSPopDescriptionController *popDescVC = [[CSPopDescriptionController alloc] init];
-    popDescVC.popDescType = popDescriptionTypeWithdraw;
-    STPopupController *popupController = [[STPopupController alloc] initWithRootViewController:popDescVC];
-    popupController.isTouchBackgorundView = NO;
-    popupController.containerView.layer.cornerRadius = 5;
-    [popupController presentInViewController:self];
+//    navigationBarClick = YES;
+//    CSPopDescriptionController *popDescVC = [[CSPopDescriptionController alloc] init];
+//    popDescVC.popDescType = popDescriptionTypeWithdraw;
+//    STPopupController *popupController = [[STPopupController alloc] initWithRootViewController:popDescVC];
+//    popupController.isTouchBackgorundView = NO;
+//    popupController.containerView.layer.cornerRadius = 5;
+//    [popupController presentInViewController:self];
+
+    Account1ViewController *vc = [[Account1ViewController alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 - (void)sectionButtonClick:(UIButton *)button {
-//    NSString *vipStatus = [JMUserDefaults valueForKey:kUserVipStatus];
-//    if (![NSString isStringEmpty:vipStatus]) {
-//        if ([vipStatus isEqual:@"15"]) { // 试用期 弹出框
-//            [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] dismiss:^{
-//            }];
-//            return;
-//        }
-//    }
+    if ([[CSUserProfileModel sharInstance].xiaolumm.last_renew_type isEqualToString:@"15"]) {
+        [self cs_presentPopView:self.popView animation:[CSPopViewAnimationSpring new] dismiss:^{
+        }];
+        return;
+    }
     CSCreateBankCardController *vc = [[CSCreateBankCardController alloc] init];
     vc.accountMoney = self.accountMoney;
     [self.navigationController pushViewController:vc animated:YES];

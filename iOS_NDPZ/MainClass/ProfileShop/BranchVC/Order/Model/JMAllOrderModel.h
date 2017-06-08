@@ -8,46 +8,50 @@
 
 #import <Foundation/Foundation.h>
 
+@class CSAllorderExtras;
 @interface JMAllOrderModel : NSObject
 
 
+/**
+ *  商品的ID
+ */
+@property (nonatomic,copy) NSString *goodsID;
+/**
+ *  订单ID
+ */
+@property (nonatomic,copy) NSString *tid;
+/**
+ *  购买者ID
+ */
 @property (nonatomic,copy) NSString *buyer_id;
-
+/**
+ *  购买者信息
+ */
 @property (nonatomic,copy) NSString *buyer_message;
 /**
- *  用户名
+ *  购买者姓名
  */
 @property (nonatomic,copy) NSString *buyer_nick;
 /**
  *  支付方式
  */
 @property (nonatomic,copy) NSString *channel;
-
-@property (nonatomic,copy) NSString *consign_time;
 /**
- *  订单创建时间
+ *  支付金额
  */
-@property (nonatomic,copy) NSString *created;
-
-@property (nonatomic,copy) NSString *discount_fee;
-/**
- *  商品的ID
- */
-@property (nonatomic,copy) NSString *goodsID;
-/**
- *  判断物流选择
- */
-@property (nonatomic,strong) NSDictionary *logistics_company;
-
-@property (nonatomic, copy) NSString *order_type;
-
-@property (nonatomic,copy) NSString *out_sid;
-
-@property (nonatomic,copy) NSString *pay_time;
-
 @property (nonatomic,copy) NSString *payment;
-
+/**
+ *  运费
+ */
 @property (nonatomic,copy) NSString *post_fee;
+/**
+ *  总支付金额
+ */
+@property (nonatomic,copy) NSString *total_fee;
+/**
+ *  优惠金额
+ */
+@property (nonatomic,copy) NSString *discount_fee;
 /**
  *  订单状态
  */
@@ -56,12 +60,42 @@
  *  订单状态文字
  */
 @property (nonatomic,copy) NSString *status_display;
-
-@property (nonatomic,copy) NSString *tid;
-
-@property (nonatomic,copy) NSString *total_fee;
-
+/**
+ *  订单商品图片
+ */
+@property (nonatomic, copy) NSString *order_pic;
 @property (nonatomic,copy) NSString *trade_type;
+/**
+ *  订单创建时间
+ */
+@property (nonatomic,copy) NSString *created;
+/**
+ *  订单支付时间
+ */
+@property (nonatomic,copy) NSString *pay_time;
+@property (nonatomic,copy) NSString *consign_time;
+@property (nonatomic,copy) NSString *out_sid;
+/**
+ *  物流选择
+ */
+@property (nonatomic,strong) NSDictionary *logistics_company;
+
+
+
+@property (nonatomic,copy) NSString *receiver_name;
+@property (nonatomic,copy) NSString *receiver_state;
+@property (nonatomic,copy) NSString *receiver_city;
+@property (nonatomic,copy) NSString *red_packer_num;
+@property (nonatomic,copy) NSString *receiver_district;
+@property (nonatomic,copy) NSString *receiver_address;
+@property (nonatomic,copy) NSString *receiver_mobile;
+@property (nonatomic,copy) NSString *receiver_phone;
+@property (nonatomic,copy) NSString *order_type;
+
+@property (nonatomic, strong) CSAllorderExtras *extras;
+
+
+
 
 //@property (nonatomic,copy) NSString *url;
 /**
@@ -73,6 +107,15 @@
 
 
 @end
+
+
+@interface CSAllorderExtras : NSObject
+
+@property (nonatomic,copy) NSString *sale_type;
+@property (nonatomic,assign) BOOL self_buy;
+
+@end
+
  // order_type --> 判断是否为团购
 /**
  *  "buyer_id" = 1;

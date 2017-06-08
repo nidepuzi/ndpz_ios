@@ -30,6 +30,6 @@
 
 @property (nonatomic, weak) id<JMOrderDetailHeaderViewDelegate> delegate;
 
-+ (instancetype)enterHeaderView;
+//+ (instancetype)enterHeaderView;
 
 @end

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+@class CSMamaExtraFigures,CSMamaExtraInfo;
 @interface JMMaMaCenterModel : NSObject
 /**
  *  活跃值
@@ -25,6 +26,15 @@
  *  未确定可以使用
  */
 @property (nonatomic, copy) NSString *carry_pending_display;
+/**
+ *  自购佣金
+ */
+@property (nonatomic, copy) NSString *cash_self_display;
+/**
+ *  分享佣金
+ */
+@property (nonatomic, copy) NSString *cash_share_display;
+
 /**
  *  可用金额 (收益金额)
  */
@@ -77,13 +87,46 @@
  */
 @property (nonatomic, copy) NSString *today_visitor_num;
 
-@property (nonatomic, strong) NSDictionary *extra_info;
+@property (nonatomic, strong) CSMamaExtraInfo *extra_info;
 
-@property (nonatomic, strong) NSDictionary *extra_figures;
+@property (nonatomic, strong) CSMamaExtraFigures *extra_figures;
 
 @end
 
 
+
+@interface CSMamaExtraFigures : NSObject
+
+@property (nonatomic, copy) NSString *month_duration_total;
+@property (nonatomic, copy) NSString *personal_total_rank;
+@property (nonatomic, copy) NSString *task_percentage;
+@property (nonatomic, copy) NSString *team_total_rank;
+@property (nonatomic, copy) NSString *today_carry_record;
+@property (nonatomic, copy) NSString *week_duration_rank;
+@property (nonatomic, copy) NSString *week_duration_total;
+
+
+
+@end
+
+@interface CSMamaExtraInfo : NSObject
+
+@property (nonatomic, copy) NSString *agencylevel;
+@property (nonatomic, copy) NSString *agencylevel_display;
+@property (nonatomic, copy) NSString *cashout_reason;
+@property (nonatomic, copy) NSString *could_cash_out;
+@property (nonatomic, copy) NSString *his_confirmed_cash_out;
+@property (nonatomic, copy) NSString *invite_url;
+@property (nonatomic, copy) NSString *next_agencylevel;
+@property (nonatomic, copy) NSString *next_agencylevel_display;
+@property (nonatomic, copy) NSString *next_level_exam_url;
+@property (nonatomic, copy) NSString *surplus_days;
+@property (nonatomic, copy) NSString *thumbnail;
+@property (nonatomic, copy) NSString *total_rank;
+
+
+
+@end
 
 
 /**

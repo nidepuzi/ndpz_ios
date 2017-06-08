@@ -7,13 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "JMAppForRefundModel.h"
-#import "JMContinuePayModel.h"
 
+@class CSOrderDetailChannels;
 @interface JMRefundCell : UITableViewCell
 
-- (void)configWithModel:(JMAppForRefundModel *)model Index:(NSInteger)index;
+- (void)configWithModel:(CSOrderDetailChannels *)model Index:(NSInteger)index;
 
-- (void)configWithPayModel:(JMContinuePayModel *)model Index:(NSInteger)index;
+- (void)configWithPayModel:(CSOrderDetailChannels *)model Index:(NSInteger)index;
 
 @end

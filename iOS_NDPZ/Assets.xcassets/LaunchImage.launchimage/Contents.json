@@ -1,10 +1,17 @@
 {
   "images" : [
     {
+      "orientation" : "portrait",
+      "idiom" : "iphone",
+      "filename" : "iPhone4S@2x.png",
+      "extent" : "full-screen",
+      "scale" : "2x"
+    },
+    {
       "extent" : "full-screen",
       "idiom" : "iphone",
       "subtype" : "736h",
-      "filename" : "iPhone6Plus@3x.png",
+      "filename" : "iPhone6plus@3x.png",
       "minimum-system-version" : "8.0",
       "orientation" : "portrait",
       "scale" : "3x"
@@ -29,7 +36,7 @@
     {
       "orientation" : "portrait",
       "idiom" : "iphone",
-      "filename" : "iPhone4S@2x.png",
+      "filename" : "iPhone4S@2x-1.png",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
       "scale" : "2x"
@@ -42,10 +49,6 @@
       "minimum-system-version" : "7.0",
       "orientation" : "portrait",
       "scale" : "2x"
-    },
-    {
-      "filename" : "iPhone6Plus@2x.png",
-      "unassigned" : true
     }
   ],
   "info" : {

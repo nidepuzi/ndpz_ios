@@ -461,6 +461,8 @@
     }else {
         self.isPopUpdataView = NO;
     }
+    [JMUserDefaults setObject:self.trackViewUrl1 forKey:@"banbenshengjixinxi"];
+    [JMUserDefaults synchronize];
 }
 - (void)updataAppPopView {
     self.updataPopView.releaseNotes = _releaseNotes;

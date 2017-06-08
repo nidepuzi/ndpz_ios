@@ -39,6 +39,7 @@
 - (void)setDescModel:(CSPopDescModel *)descModel {
     _descModel = descModel;
     self.titleLabel.text = descModel.rowTitle;
+    
 }
 
 

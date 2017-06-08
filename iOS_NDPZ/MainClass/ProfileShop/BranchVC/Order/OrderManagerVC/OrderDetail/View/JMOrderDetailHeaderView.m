@@ -95,11 +95,9 @@
     self.orderNumLabel.text = [NSString stringWithFormat:@"订单编号: %@",orderDetailModel.tid];
     self.orderCreateTime.text = [NSString stringWithFormat:@"下单时间: %@",[NSString jm_cutOutSec:orderDetailModel.created]];
     self.orderPayTime.text = [NSString stringWithFormat:@"付款时间: %@",[NSString jm_cutOutSec:orderDetailModel.created]];
-    NSDictionary *addressDict = orderDetailModel.user_adress;
-    self.addressNameLabel.text = addressDict[@"receiver_name"];
-    self.addressPhoneLabel.text = addressDict[@"receiver_mobile"];
-    NSString *addressStr = [NSString stringWithFormat:@"%@-%@-%@-%@",addressDict[@"receiver_state"],addressDict[@"receiver_city"],addressDict[@"receiver_district"],addressDict[@"receiver_address"]];
-    self.addressDetailLabel.text = addressStr;
+    self.addressNameLabel.text = orderDetailModel.user_adress.receiver_name;
+    self.addressPhoneLabel.text = orderDetailModel.user_adress.receiver_mobile;
+    self.addressDetailLabel.text = [NSString stringWithFormat:@"%@-%@-%@-%@",orderDetailModel.user_adress.receiver_state,orderDetailModel.user_adress.receiver_city,orderDetailModel.user_adress.receiver_district,orderDetailModel.user_adress.receiver_address];
     
     if ([orderDetailModel.channel isEqual:@"wx"]) {
         self.orderPayType.text = [NSString stringWithFormat:@"支付类型: 微信支付"];

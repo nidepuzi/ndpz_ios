@@ -14,6 +14,7 @@
 @property (nonatomic, copy) NSString *rowTitle;
 @property (nonatomic, assign) CGFloat sectionHeight;
 @property (nonatomic, assign) CGFloat cellHeight;
+@property (nonatomic, assign) CGFloat cellHeightP;
 
 + (NSArray *)getCouponSectionDescData;
 + (NSArray *)getCouponRowDescData;
@@ -28,7 +29,7 @@
 + (NSArray *)getWithdrawSectionDescData;
 + (NSArray *)getWithdrawRowDescData;
 
-
++ (NSArray *)getWithdrawCellData;
 
 
 @end

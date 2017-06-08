@@ -11,6 +11,11 @@
 #import "JMRichTextTool.h"
 #import "CSInviteRecordsController.h"
 
+NSString *const CSInviteViewControllerLabel1 = @"1、邀请好友购买365元套装商品“成为正式掌柜” ";
+NSString *const CSInviteViewControllerLabel2 = @"（1）获得365元正品超值礼包（2）自购或分享获得返佣（5%-25%）（3）推广一个正式掌柜即得100元现金 （4）全国包邮（海外、港澳台除外）";
+NSString *const CSInviteViewControllerLabel3 = @"2、通过试用邀请“成为试用掌柜”  ";
+NSString *const CSInviteViewControllerLabel4 = @"（1）全国包邮（海外、港澳台除外）（2）1000件全球精选正品，随心购（3）随时升级成为正式掌柜，享受返佣";
+
 
 @interface CSInviteViewController () {
  
@@ -49,89 +54,89 @@
     self.view.backgroundColor = [UIColor whiteColor];
     [self createNavigationBarWithTitle:@"邀请好礼" selecotr:@selector(backCkick)];
     
+    UIScrollView *contenScrollView = [[UIScrollView alloc] init];
+    contenScrollView.frame = CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT);
+    [self.view addSubview:contenScrollView];
+    
     UIImageView *headerImageView = [UIImageView new];
     headerImageView.contentMode = UIViewContentModeScaleAspectFill;
     headerImageView.userInteractionEnabled = YES;
-    [self.view addSubview:headerImageView];
+    [contenScrollView addSubview:headerImageView];
     UIImage *packsImage = CS_UIImageName(@"invitePacksImage");
     headerImageView.image = packsImage;
     
     CGFloat imageW = SCREENWIDTH;
     CGFloat imageH = packsImage.size.height / packsImage.size.width * imageW;
     
-    kWeakSelf
-    [headerImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.view).offset(64);
-        make.left.equalTo(weakSelf.view);
-        make.width.mas_equalTo(@(imageW));
-        make.height.mas_equalTo(@(imageH));
-    }];
-    
-    UILabel *titleLabel = [UILabel new];
-    titleLabel.textColor = [UIColor buttonTitleColor];
-    titleLabel.font = CS_UIFontSize(14.);
-    titleLabel.numberOfLines = 0;
-    titleLabel.textAlignment = NSTextAlignmentCenter;
-    NSString *moneyStr1 = @"100";
-    NSString *moneyStr2 = @"200";
-    NSString *allString = [NSString stringWithFormat:@"成功帮助好友创业,既得%@元现金 \n 好友立奖%@元购物券哦!",moneyStr1,moneyStr2];
-//    titleLabel.attributedText = [JMRichTextTool cs_changeFontAndColorWithSubFont:[UIFont systemFontOfSize:18.] AllString:allString SubStringArray:@[moneyStr1,moneyStr2]];
-    titleLabel.attributedText = [JMRichTextTool cs_changeFontAndColorWithSubFont:[UIFont boldSystemFontOfSize:24] SubColor:[UIColor buttonEnabledBackgroundColor] AllString:allString SubStringArray:@[moneyStr1,moneyStr2]];
-    [headerImageView addSubview:titleLabel];
-    
-    [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(headerImageView.mas_centerY);
-        make.centerX.equalTo(headerImageView.mas_centerX);
-        make.width.mas_equalTo(SCREENWIDTH - 20);
-    }];
-    
-    UILabel *titleLabel1 = [UILabel new];
-    titleLabel1.textColor = [UIColor buttonEnabledBackgroundColor];
-    titleLabel1.font = CS_UIFontSize(11.);
-    titleLabel1.numberOfLines = 0;
-    titleLabel1.textAlignment = NSTextAlignmentCenter;
-    titleLabel1.text = @"友情提示:好友立奖活动截至日2017-8-30,赶快帮好友创业吧!";
-    [headerImageView addSubview:titleLabel1];
-    
-    [titleLabel1 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(titleLabel.mas_bottom).offset(10);
-        make.centerX.equalTo(headerImageView.mas_centerX);
-        make.width.mas_equalTo(SCREENWIDTH - 20);
-    }];
-    
-//    UIButton *invetButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    [headerImageView addSubview:invetButton];
-//    invetButton.backgroundColor = [UIColor colorWithHex:0xff5000];
-//    invetButton.layer.cornerRadius = 2.;
-//    [invetButton addTarget:self action:@selector(inviteClick) forControlEvents:UIControlEventTouchUpInside];
-//    
-//    [invetButton setTitle:@"邀请方式二  30天试用掌柜" forState:UIControlStateNormal];
-//    invetButton.titleLabel.font = CS_UIFontSize(13.);
-//    [invetButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    headerImageView.frame = CGRectMake(0, 0, imageW, imageH);
     
     UIButton *invetZhengshiButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [headerImageView addSubview:invetZhengshiButton];
+    [contenScrollView addSubview:invetZhengshiButton];
     invetZhengshiButton.backgroundColor = [UIColor colorWithHex:0xff5000];
     invetZhengshiButton.layer.cornerRadius = 2.;
     [invetZhengshiButton addTarget:self action:@selector(inviteZhengshiClick) forControlEvents:UIControlEventTouchUpInside];
-    
-    [invetZhengshiButton setTitle:@"邀请好友成为掌柜" forState:UIControlStateNormal];
+    [invetZhengshiButton setTitle:@"邀请好友成为正式掌柜" forState:UIControlStateNormal];
     invetZhengshiButton.titleLabel.font = CS_UIFontSize(13.);
     [invetZhengshiButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
+    UIButton *invetButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [contenScrollView addSubview:invetButton];
+    invetButton.backgroundColor = [UIColor colorWithHex:0xff5000];
+    invetButton.layer.cornerRadius = 2.;
+    [invetButton addTarget:self action:@selector(inviteClick) forControlEvents:UIControlEventTouchUpInside];
+    [invetButton setTitle:@"邀请好友成为试用掌柜" forState:UIControlStateNormal];
+    invetButton.titleLabel.font = CS_UIFontSize(13.);
+    [invetButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
-    [invetZhengshiButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(titleLabel1.mas_bottom).offset(30);
-        make.width.mas_equalTo(@(SCREENWIDTH - 40));
-        make.height.mas_equalTo(@(40));
-        make.centerX.equalTo(weakSelf.view.mas_centerX);
-    }];
-//    [invetButton mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(invetZhengshiButton.mas_bottom).offset(15);
-//        make.width.mas_equalTo(@(SCREENWIDTH - 40));
-//        make.height.mas_equalTo(@(40));
-//        make.centerX.equalTo(weakSelf.view.mas_centerX);
-//    }];
+    invetZhengshiButton.frame = CGRectMake(30, SCREENHEIGHT / 2 , SCREENWIDTH - 60, 40);
+    invetButton.frame = CGRectMake(30, invetZhengshiButton.cs_max_Y + 15 , SCREENWIDTH - 60, 40);
+    
+    UILabel *label1 = [UILabel new];
+    label1.textColor = [UIColor dingfanxiangqingColor];
+    label1.font = CS_UIFontSize(14.);
+    label1.text = CSInviteViewControllerLabel1;
+    label1.numberOfLines = 0;
+    
+    UILabel *label2 = [UILabel new];
+    label2.textColor = [UIColor dingfanxiangqingColor];
+    label2.font = CS_UIFontSize(12.);
+    label2.text = CSInviteViewControllerLabel2;
+    label2.numberOfLines = 0;
+    
+    UILabel *label3 = [UILabel new];
+    label3.textColor = [UIColor dingfanxiangqingColor];
+    label3.font = CS_UIFontSize(14.);
+    label3.text = CSInviteViewControllerLabel3;
+    label3.numberOfLines = 0;
+    
+    UILabel *label4 = [UILabel new];
+    label4.textColor = [UIColor dingfanxiangqingColor];
+    label4.font = CS_UIFontSize(12.);
+    label4.text = CSInviteViewControllerLabel4;
+    label4.numberOfLines = 0;
+    
+    [contenScrollView addSubview:label1];
+    [contenScrollView addSubview:label2];
+    [contenScrollView addSubview:label3];
+    [contenScrollView addSubview:label4];
+    
+    CGFloat label1H = [CSInviteViewControllerLabel1 heightWithWidth:SCREENWIDTH - 30 andFont:14.].height;
+    CGFloat label2H = [CSInviteViewControllerLabel2 heightWithWidth:SCREENWIDTH - 45 andFont:12.].height;
+    CGFloat label3H = [CSInviteViewControllerLabel3 heightWithWidth:SCREENWIDTH - 30 andFont:14.].height;
+    CGFloat label4H = [CSInviteViewControllerLabel4 heightWithWidth:SCREENWIDTH - 45 andFont:12.].height;
+    
+    label1.frame = CGRectMake(15, invetButton.cs_max_Y + 15, SCREENWIDTH - 30, label1H);
+    label2.frame = CGRectMake(30, label1.cs_max_Y + 5, SCREENWIDTH - 45, label2H);
+    label3.frame = CGRectMake(15, label2.cs_max_Y + 10, SCREENWIDTH - 30, label3H);
+    label4.frame = CGRectMake(30, label3.cs_max_Y + 5, SCREENWIDTH - 45, label4H);
+    
+    
+    
+    contenScrollView.contentSize = CGSizeMake(SCREENWIDTH, label4.cs_max_Y + 30);
+    
+    
+    
+    
     
  
 

@@ -90,6 +90,7 @@
 
 #pragma mark 文字+菊花提示,不自动消失
 + (MBProgressHUD *)showTitle:(NSString *)title ToView:(UIView *)view {
+    [self hideHUDForView:nil];
     if (view == nil) view = (UIView*)[UIApplication sharedApplication].delegate.window;
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
     hud.mode = MBProgressHUDModeIndeterminate;

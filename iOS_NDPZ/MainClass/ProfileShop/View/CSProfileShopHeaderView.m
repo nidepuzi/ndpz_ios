@@ -9,6 +9,8 @@
 #import "CSProfileShopHeaderView.h"
 #import "UIImage+UIImageExt.h"
 #import "NSArray+Reverse.h"
+#import "JMMaMaCenterModel.h"
+#import "CSUserProfileModel.h"
 
 
 @interface CSProfileShopHeaderView ()
@@ -112,7 +114,7 @@
     
     
     NSArray *title1 = @[@"0",@"0.00",@"0",@"0"];
-    NSArray *title2 = @[@"今日订单",@"今日收益",@"今日访客",@"今日粉丝"];
+    NSArray *title2 = @[@"今日订单",@"今日收益",@"今日访客",@"今日掌柜"];
     CGFloat itemSizeWidth = SCREENWIDTH / 4;
     for (int i = 0; i < title1.count; i++) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -171,28 +173,15 @@
     
     
 }
-- (void)setUserInfoDic:(NSDictionary *)userInfoDic {
-    _userInfoDic = userInfoDic;
-    if (userInfoDic.count == 0) {
-        [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[userInfoDic objectForKey:@"thumbnail"]] placeholderImage:[UIImage imageNamed:@"icon_placeholder"]];
-        self.userNameLabel.text = @"";
-        self.userShopDescLabel.text = @"";
-        return;
-    }
-    [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[userInfoDic objectForKey:@"thumbnail"]] placeholderImage:[UIImage imageNamed:@"icon_placeholder"]];
-    NSString *nickName = [userInfoDic objectForKey:@"nick"];
-    if (nickName.length > 0 || [nickName class] != [NSNull null]) {
-        self.userNameLabel.text = [userInfoDic objectForKey:@"nick"];
-    }
-    NSDictionary *vipDic = userInfoDic[@"xiaolumm"];
-    if (vipDic.count == 0) {
-        self.userShopDescLabel.text = [NSString stringWithFormat:@"店铺名 : %@ / 店铺序号 : %@",@"你的铺子",[userInfoDic objectForKey:@"user_id"]];
-    }else {
-        self.userShopDescLabel.text = [NSString stringWithFormat:@"店铺名 : %@ / 店铺序号 : %@",@"你的铺子",[vipDic objectForKey:@"id"]];
-    }
+- (void)setUserModel:(CSUserProfileModel *)userModel {
+    _userModel = userModel;
+    self.userNameLabel.text = userModel.nick;
+    [self.iconImage sd_setImageWithURL:[NSURL URLWithString:userModel.thumbnail] placeholderImage:[UIImage imageNamed:@"icon_placeholder"]];
+     self.userShopDescLabel.text = [NSString stringWithFormat:@"店铺序号 : %@",userModel.xiaolumm.UserVipID];
     
     
 }
+
 - (void)yaoqinghaoyouImageVTap {
     if (_delegate && [_delegate respondsToSelector:@selector(composeProfileShopHeaderTap:)]) {
         [_delegate composeProfileShopHeaderTap:self];

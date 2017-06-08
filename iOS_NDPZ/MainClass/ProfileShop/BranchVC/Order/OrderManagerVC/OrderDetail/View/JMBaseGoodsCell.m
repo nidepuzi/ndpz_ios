@@ -43,7 +43,6 @@ NSString *const JMBaseGoodsCellIdentifier = @"JMBaseGoodsCellIdentifier";
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         [self createUI];
-        [self layoutUI];
     }
     return self;
 }
@@ -85,6 +84,22 @@ NSString *const JMBaseGoodsCellIdentifier = @"JMBaseGoodsCellIdentifier";
     self.numLabel.font = [UIFont systemFontOfSize:12.];
     self.numLabel.textColor = [UIColor dingfanxiangqingColor];
     
+    UILabel *zhuanLabel = [UILabel new];
+    zhuanLabel.textColor = [UIColor whiteColor];
+    zhuanLabel.backgroundColor = [UIColor buttonEnabledBackgroundColor];
+    zhuanLabel.font = CS_UIFontSize(11.);
+    zhuanLabel.text = @"赚";
+    zhuanLabel.textAlignment = NSTextAlignmentCenter;
+    [self.contentView addSubview:zhuanLabel];
+    self.zhuanLabel = zhuanLabel;
+    
+    UILabel *zhuanValueLabel = [UILabel new];
+    zhuanValueLabel.textColor = [UIColor buttonTitleColor];
+    zhuanValueLabel.font = CS_UIFontSize(12.);
+    zhuanValueLabel.text = @"0.00";
+    self.zhuanValueLabel = zhuanValueLabel;
+    [self.contentView addSubview:zhuanValueLabel];
+    
     JMSelecterButton *optionButton = [[JMSelecterButton alloc] init];
     [self.contentView addSubview:optionButton];
     self.optionButton = optionButton;
@@ -104,16 +119,15 @@ NSString *const JMBaseGoodsCellIdentifier = @"JMBaseGoodsCellIdentifier";
 //    self.tapView.alpha = 0.0;
 //    self.tapView.userInteractionEnabled = YES;
     
-    self.earningButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.contentView addSubview:self.earningButton];
-    [self.earningButton sizeToFit];
-    self.earningButton.titleLabel.font = CS_UIFontSize(13.);
-    [self.earningButton setTitleColor:[UIColor buttonEnabledBackgroundColor] forState:UIControlStateNormal];
-    self.earningButton.hidden = YES;
-}
-- (void)layoutUI {
+//    self.earningButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    [self.contentView addSubview:self.earningButton];
+//    [self.earningButton sizeToFit];
+//    self.earningButton.titleLabel.font = CS_UIFontSize(13.);
+//    [self.earningButton setTitleColor:[UIColor buttonEnabledBackgroundColor] forState:UIControlStateNormal];
+//    self.earningButton.hidden = YES;
+    
     kWeakSelf
-
+    
     [self.iconImage mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.equalTo(weakSelf.contentView).offset(10);
         make.width.height.mas_equalTo(@90);
@@ -129,7 +143,7 @@ NSString *const JMBaseGoodsCellIdentifier = @"JMBaseGoodsCellIdentifier";
         make.centerY.equalTo(weakSelf.iconImage.mas_centerY);
         make.left.equalTo(weakSelf.titleLabel);
         make.right.equalTo(weakSelf.contentView).offset(-10);
-//        make.width.mas_equalTo(@(SCREENWIDTH - 180));
+        //        make.width.mas_equalTo(@(SCREENWIDTH - 180));
     }];
     
     [self.PriceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -142,9 +156,19 @@ NSString *const JMBaseGoodsCellIdentifier = @"JMBaseGoodsCellIdentifier";
         make.left.equalTo(weakSelf.PriceLabel.mas_right).offset(10);
     }];
     
+    [zhuanValueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(weakSelf.contentView).offset(-10);
+        make.centerY.equalTo(weakSelf.numLabel.mas_centerY);
+    }];
+    [zhuanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(zhuanValueLabel.mas_left).offset(-2);
+        make.centerY.equalTo(weakSelf.numLabel.mas_centerY);
+        make.width.height.mas_equalTo(15);
+    }];
+    
     [self.optionButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(weakSelf.contentView).offset(-10);
-//        make.centerY.equalTo(weakSelf.contentView.mas_centerY);
+        //        make.centerY.equalTo(weakSelf.contentView.mas_centerY);
         make.top.equalTo(weakSelf.sizeLabel.mas_bottom).offset(5);
         make.width.mas_equalTo(@70);
         make.height.mas_equalTo(@25);
@@ -152,19 +176,19 @@ NSString *const JMBaseGoodsCellIdentifier = @"JMBaseGoodsCellIdentifier";
     
     [self.refundLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(weakSelf.contentView).offset(-10);
-//        make.centerY.equalTo(weakSelf.contentView.mas_centerY);
+        //        make.centerY.equalTo(weakSelf.contentView.mas_centerY);
         make.top.equalTo(weakSelf.sizeLabel.mas_bottom).offset(5);
-//        make.width.mas_equalTo(@80);
+        //        make.width.mas_equalTo(@80);
     }];
     
-//    [self.tapView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.top.bottom.equalTo(weakSelf.contentView);
-//        make.right.equalTo(weakSelf.refundLabel.mas_left).offset(-40);
+    //    [self.tapView mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.left.top.bottom.equalTo(weakSelf.contentView);
+    //        make.right.equalTo(weakSelf.refundLabel.mas_left).offset(-40);
+    //    }];
+//    [self.earningButton mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.centerY.equalTo(weakSelf.PriceLabel.mas_centerY);
+//        make.right.equalTo(weakSelf.contentView).offset(-10);
 //    }];
-    [self.earningButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(weakSelf.PriceLabel.mas_centerY);
-        make.right.equalTo(weakSelf.contentView).offset(-10);
-    }];
     
     
 }
@@ -176,22 +200,18 @@ NSString *const JMBaseGoodsCellIdentifier = @"JMBaseGoodsCellIdentifier";
     
 }
 - (void)configWithModel:(JMOrderGoodsModel *)goodsModel SectionCount:(NSInteger)sectionCount RowCount:(NSInteger)rowCount     {
-    NSString *string = goodsModel.pic_path;
-
-    [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[[string imageGoodsOrderCompression] JMUrlEncodedString]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"]];
+    self.zhuanLabel.hidden = YES;
+    self.zhuanValueLabel.hidden = YES;
     
-//    if (packageModel) {
-//        self.iconImage.userInteractionEnabled = YES;
-//    }else {
-//        self.iconImage.userInteractionEnabled = NO;
-//    }
+    NSString *string = goodsModel.pic_path;
+    [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[[string imageGoodsOrderCompression] JMUrlEncodedString]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"]];
     self.titleLabel.text = goodsModel.title;
     self.sizeLabel.text = [NSString stringWithFormat:@"规格:%@",goodsModel.sku_name];
     CGFloat payment = [goodsModel.total_fee floatValue];
     NSInteger goodsNum = [goodsModel.num integerValue];
     self.PriceLabel.text = [NSString stringWithFormat:@"¥%.2f",payment / goodsNum];
     self.numLabel.text = [NSString stringWithFormat:@"x%@",goodsModel.num];
-
+    
     NSInteger orderStatus = [goodsModel.status integerValue];
     NSInteger refundStatus = [goodsModel.refund_status integerValue];
     NSString *refundDisplay = goodsModel.refund_status_display;
@@ -251,21 +271,29 @@ NSString *const JMBaseGoodsCellIdentifier = @"JMBaseGoodsCellIdentifier";
 - (void)configWithAllOrder:(JMOrderGoodsModel *)goodsModel {
     NSString *string = goodsModel.pic_path;
     [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[[string imageGoodsOrderCompression] JMUrlEncodedString]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"]];
-//    self.iconImage.contentMode = UIViewContentModeScaleAspectFill;
-//    self.iconImage.layer.masksToBounds = YES;
-//    self.iconImage.layer.borderWidth = 0.5;
-//    self.iconImage.layer.borderColor = [UIColor dingfanxiangqingColor].CGColor;
-//    self.iconImage.layer.cornerRadius = 5;
-    
     self.titleLabel.text = goodsModel.title;
     self.sizeLabel.text = [NSString stringWithFormat:@"规格:%@",goodsModel.sku_name];
     CGFloat payment = [goodsModel.total_fee floatValue];
     NSInteger goodsNum = [goodsModel.num integerValue];
     self.PriceLabel.text = [NSString stringWithFormat:@"¥%.2f",payment / goodsNum];
     self.numLabel.text = [NSString stringWithFormat:@"x%@",goodsModel.num];
-//    [self.earningButton setImage:[UIImage imageNamed:@"order_sheng"] forState:UIControlStateNormal];
-//    [self.earningButton setTitle:goodsModel.total_fee forState:UIControlStateNormal];
+    self.zhuanValueLabel.text = [NSString stringWithFormat:@"%.2f",[goodsModel.extras.order_profit floatValue] / 100.00];
     
+}
+
+- (void)configWithLogistics:(JMOrderGoodsModel *)goodsModel {
+    self.zhuanLabel.hidden = YES;
+    self.zhuanValueLabel.hidden = YES;
+    
+    NSString *string = goodsModel.pic_path;
+    [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[[string imageGoodsOrderCompression] JMUrlEncodedString]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"]];
+    self.titleLabel.text = goodsModel.title;
+    self.sizeLabel.text = [NSString stringWithFormat:@"规格:%@",goodsModel.sku_name];
+    CGFloat payment = [goodsModel.total_fee floatValue];
+    NSInteger goodsNum = [goodsModel.num integerValue];
+    self.PriceLabel.text = [NSString stringWithFormat:@"¥%.2f",payment / goodsNum];
+    self.numLabel.text = [NSString stringWithFormat:@"x%@",goodsModel.num];
+    self.zhuanValueLabel.text = [NSString stringWithFormat:@"%.2f",[goodsModel.extras.order_profit floatValue] / 100.00];
 }
 
 
@@ -273,14 +301,11 @@ NSString *const JMBaseGoodsCellIdentifier = @"JMBaseGoodsCellIdentifier";
  *  支付订单数据源赋值
  */
 - (void)configPurchaseModel:(CartListModel *)cartModel {
+    self.zhuanLabel.hidden = YES;
+    self.zhuanValueLabel.hidden = YES;
+    
     NSString *string = cartModel.pic_path;
     [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[[string imageGoodsOrderCompression] JMUrlEncodedString]] placeholderImage:[UIImage imageNamed:@"icon_placeholderEmpty"]];
-//    self.iconImage.contentMode = UIViewContentModeScaleAspectFill;
-//    self.iconImage.layer.masksToBounds = YES;
-//    self.iconImage.layer.borderWidth = 0.5;
-//    self.iconImage.layer.borderColor = [UIColor dingfanxiangqingColor].CGColor;
-//    self.iconImage.layer.cornerRadius = 5;
-    
     self.titleLabel.text = cartModel.title;
     self.sizeLabel.text = [NSString stringWithFormat:@"规格:%@",cartModel.sku_name];
     CGFloat payment = [cartModel.total_fee floatValue];

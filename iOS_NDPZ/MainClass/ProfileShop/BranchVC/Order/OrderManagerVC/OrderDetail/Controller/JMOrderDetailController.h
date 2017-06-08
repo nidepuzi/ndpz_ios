@@ -21,9 +21,6 @@
 @property (nonatomic, weak) id<JMOrderDetailControllerDelegate> delegate;
 
 @property (nonatomic, copy) NSString *urlString;
-
-@property (nonatomic, strong) JMAllOrderModel *allOrderModel;
-
 @property (nonatomic, copy) NSString *orderTid;
 
 @end

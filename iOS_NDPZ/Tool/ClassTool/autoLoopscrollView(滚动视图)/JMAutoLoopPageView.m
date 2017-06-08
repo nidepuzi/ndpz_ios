@@ -117,7 +117,7 @@ static CGFloat const kDefaultautoScrollTimeInterval = 5.f;
 - (JMPageControl *)systemPageCtrol {
     if (!_systemPageCtrol) {
         self.systemPageCtrol = [[JMPageControl alloc] init];
-        self.systemPageCtrol.frame = CGRectMake(0, self.mj_h  - 30, self.mj_w, 20);
+        self.systemPageCtrol.frame = CGRectMake(0, self.mj_h  - 40, self.mj_w, 20);
         self.systemPageCtrol.enabled = NO;
         //    [self.systemPageCtrl addTarget:self action:@selector(pageControlAction:) forControlEvents:UIControlEventValueChanged];
         UIView *nomalView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 12, 4)];

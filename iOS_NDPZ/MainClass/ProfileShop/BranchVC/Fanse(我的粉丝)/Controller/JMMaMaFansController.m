@@ -60,8 +60,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    [self createNavigationBarWithTitle:@"今日粉丝" selecotr:@selector(backClick)];
-    _itemArr = @[@"正式粉丝",@"转正粉丝",@"试用粉丝",@"冻结粉丝"];
+    [self createNavigationBarWithTitle:@"今日掌柜" selecotr:@selector(backClick)];
+    _itemArr = @[@"正式掌柜",@"转正掌柜",@"试用掌柜",@"冻结掌柜"];
     _itemIndexArr = @[@"2",@"3",@"1",@"4"];
     [self.view addSubview:self.segmentControl];
     _segmentControl.selectedSegmentIndex = 0;

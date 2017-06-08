@@ -11,13 +11,11 @@
 #import "CSDevice.h"
 #import "CSAboutNDPZController.h"
 #import "CSPersonalInfoController.h"
-#import "CSAccountSecurityController.h"
-#import "CSOnlineTestController.h"
 #import "MiPushSDK.h"
 #import "QYPOPSDK.h"
 #import "JMVerificationCodeController.h"
 #import "JMStoreManager.h"
-
+#import "CSUserProfileModel.h"
 
 @interface CSProfilerSettingController () <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate> {
     NSArray *dataArr;
@@ -33,7 +31,9 @@
     [super viewDidLoad];
     
     [self createNavigationBarWithTitle:@"设置" selecotr:@selector(backClick)];
-    dataArr = [self getData:[JMStoreManager getDataDictionary:@"userProfile"]];
+    
+    dataArr = [self getData:[CSUserProfileModel sharInstance]];
+    
     [self createTableView];
     
     
@@ -122,14 +122,10 @@
     if (sectionIndex == 0) {
         if (rowIndex == 0) {
             CSPersonalInfoController *vc = [[CSPersonalInfoController alloc] init];
-            vc.profileInfo = self.profileInfo;
             [self.navigationController pushViewController:vc animated:YES];
         }else if (rowIndex == 1) {
-            NSDictionary *weChatInfo = [JMUserDefaults objectForKey:kWxLoginUserInfo];
             JMVerificationCodeController *vc = [[JMVerificationCodeController alloc] init];
             vc.verificationCodeType = SMSVerificationCodeWithBind;
-            vc.userInfo = weChatInfo;
-            vc.profileUserInfo = self.profileInfo;
             vc.userLoginMethodWithWechat = YES;
             [self.navigationController pushViewController:vc animated:YES];
         }else {
@@ -143,11 +139,14 @@
             UIAlertView *alterView = [[UIAlertView alloc] initWithTitle:nil message:@"确定要清空缓存吗？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
             alterView.delegate = self;
             [alterView show];
-        }else {
-            NSString *titleString = rowIndex == 1 ? @"关于你的铺子" : @"当前版本";
+        }else if (rowIndex == 1) {
+//            NSString *titleString = rowIndex == 1 ?  : @"当前版本";
             CSAboutNDPZController *vc = [[CSAboutNDPZController alloc] init];
-            vc.navigationTitleString = titleString;
+            vc.navigationTitleString = @"关于你的铺子";
             [self.navigationController pushViewController:vc animated:YES];
+        }else {
+            NSString *string = [JMUserDefaults objectForKey:@"banbenshengjixinxi"];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:string]];
         }
     }else { }
 //    else if (sectionIndex == 2) {
@@ -188,6 +187,8 @@
         [[QYSDK sharedSDK] logout:^{
             NSLog(@"七鱼客服已经退出");
         }];
+        [[CSUserProfileModel sharInstance] loginOut];
+        
         [JMUserDefaults setBool:NO forKey:kIsLogin];
 //        [JMUserDefaults setBool:NO forKey:kISNDPZVIP];54
         [JMUserDefaults setObject:@"unlogin" forKey:kLoginMethod];
@@ -228,13 +229,13 @@
     if (sizeValue < 1.0) {
         sizeValue = 0.0f;
     }
-    dataArr = [self getData:[JMStoreManager getDataDictionary:@"userProfile"]];
+    dataArr = [self getData:[CSUserProfileModel sharInstance]];
     [self.tableView reloadData];
     [MBProgressHUD hideHUD];
 }
 
-- (NSArray *)getData:(NSDictionary *)dic {
-    if (dic == nil) {
+- (NSArray *)getData:(CSUserProfileModel *)model {
+    if (model == nil) {
         return nil;
     }
     NSString *appVersion = [[CSDevice defaultDevice] getDeviceAppVersion];
@@ -242,7 +243,7 @@
     NSString *deviceVersion = [NSString stringWithFormat:@"%@.%@",appVersion,appBulidVersion];
     NSString *cacheString = [[CSDevice defaultDevice] getDeviceCacheSize];
     
-    NSString *phoneString = dic[@"mobile"];
+    NSString *phoneString = model.mobile;
     NSMutableString * mutablePhoneNumber = [phoneString mutableCopy];
     NSRange range = {3,4};
     if (mutablePhoneNumber.length == 11) {

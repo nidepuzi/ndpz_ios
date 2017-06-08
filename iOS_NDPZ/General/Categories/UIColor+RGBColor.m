@@ -42,6 +42,9 @@
     return [UIColor colorWithR:255 G:80 B:0 alpha:1];
 //    return [UIColor colorWithHex:0xff5000];
 }
++ (UIColor *)orderYellowColor {
+    return [UIColor colorWithR:250 G:171 B:53 alpha:1];
+}
 
 + (UIColor *)settingBackgroundColor{
     return [UIColor colorWithR:38 G:38 B:46 alpha:1];

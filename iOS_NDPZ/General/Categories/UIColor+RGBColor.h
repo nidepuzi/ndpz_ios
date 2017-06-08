@@ -39,6 +39,7 @@
 + (UIColor *)countLabelColor;
 + (UIColor *)buttonTitleColor;
 + (UIColor *)randomColor;
++ (UIColor *)orderYellowColor;
 + (UIColor *)wechatBackColor;
 + (UIColor *)timeLabelColor;
 + (UIColor *)titleDarkGrayColor;

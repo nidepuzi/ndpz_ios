@@ -318,9 +318,9 @@
 
 
 
-- (void)setAccountMoney:(NSNumber *)accountMoney {
+- (void)setAccountMoney:(NSString *)accountMoney {
     _accountMoney = accountMoney;
-    self.ableBlanceValueLabel.text = [NSString stringWithFormat:@"%.2f",[accountMoney floatValue]];
+    self.ableBlanceValueLabel.text = accountMoney;
 }
 - (void)buttonClick:(UIButton *)button {
     NSLog(@"%ld",button.tag);

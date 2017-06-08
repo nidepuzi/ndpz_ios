@@ -23,13 +23,6 @@
     });
     return defaultDevice;
 }
-- (void)getServerIP {
-    NSString *serverip = [JMUserDefaults objectForKey:@"serverip"];
-    if((serverip != nil) && (![serverip isEqualToString:@""])){
-        Root_URL = serverip;
-    }
-    NSLog(@"serverip %@, Root_url %@",serverip, Root_URL);
-}
 - (void)cerateUserAgent:(IMYWebView *)webView {
     NSString *oldAgent;
     if (webView == nil) {

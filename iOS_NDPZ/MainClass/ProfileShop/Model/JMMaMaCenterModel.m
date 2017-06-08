@@ -16,5 +16,15 @@
 @end
 
 
+@implementation CSMamaExtraFigures
+
+
+@end
+
+
+@implementation CSMamaExtraInfo
+
+
+@end
 
 

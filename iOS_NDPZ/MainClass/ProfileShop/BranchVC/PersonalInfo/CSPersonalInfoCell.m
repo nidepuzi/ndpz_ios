@@ -42,10 +42,6 @@ NSString *const CSPersonalInfoCellIdentifier = @"CSPersonalInfoCellIdentifier";
         [self.contentView addSubview:self.iconImageView];
         self.iconImageView.hidden = YES;
         
-//        UIView *lineView = [UIView new];
-//        lineView.backgroundColor = [UIColor countLabelColor];
-//        [self.contentView addSubview:lineView];
-        
         kWeakSelf
 
         [self.settingTitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -67,15 +63,6 @@ NSString *const CSPersonalInfoCellIdentifier = @"CSPersonalInfoCellIdentifier";
             make.width.mas_equalTo(@(8));
             make.height.mas_equalTo(@(15));
         }];
-//        [lineView mas_makeConstraints:^(MASConstraintMaker *make) {
-//            make.left.equalTo(weakSelf.contentView).offset(15);
-//            make.right.equalTo(weakSelf.contentView).offset(-15);
-//            make.bottom.equalTo(weakSelf.contentView);
-//            make.height.mas_equalTo(@1);
-//        }];
-        
-        
-        
         
         
     }

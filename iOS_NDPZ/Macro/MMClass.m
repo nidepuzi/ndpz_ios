@@ -32,11 +32,11 @@ CGFloat    const kSegmentControHeight = 45.f;
 //NSString *Root_URL =  @"https://192.168.1.31:9000";
 //NSString *Root_URL = @"https://192.168.1.50:8000";
 //NSString *Root_URL = @"https://192.168.1.56:8000";
-NSString *Root_URL = @"http://youni.f3322.org:8006";
+NSString *const Root_URL = @"http://youni.f3322.org:8006";
 
 #else
 
-NSString * Root_URL = @"https://m.nidepuzi.com";
+NSString *const Root_URL = @"https://m.nidepuzi.com";
 
 #endif
 

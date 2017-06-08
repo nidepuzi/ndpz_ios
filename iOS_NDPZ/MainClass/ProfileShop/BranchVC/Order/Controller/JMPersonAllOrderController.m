@@ -14,11 +14,9 @@
 #import "JMOrderDetailController.h"
 #import "JMReloadEmptyDataView.h"
 
+static BOOL _isShowSettingOrder;
 
-@interface JMPersonAllOrderController ()<UITableViewDataSource,UITableViewDelegate,CSTableViewPlaceHolderDelegate, JMOrderDetailControllerDelegate> {
-    BOOL _isShowSettingOrder;
-}
-
+@interface JMPersonAllOrderController ()<UITableViewDataSource,UITableViewDelegate,CSTableViewPlaceHolderDelegate, JMOrderDetailControllerDelegate>
 /**
  *  订单详情模型
  */
@@ -163,28 +161,16 @@
         for (NSDictionary *allDic in allArr) {
             JMAllOrderModel *allModel = [JMAllOrderModel mj_objectWithKeyValues:allDic];
             [self.dataSource addObject:allModel];
-            
-//            _goodsArray = [NSMutableArray array];
-//            NSArray *goodsArr = allDic[@"orders"];
-//            for (NSDictionary *goodsDic in goodsArr) {
-//                JMOrderGoodsModel *fetureModel = [JMOrderGoodsModel mj_objectWithKeyValues:goodsDic];
-//                [_goodsArray addObject:fetureModel];
-//            }
-//            [self.dataSource addObject:_goodsArray];
         }
     }
     [self.tableView cs_reloadData];
 }
-- (void)setNavigaButton:(UIButton *)navigaButton {
-    _navigaButton = navigaButton;
-    navigaButton.selected = NO;
-    [navigaButton addTarget:self action:@selector(naviButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-}
-- (void)naviButtonClick:(UIButton *)button {
-    button.selected = !button.selected;
-    _isShowSettingOrder = button.selected;
+- (void)setIsShow:(BOOL)isShow {
+    _isShow = isShow;
+    _isShowSettingOrder = isShow;
     [self.tableView cs_reloadData];
 }
+
 #pragma 创建UI 实现 UITableView 代理
 - (void)createTabelView {
     UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT - 64 - 45) style:UITableViewStyleGrouped];
@@ -213,15 +199,15 @@
     JMAllOrderModel *allModel = self.dataSource[indexPath.section];
     JMOrderGoodsModel *orderGoodsModel = allModel.orders[indexPath.row];
     [cell configWithAllOrder:orderGoodsModel];
-    cell.earningButton.hidden = !_isShowSettingOrder;
+    cell.zhuanLabel.hidden = !_isShowSettingOrder;
+    cell.zhuanValueLabel.hidden = !_isShowSettingOrder;
     return cell;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     JMAllOrderModel *allModel = self.dataSource[indexPath.section];
     JMOrderDetailController *orderDetailVC = [[JMOrderDetailController alloc] init];
-    orderDetailVC.allOrderModel = allModel;
     orderDetailVC.orderTid = allModel.tid;
-    orderDetailVC.urlString = [NSString stringWithFormat:@"%@/rest/v2/trades/%@?device=app", Root_URL, allModel.goodsID];
+    orderDetailVC.urlString = [NSString stringWithFormat:@"%@/rest/v2/trades/%@?device=app&show_sales=1", Root_URL, allModel.goodsID];
     orderDetailVC.delegate = self;
     [self.navigationController pushViewController:orderDetailVC animated:YES];
 }
@@ -242,6 +228,28 @@
     
     UIView *bottomView = [UIView new];
     [sectionShowView addSubview:bottomView];
+    
+    UILabel *saleTypeLabel = [UILabel new];
+    saleTypeLabel.font = CS_UIFontSize(11.);
+    saleTypeLabel.text = @"";
+    saleTypeLabel.textAlignment = NSTextAlignmentCenter;
+    [sectionShowView addSubview:saleTypeLabel];
+    saleTypeLabel.layer.borderWidth = 0.5f;
+    
+    if ([allModel.extras.sale_type integerValue] == 1) {
+        saleTypeLabel.hidden = NO;
+        saleTypeLabel.text = @"买";
+        saleTypeLabel.textColor = [UIColor orderYellowColor];
+        saleTypeLabel.layer.borderColor = [UIColor orderYellowColor].CGColor;
+    }else if ([allModel.extras.sale_type integerValue] == 2) {
+        saleTypeLabel.hidden = NO;
+        saleTypeLabel.text = @"卖";
+        saleTypeLabel.textColor = [UIColor buttonEnabledBackgroundColor];
+        saleTypeLabel.layer.borderColor = [UIColor buttonEnabledBackgroundColor].CGColor;
+    }else {
+        saleTypeLabel.hidden = YES;
+    }
+    CGFloat stringWidth = [saleTypeLabel.text widthWithHeight:16 andFont:11].width + 4;
     
     UILabel *orderStatusLabel = [UILabel new];
     [sectionShowView addSubview:orderStatusLabel];
@@ -277,14 +285,18 @@
         make.top.equalTo(lineView.mas_bottom);
         make.height.mas_equalTo(@35);
     }];
-    
+    [saleTypeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(sectionShowView).offset(10);
+        make.centerY.equalTo(sectionShowView.mas_centerY);
+        make.width.height.mas_equalTo(stringWidth);
+    }];
     [self.orderStatusLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(sectionShowView).offset(-10);
         make.centerY.equalTo(sectionShowView.mas_centerY);
     }];
     
     [self.orderPament mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(sectionShowView).offset(10);
+        make.left.equalTo(saleTypeLabel.mas_right).offset(5);
         make.centerY.equalTo(sectionShowView.mas_centerY);
     }];
     
@@ -299,100 +311,120 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (_isShowSettingOrder) {
         return 80;
+    }else {
+        return 40;
     }
-    return 40;
 }
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     JMAllOrderModel *allModel = self.dataSource[section];
-    CGFloat sectionH = _isShowSettingOrder ? 80 : 40;
-    UIView *sectionView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, sectionH)];
-    sectionView.backgroundColor = [UIColor whiteColor];
-    
-    UIView *totlaView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 40)];
-    [sectionView addSubview:totlaView];
-    CGFloat payment = [allModel.payment floatValue];
-    CGFloat postFee = [allModel.post_fee floatValue];
-    
-    UILabel *orderPament = [UILabel new];
-    [totlaView addSubview:orderPament];
-    orderPament.font = [UIFont systemFontOfSize:13.];
-    orderPament.textColor = [UIColor buttonTitleColor];
-    orderPament.text = [NSString stringWithFormat:@"实付款:¥ %.2f(运费:¥ %.2f)",payment,postFee];
-    
-    [orderPament mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(totlaView.mas_centerY);
-        make.right.equalTo(totlaView).offset(-10);
-    }];
-    
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(20, 40, SCREENWIDTH - 40, 1)];
-    lineView.backgroundColor = [UIColor countLabelColor];
-    
-    UIView *settingView = [[UIView alloc] initWithFrame:CGRectMake(0, 41, SCREENHEIGHT, 39)];
-    [sectionView addSubview:lineView];
-    [sectionView addSubview:settingView];
-//    settingView.backgroundColor = [UIColor redColor];
-    
-    UIButton *xiangqingButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [settingView addSubview:xiangqingButton];
-    xiangqingButton.frame = CGRectMake(SCREENWIDTH - 80, 7, 60, 25);
-    xiangqingButton.layer.cornerRadius = 2.;
-    xiangqingButton.layer.borderColor = [UIColor dingfanxiangqingColor].CGColor;
-    xiangqingButton.layer.borderWidth = 0.5f;
-    xiangqingButton.titleLabel.font = CS_UIFontSize(12.);
-    [xiangqingButton setTitleColor:[UIColor buttonTitleColor] forState:UIControlStateNormal];
-    xiangqingButton.tag = 1 + section;
-    
-    UIButton *settingButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [settingView addSubview:settingButton];
-    settingButton.frame = CGRectMake(SCREENWIDTH - 160, 7, 60, 25);
-    settingButton.layer.cornerRadius = 2.;
-    settingButton.layer.borderColor = [UIColor dingfanxiangqingColor].CGColor;
-    settingButton.layer.borderWidth = 0.5f;
-    settingButton.titleLabel.font = CS_UIFontSize(12.);
-    [settingButton setTitleColor:[UIColor buttonTitleColor] forState:UIControlStateNormal];
-    settingButton.tag = 1000 + section;
-    
-    
-    [xiangqingButton addTarget:self action:@selector(sectionFooterClick:) forControlEvents:UIControlEventTouchUpInside];
-    [settingButton addTarget:self action:@selector(settingButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    
-    if ([allModel.status integerValue] == 3 || [allModel.status integerValue] == 4 || [allModel.status integerValue] == 2) {
-        xiangqingButton.hidden = NO;
-        settingButton.hidden = YES;
-        CGFloat sizeW = [@"物流/详情" widthWithHeight:25 andFont:12.].width;
-        [xiangqingButton setTitle:@"物流/详情" forState:UIControlStateNormal];
-        xiangqingButton.cs_w = sizeW + 10;
-    }else if ([allModel.status integerValue] == 1) {
-        xiangqingButton.hidden = NO;
-        settingButton.hidden = NO;
-//        CGFloat sizeW = [@"去付款" widthWithHeight:25 andFont:12.].width;
-        [xiangqingButton setTitle:@"详情" forState:UIControlStateNormal];
-        [settingButton setTitle:@"去付款" forState:UIControlStateNormal];
-        settingButton.backgroundColor = [UIColor buttonEnabledBackgroundColor];
-        [settingButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//        settingButton.cs_w = sizeW + 10;
+    if (_isShowSettingOrder) {
+        UIView *sectionView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 80)];
+        sectionView.backgroundColor = [UIColor whiteColor];
+        
+        UIView *totlaView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 40)];
+        [sectionView addSubview:totlaView];
+        CGFloat payment = [allModel.payment floatValue];
+        CGFloat postFee = [allModel.post_fee floatValue];
+        
+        UILabel *orderPament = [UILabel new];
+        [totlaView addSubview:orderPament];
+        orderPament.font = [UIFont systemFontOfSize:13.];
+        orderPament.textColor = [UIColor buttonTitleColor];
+        orderPament.text = [NSString stringWithFormat:@"实付款:¥ %.2f(运费:¥ %.2f)",payment,postFee];
+        
+        [orderPament mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerY.equalTo(totlaView.mas_centerY);
+            make.right.equalTo(totlaView).offset(-10);
+        }];
+        
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(20, 40, SCREENWIDTH - 40, 1)];
+        lineView.backgroundColor = [UIColor countLabelColor];
+        
+        UIView *settingView = [[UIView alloc] initWithFrame:CGRectMake(0, 41, SCREENHEIGHT, 39)];
+        [sectionView addSubview:lineView];
+        [sectionView addSubview:settingView];
+        //    settingView.backgroundColor = [UIColor redColor];
+        
+        UIButton *xiangqingButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [settingView addSubview:xiangqingButton];
+        xiangqingButton.frame = CGRectMake(SCREENWIDTH - 80, 7, 60, 25);
+        xiangqingButton.layer.cornerRadius = 2.;
+        xiangqingButton.layer.borderColor = [UIColor dingfanxiangqingColor].CGColor;
+        xiangqingButton.layer.borderWidth = 0.5f;
+        xiangqingButton.titleLabel.font = CS_UIFontSize(12.);
+        [xiangqingButton setTitleColor:[UIColor buttonTitleColor] forState:UIControlStateNormal];
+        xiangqingButton.tag = 1 + section;
+        
+        UIButton *settingButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [settingView addSubview:settingButton];
+        settingButton.frame = CGRectMake(SCREENWIDTH - 160, 7, 60, 25);
+        settingButton.layer.cornerRadius = 2.;
+        settingButton.layer.borderColor = [UIColor dingfanxiangqingColor].CGColor;
+        settingButton.layer.borderWidth = 0.5f;
+        settingButton.titleLabel.font = CS_UIFontSize(12.);
+        [settingButton setTitleColor:[UIColor buttonTitleColor] forState:UIControlStateNormal];
+        settingButton.tag = 1000 + section;
+        
+        
+        [xiangqingButton addTarget:self action:@selector(sectionFooterClick:) forControlEvents:UIControlEventTouchUpInside];
+        [settingButton addTarget:self action:@selector(settingButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        
+        if ([allModel.status integerValue] == 3 || [allModel.status integerValue] == 4 || [allModel.status integerValue] == 2) {
+            xiangqingButton.hidden = NO;
+            settingButton.hidden = YES;
+            CGFloat sizeW = [@"物流/详情" widthWithHeight:25 andFont:12.].width;
+            [xiangqingButton setTitle:@"物流/详情" forState:UIControlStateNormal];
+            xiangqingButton.cs_w = sizeW + 10;
+        }else if ([allModel.status integerValue] == 1) {
+            xiangqingButton.hidden = NO;
+            settingButton.hidden = NO;
+            //        CGFloat sizeW = [@"去付款" widthWithHeight:25 andFont:12.].width;
+            [xiangqingButton setTitle:@"详情" forState:UIControlStateNormal];
+            [settingButton setTitle:@"去付款" forState:UIControlStateNormal];
+            settingButton.backgroundColor = [UIColor buttonEnabledBackgroundColor];
+            [settingButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            //        settingButton.cs_w = sizeW + 10;
+        }else {
+            xiangqingButton.hidden = NO;
+            settingButton.hidden = YES;
+            [xiangqingButton setTitle:@"详情" forState:UIControlStateNormal];
+            [settingButton setTitle:@"删除" forState:UIControlStateNormal];
+        }
+        if (!_isShowSettingOrder) {
+            settingView.cs_h = 0.;
+            xiangqingButton.hidden = YES;
+            settingButton.hidden = YES;
+        }
+        
+        
+        return sectionView;
     }else {
-        xiangqingButton.hidden = NO;
-        settingButton.hidden = YES;
-        [xiangqingButton setTitle:@"详情" forState:UIControlStateNormal];
-        [settingButton setTitle:@"删除" forState:UIControlStateNormal];
+        UIView *sectionView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 40)];
+        sectionView.backgroundColor = [UIColor whiteColor];
+        
+        CGFloat payment = [allModel.payment floatValue];
+        CGFloat postFee = [allModel.post_fee floatValue];
+        
+        UILabel *orderPament = [UILabel new];
+        [sectionView addSubview:orderPament];
+        orderPament.font = [UIFont systemFontOfSize:13.];
+        orderPament.textColor = [UIColor buttonTitleColor];
+        orderPament.text = [NSString stringWithFormat:@"实付款:¥ %.2f(运费:¥ %.2f)",payment,postFee];
+        
+        [orderPament mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerY.equalTo(sectionView.mas_centerY);
+            make.right.equalTo(sectionView).offset(-10);
+        }];
+        
+        return sectionView;
     }
-    if (!_isShowSettingOrder) {
-        settingView.cs_h = 0.;
-        xiangqingButton.hidden = YES;
-        settingButton.hidden = YES;
-    }
-    
-    
-    return sectionView;
 }
 - (void)sectionFooterClick:(UIButton *)button {
     NSInteger sectionIndex = button.tag - 1;
     JMAllOrderModel *allModel = self.dataSource[sectionIndex];
     JMOrderDetailController *orderDetailVC = [[JMOrderDetailController alloc] init];
-    orderDetailVC.allOrderModel = allModel;
     orderDetailVC.orderTid = allModel.tid;
-    orderDetailVC.urlString = [NSString stringWithFormat:@"%@/rest/v2/trades/%@?device=app", Root_URL, allModel.goodsID];
+    orderDetailVC.urlString = [NSString stringWithFormat:@"%@/rest/v2/trades/%@?device=app&show_sales=1", Root_URL, allModel.goodsID];
     orderDetailVC.delegate = self;
     [self.navigationController pushViewController:orderDetailVC animated:YES];
 }
@@ -400,9 +432,8 @@
     NSInteger sectionIndex = button.tag - 1000;
     JMAllOrderModel *allModel = self.dataSource[sectionIndex];
     JMOrderDetailController *orderDetailVC = [[JMOrderDetailController alloc] init];
-    orderDetailVC.allOrderModel = allModel;
     orderDetailVC.orderTid = allModel.tid;
-    orderDetailVC.urlString = [NSString stringWithFormat:@"%@/rest/v2/trades/%@?device=app", Root_URL, allModel.goodsID];
+    orderDetailVC.urlString = [NSString stringWithFormat:@"%@/rest/v2/trades/%@?device=app&show_sales=1", Root_URL, allModel.goodsID];
     orderDetailVC.delegate = self;
     [self.navigationController pushViewController:orderDetailVC animated:YES];
 }

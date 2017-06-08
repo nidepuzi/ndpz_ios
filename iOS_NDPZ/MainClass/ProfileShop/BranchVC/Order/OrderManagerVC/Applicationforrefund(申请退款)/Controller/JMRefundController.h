@@ -8,11 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class JMRefundController;
-@class JMOrderGoodsModel;
+@class JMRefundController,JMOrderGoodsModel,CSOrderDetailChannels;
 @protocol JMRefundControllerDelegate <NSObject>
 
-- (void)Clickrefund:(JMRefundController *)click OrderGoods:(JMOrderGoodsModel *)goodsModel Refund:(NSDictionary *)refundDic;
+- (void)Clickrefund:(JMRefundController *)click OrderGoods:(JMOrderGoodsModel *)goodsModel Refund:(CSOrderDetailChannels *)channelsModel;
 
 - (void)Clickrefund:(JMRefundController *)click ContinuePay:(NSDictionary *)continueDic;
 
@@ -20,11 +19,13 @@
 
 @interface JMRefundController : UIViewController
 
-@property (nonatomic,strong) NSDictionary *refundDic;
-
-@property (nonatomic, strong) NSDictionary *continuePayDic;
+//@property (nonatomic,strong) NSDictionary *refundDic;
+//
+//@property (nonatomic, strong) NSDictionary *continuePayDic;
 
 @property (nonatomic, strong) JMOrderGoodsModel *ordergoodsModel;
+@property (nonatomic, strong) NSArray *channelsArr;
+@property (nonatomic, assign) BOOL isRefund;
 
 @property (nonatomic,weak) id<JMRefundControllerDelegate>delegate;
 

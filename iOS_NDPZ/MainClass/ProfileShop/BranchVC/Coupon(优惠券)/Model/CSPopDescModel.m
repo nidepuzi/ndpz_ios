@@ -12,6 +12,15 @@
 
 @implementation CSPopDescModel
 
+- (CGFloat)cellHeightP {
+    if (!_cellHeight) {
+        CGFloat contentW = SCREENWIDTH - 20;
+        CGFloat contentH = [self.rowTitle boundingRectWithSize:CGSizeMake(contentW, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14.]} context:nil].size.height;
+        _cellHeight = contentH + 5;
+    }
+    return _cellHeight;
+}
+
 - (CGFloat)cellHeight {
     if (!_cellHeight) {
         CGFloat contentW = SCREENWIDTH * 0.9;
@@ -233,6 +242,24 @@
                           ],
                         ];
     return rowArr;
+}
+
++ (NSArray *)getWithdrawCellData {
+    NSArray *cellArr = @[
+                        @{@"rowTitle":@"1. 您可以随时提现"},
+                        
+                        
+                            @{@"rowTitle":@"2. 提现需要您个人信息与银行卡保持一致,并且银行卡信息完整无误"},
+                        
+                        @{@"rowTitle":@"3. 通常你的铺子审核日后3个工作日内到账（具体视银行结算）"},
+                        
+                        @{@"rowTitle":@"4. 审核日是每个月的9号和24号(9号审核时间范围：上月24号17:01至本月9号10:00)"},
+                        
+                        @{@"rowTitle":@"5. 如有其它疑问,请联系你的铺子服务号nidepuzi"}
+                        
+                        ];
+    return cellArr;
+    
 }
 
 

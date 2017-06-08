@@ -7,12 +7,13 @@
 //
 
 #import "CSPerformanceManagerController.h"
-#import "CSAccountSecurityCell.h"
 #import "JMOrderListController.h"
-#import "CSFansTotalRevenueController.h"
 #import "CSInviteViewController.h"
 #import "CSInviteRecordingController.h"
 #import "MaMaOrderListViewController.h"
+#import "CSAccountSecurityCell.h"
+#import "CSUserProfileModel.h"
+#import "JMMaMaCenterModel.h"
 
 
 @interface CSPerformanceManagerController () <UITableViewDelegate, UITableViewDataSource> {
@@ -33,7 +34,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     [self createNavigationBarWithTitle:@"业绩管理" selecotr:@selector(backClick)];
-    dataArr = [self getData:self.profileInfo];
+    dataArr = [self getData];
     [self createTableView];
     
 }
@@ -69,8 +70,8 @@
     [headerRow addSubview:nameLabel];
     [headerRow addSubview:zhiweiLabel];
     
-    [iconImageV sd_setImageWithURL:[NSURL URLWithString:self.profileInfo[@"thumbnail"]] placeholderImage:[UIImage imageNamed:@"icon_placeholder"]];
-    nameLabel.text = self.profileInfo[@"nick"];
+    [iconImageV sd_setImageWithURL:[NSURL URLWithString:[CSUserProfileModel sharInstance].thumbnail] placeholderImage:[UIImage imageNamed:@"icon_placeholder"]];
+    nameLabel.text = [CSUserProfileModel sharInstance].nick;
     zhiweiLabel.text = @"掌柜";//self.profileInfo[@""];
     
     [iconImageV mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -155,14 +156,14 @@
             break;
         case 2: {
             MaMaOrderListViewController *order = [[MaMaOrderListViewController alloc] init];
-//            order.orderRecord = _orderRecordToday;
+            order.orderRecord = [NSString stringWithFormat:@"%.2f",[self.model.cash_self_display floatValue]];
             order.orderListType = orderListWithSelfBuy;
             [self.navigationController pushViewController:order animated:YES];
         }
             break;
         case 3: {
             MaMaOrderListViewController *order = [[MaMaOrderListViewController alloc] init];
-//            order.orderRecord = _orderRecordToday;
+            order.orderRecord = [NSString stringWithFormat:@"%.2f",[self.model.cash_share_display floatValue]];
             order.orderListType = orderListWithShare;
             [self.navigationController pushViewController:order animated:YES];
         }
@@ -177,7 +178,7 @@
     order.ispopToView = YES;
     [self.navigationController pushViewController:order animated:YES];
 }
-- (NSArray *)getData:(NSDictionary *)dic {
+- (NSArray *)getData {
     
     NSArray *arr = @[
                      @{

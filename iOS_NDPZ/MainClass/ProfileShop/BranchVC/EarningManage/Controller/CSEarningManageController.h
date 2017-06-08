@@ -8,12 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class JMMaMaCenterModel;
 @interface CSEarningManageController : UIViewController
 
-
-@property (nonatomic, copy) NSString *totalEarning;
-@property (nonatomic, copy) NSString *weekEarning;
-@property (nonatomic, copy) NSString *monthEarning;
+@property (nonatomic, strong) JMMaMaCenterModel *model;
 
 
 @end

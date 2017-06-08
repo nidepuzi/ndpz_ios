@@ -7,53 +7,41 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MJExtension.h"
 
+@class CSOrderDetailAddress,CSOrderDetailExtras,CSOrderDetailChannels;
 @interface JMOrderDetailModel : NSObject
 
-@property (nonatomic,copy) NSString *buyer_id;
-
-@property (nonatomic,copy) NSString *buyer_message;
-/**
- *  用户名
- */
-@property (nonatomic,copy) NSString *buyer_nick;
-
-@property (nonatomic, copy) NSString *can_change_address;
-@property (nonatomic, copy) NSString *can_refund;
-
-/**
- *  支付方式
- */
-@property (nonatomic,copy) NSString *channel;
-
-@property (nonatomic,copy) NSString *consign_time;
-/**
- *  订单创建时间
- */
-@property (nonatomic,copy) NSString *created;
-
-@property (nonatomic,copy) NSString *discount_fee;
 /**
  *  商品的ID
  */
 @property (nonatomic,copy) NSString *goodsID;
 /**
- *  判断物流选择
+ *  商品信息
  */
-@property (nonatomic,strong) NSDictionary *logistics_company;
-
-@property (nonatomic,copy) NSString *out_sid;
-
-@property (nonatomic,copy) NSString *pay_time;
-
-@property (nonatomic,copy) NSString *payment;
-
-@property (nonatomic, assign) bool has_budget_paid;
-
+@property (nonatomic,strong) NSMutableArray *orders;
+/**
+ *  订单ID
+ */
+@property (nonatomic,copy) NSString *tid;
+/**
+ *  用户名
+ */
+@property (nonatomic,copy) NSString *buyer_nick;
+@property (nonatomic,copy) NSString *buyer_id;
+@property (nonatomic,copy) NSString *buyer_message;
+/**
+ *  支付方式
+ */
+@property (nonatomic,copy) NSString *channel;
+/**
+ *  支付金额
+ */
+@property (nonatomic, copy) NSString *payment;
 @property (nonatomic, copy) NSString *pay_cash;
-
-@property (nonatomic,copy) NSString *post_fee;
+@property (nonatomic, copy) NSString *post_fee;
+@property (nonatomic, copy) NSString *total_fee;
+@property (nonatomic, copy) NSString *discount_fee;
+@property (nonatomic, assign) bool has_budget_paid;
 /**
  *  订单状态
  */
@@ -63,23 +51,22 @@
  */
 @property (nonatomic,copy) NSString *status_display;
 
-@property (nonatomic,copy) NSString *tid;
-
-@property (nonatomic,copy) NSString *total_fee;
-
 @property (nonatomic,copy) NSString *trade_type;
-
-//@property (nonatomic,copy) NSString *url;
-
-@property (nonatomic,copy) NSString *order_type;
 /**
- *  商品信息
+ *  订单创建时间
  */
-@property (nonatomic,strong) NSMutableArray *orders;
+@property (nonatomic,copy) NSString *created;
+@property (nonatomic,copy) NSString *pay_time;
+@property (nonatomic,copy) NSString *consign_time;
+@property (nonatomic,copy) NSString *out_sid;
+/**
+ *  判断物流选择
+ */
+@property (nonatomic,strong) NSDictionary *logistics_company;
 /**
  *  收货地址
  */
-@property (nonatomic,strong) NSDictionary *user_adress;
+@property (nonatomic,strong) CSOrderDetailAddress *user_adress;
 /**
  *  包裹信息
  */
@@ -87,10 +74,56 @@
 /**
  *  退款方式
  */
-@property (nonatomic,strong) NSDictionary *extras;
+@property (nonatomic,strong) CSOrderDetailExtras *extras;
+
+@property (nonatomic, copy) NSString *order_type;
+@property (nonatomic, assign) BOOL can_change_address;
+@property (nonatomic, assign) BOOL can_refund;
+@property (nonatomic, assign) BOOL is_paid;
 
 
 @end
+
+@interface CSOrderDetailAddress : NSObject
+
+@property (nonatomic, copy) NSString *receiver_address;
+@property (nonatomic, copy) NSString *receiver_district;
+@property (nonatomic, copy) NSString *receiver_city;
+@property (nonatomic, copy) NSString *receiver_state;
+@property (nonatomic, assign) BOOL isDefault;
+@property (nonatomic, copy) NSString *identification_no;
+@property (nonatomic, copy) NSString *receiver_name;
+@property (nonatomic, copy) NSString *receiver_mobile;
+@property (nonatomic, copy) NSString *receiver_phone;
+@property (nonatomic, copy) NSString *userAddressID;
+
+
+@end
+
+@interface CSOrderDetailExtras : NSObject
+
+@property (nonatomic, assign) BOOL self_buy;
+@property (nonatomic, strong) NSArray *channels;
+
+
+@end
+
+
+@interface CSOrderDetailChannels : NSObject
+
+@property (nonatomic, copy) NSString *msg;
+@property (nonatomic, copy) NSString *payable;
+@property (nonatomic, copy) NSString *channelsID;
+@property (nonatomic, copy) NSString *name;
+
+
+@end
+
+
+
+
+
+
 
 
 

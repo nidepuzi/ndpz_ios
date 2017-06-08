@@ -13,7 +13,7 @@ typedef void(^sureButtonBlock)(NSDictionary *dic);
 @class JMGoodsInfoPopView;
 @protocol JMGoodsInfoPopViewDelegate <NSObject>
 
-- (void)composeGoodsInfoView:(JMGoodsInfoPopView *)popView AttrubuteDic:(NSMutableDictionary *)attrubuteDic;
+- (void)composeGoodsInfoView:(JMGoodsInfoPopView *)popView Button:(UIButton *)button AttrubuteDic:(NSMutableDictionary *)attrubuteDic;
 
 @end
 

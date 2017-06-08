@@ -70,6 +70,7 @@
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithCustomView:button];
     self.navigationItem.rightBarButtonItem = leftItem;
     self.rightNavButton = button;
+    [button addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
     
     _itemArr = @[@"全部订单",@"待支付",@"待收货"];
     _urlArr = @[kQuanbuDingdan_URL,kWaitpay_List_URL,kWaitsend_List_URL];
@@ -88,7 +89,6 @@
 - (void)addChildController {
     for (int i = 0 ; i < _itemArr.count; i++) {
         JMPersonAllOrderController *fineVC = [[JMPersonAllOrderController alloc] init];
-        fineVC.navigaButton = self.rightNavButton;
         [self addChildViewController:fineVC];
         [fineVC didMoveToParentViewController:self];
     }
@@ -122,7 +122,13 @@
         [self.navigationController popToRootViewControllerAnimated:YES];
     }
 }
-
+- (void)buttonClick:(UIButton *)button {
+    button.selected = !button.selected;
+    for (int i = 0 ; i < _itemArr.count; i++) {
+        JMPersonAllOrderController *fineVC = self.childViewControllers[i];
+        fineVC.isShow = button.selected;
+    }
+}
 
 
 @end

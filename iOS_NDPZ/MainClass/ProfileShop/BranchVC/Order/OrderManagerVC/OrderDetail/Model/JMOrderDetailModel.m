@@ -25,3 +25,40 @@
 }
 
 @end
+
+
+@implementation CSOrderDetailAddress
+
++ (NSDictionary *)mj_replacedKeyFromPropertyName {
+    
+    return @{@"userAddressID":@"id",
+             @"isDefault":@"default"};
+}
+
+@end
+
+
+
+@implementation CSOrderDetailExtras
+
++ (NSDictionary *)mj_objectClassInArray {
+    return @{@"channels":[CSOrderDetailChannels class]};
+    
+}
+
+@end
+
+
+@implementation CSOrderDetailChannels
+
++ (NSDictionary *)mj_replacedKeyFromPropertyName {
+    
+    return @{@"channelsID":@"id"};
+}
+
+
+
+@end
+
+
+

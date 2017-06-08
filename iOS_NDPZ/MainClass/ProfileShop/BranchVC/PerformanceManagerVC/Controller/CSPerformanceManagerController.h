@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+@class JMMaMaCenterModel;
 @interface CSPerformanceManagerController : UIViewController
 
-@property (nonatomic, strong) NSDictionary *profileInfo;
+@property (nonatomic, strong) JMMaMaCenterModel *model;
 
 @end

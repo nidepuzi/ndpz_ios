@@ -7,13 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "JMOrderGoodsModel.h"
 
+@class CSOrderDetailChannels,JMOrderGoodsModel;
 @interface JMApplyForRefundController : UIViewController
 
 @property (nonatomic, strong) JMOrderGoodsModel *dingdanModel;
-@property (copy, nonatomic) NSString *tid;
-@property (strong, nonatomic) NSDictionary *refundDic;
+@property (nonatomic, strong) CSOrderDetailChannels *channelsModel;
 
 
 @end

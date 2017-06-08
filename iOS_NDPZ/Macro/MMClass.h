@@ -61,7 +61,7 @@
 #define kAPP_WXAPPSECRET = @"a894a72567440fa7317843d76dd7bf03"
 
 
-UIKIT_EXTERN NSString * Root_URL;
+UIKIT_EXTERN NSString  *const Root_URL;
 UIKIT_EXTERN NSInteger  const kAppVisitoryDay;
 UIKIT_EXTERN CGFloat    const kAppTabBarHeight;
 UIKIT_EXTERN CGFloat    const kAppShareViewHeight;

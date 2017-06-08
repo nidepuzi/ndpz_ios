@@ -8,6 +8,9 @@
 
 #import "CSPersonalInfoController.h"
 #import "CSPersonalInfoCell.h"
+#import "CSUserProfileModel.h"
+#import "CSChangeUserProfileController.h"
+
 
 @interface CSPersonalInfoController () <UITableViewDelegate, UITableViewDataSource> {
     NSArray *dataArr;
@@ -23,16 +26,18 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     [self createNavigationBarWithTitle:@"个人资料" selecotr:@selector(backClick)];
-    
     [self createTableView];
     
     
 }
-- (void)setProfileInfo:(NSDictionary *)profileInfo {
-    _profileInfo = profileInfo;
-    dataArr = [self getData:profileInfo];
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    dataArr = [self getData:[CSUserProfileModel sharInstance]];
     [self.tableView reloadData];
+    
 }
+
 - (void)createTableView {
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT) style:UITableViewStylePlain];
     self.tableView.delegate = self;
@@ -78,58 +83,47 @@
     return sectionView;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    if (indexPath.section == 0) {
-//        if (indexPath.row !=0 ) {
-//            identifier = @"CSPersonalInfoCell1";
-//        }else {
-//            identifier = @"CSPersonalInfoCell0";
-//        }
-//    }else {
-//        identifier = @"CSPersonalInfoCell0";
-//    }
     CSPersonalInfoCell *cell = [tableView dequeueReusableCellWithIdentifier:CSPersonalInfoCellIdentifier];
     if (!cell) {
         cell = [[CSPersonalInfoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CSPersonalInfoCellIdentifier];
     }
     NSDictionary *itemDic = dataArr[indexPath.section][indexPath.row];
-    //    if (indexPath.section == 1) {
-    //        if (indexPath.row == 0) {
-    //            cell.settingDescTitleLabel.text = [[CSDevice defaultDevice] getDeviceCacheSize];
-    //        }
-    //    }
     [cell configWithItem:itemDic Section:indexPath.section Row:indexPath.row];
     cell.layoutMargins = UIEdgeInsetsZero;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 1) {
+        CSChangeUserProfileController *vc = [[CSChangeUserProfileController alloc] init];
+        [self.navigationController pushViewController:vc animated:YES];
+    }
+    
+}
 
 
 
-
-- (NSArray *)getData:(NSDictionary *)dic {
+- (NSArray *)getData:(CSUserProfileModel *)model {
     NSString *sexStr = @"";
     NSString *shengriStr = @"";
     NSString *diquStr = @"";
     NSString *nikeName = @"";
     NSString *imageUrl = @"";
-    if (dic.count == 0) {
-        
-    }else {
-//        sexStr = [dic[@"sex"] boolValue] == 1 ? @"男" : @"女";
-        nikeName = dic[@"nick"];
-        imageUrl = dic[@"thumbnail"];
+    NSString *descTitle = @"你的铺子";
+    
+    if (model != nil) {
+        nikeName = model.nick;
+        imageUrl = model.thumbnail;
+        descTitle = [NSString stringWithFormat:@"%@的铺子",nikeName];
+        shengriStr = model.birthday_display;
+        sexStr = [model.sex integerValue] == 0 ? @"" : [model.sex integerValue] == 1 ? @"男" : @"女";
+        diquStr = [NSString stringWithFormat:@"%@%@%@",model.province,model.city,model.district];
     }
     
     NSArray *arr = @[@[
                          @{
                              @"title":@"店名",
-                             @"descTitle":@"你的铺子",
-                             @"iconImage":@"",
-                             @"cellImage":@"cs_pushInImage"
-                             },
-                         @{
-                             @"title":@"店铺介绍",
-                             @"descTitle":@"",
+                             @"descTitle":descTitle,
                              @"iconImage":@"",
                              @"cellImage":@"cs_pushInImage"
                              },
@@ -139,12 +133,6 @@
                              @"iconImage":imageUrl,
                              @"cellImage":@"cs_pushInImage"
                              },
-//                         @{
-//                             @"title":@"店招图",
-//                             @"descTitle":@"",
-//                             @"iconImage":imageUrl,
-//                             @"cellImage":@"cs_pushInImage"
-//                             },
                          @{
                              @"title":@"店主名片",
                              @"descTitle":@"",
@@ -154,7 +142,7 @@
                          ],
                      @[
                          @{
-                             @"title":@"姓名",
+                             @"title":@"昵称",
                              @"descTitle":nikeName,
                              @"iconImage":@"",
                              @"cellImage":@"cs_pushInImage"

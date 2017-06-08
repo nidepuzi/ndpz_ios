@@ -11,6 +11,6 @@
 #import <objc/message.h>
 
 
-@interface JMInpotBoxBaseController : UIViewController <UITextFieldDelegate, UITextViewDelegate, UIScrollViewDelegate>
+@interface JMInpotBoxBaseController : UIViewController <UITextFieldDelegate, UITextViewDelegate, UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
 @end

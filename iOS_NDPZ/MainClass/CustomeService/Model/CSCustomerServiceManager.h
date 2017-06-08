@@ -10,7 +10,7 @@
 
 typedef void(^popCustomerServiceBlock)();
 
-
+@class CSUserProfileModel;
 @interface CSCustomerServiceManager : NSObject 
 
 + (instancetype)defaultManager;
@@ -19,7 +19,7 @@ typedef void(^popCustomerServiceBlock)();
 @property (nonatomic, copy) popCustomerServiceBlock popBlock;
 
 - (void)showCustomerService:(UIViewController *)vc;
-- (void)registerUserInfo:(NSDictionary *)dic;
+- (void)registerUserInfo:(CSUserProfileModel *)model;
 
 
 

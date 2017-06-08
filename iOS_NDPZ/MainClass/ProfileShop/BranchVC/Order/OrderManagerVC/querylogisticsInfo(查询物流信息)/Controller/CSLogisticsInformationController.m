@@ -72,8 +72,14 @@
 - (void)setPackageModel:(JMPackAgeModel *)packageModel {
     _packageModel = packageModel;
     NSDictionary *dic = packageModel.logistics_company;
-    _companyCode = dic[@"code"];
-    _packetId = packageModel.out_sid;
+    if (dic == nil) {
+        _companyCode = nil;
+        _packetId = nil;
+    }else {
+        _companyCode = dic[@"code"];
+        _packetId = packageModel.out_sid;
+    }
+    
 }
 
 #pragma mark ==== 下拉刷新,上拉加载 ====
@@ -241,7 +247,7 @@
         if (!cell) {
             cell = [[JMBaseGoodsCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:JMBaseGoodsCellIdentifier];
         }
-        [cell configWithAllOrder:self.orderDataSource[indexPath.row]];
+        [cell configWithLogistics:self.orderDataSource[indexPath.row]];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
     }else {

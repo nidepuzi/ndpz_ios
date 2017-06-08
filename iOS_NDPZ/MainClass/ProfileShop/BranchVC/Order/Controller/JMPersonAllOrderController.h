@@ -14,6 +14,7 @@
 - (void)refresh;
 @property (nonatomic, copy) NSString *itemIndex;
 @property (nonatomic, copy) NSString *urlString;
-@property (nonatomic, strong) UIButton *navigaButton;
+@property (nonatomic, assign) BOOL isShow;
+
 
 @end

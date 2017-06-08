@@ -22,9 +22,6 @@ typedef NS_ENUM(NSInteger, SMSVerificationCodeTpye) {
 /// 短信验证码类型
 @property (nonatomic, assign) SMSVerificationCodeTpye verificationCodeType;
 
-@property (nonatomic, strong) NSDictionary *userInfo;
-@property (nonatomic, strong) NSDictionary *profileUserInfo;
-
 // 提示用户不是小鹿妈妈.YES -> 不用处理滑动验证的情况
 @property (nonatomic, assign) BOOL userNotXLMM;
 @property (nonatomic, assign) BOOL userLoginMethodWithWechat;

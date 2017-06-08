@@ -82,7 +82,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
 //    self.automaticallyAdjustsScrollViewInsets = NO;
-    [self createNavigationBarWithTitle:@"钱包" selecotr:@selector(backBtnClicked:)];
+    [self createNavigationBarWithTitle:@"提现记录" selecotr:@selector(backBtnClicked:)];
     
     navigationBarClick = NO;
     

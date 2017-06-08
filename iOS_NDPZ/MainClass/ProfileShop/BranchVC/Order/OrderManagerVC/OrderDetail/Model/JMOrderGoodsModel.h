@@ -8,63 +8,34 @@
 
 #import <Foundation/Foundation.h>
 
+@class CSOrderGoodsExtras;
 @interface JMOrderGoodsModel : NSObject
 
 
-@property (nonatomic, assign) BOOL can_refund;
-
-/**
- *  是否是保税商品
- */
-@property (nonatomic, assign) BOOL is_bonded_goods;
-
-@property (nonatomic,copy) NSString *discount_fee;
-
 @property (nonatomic,copy) NSString *orderGoodsID;
-
-@property (nonatomic,assign) BOOL is_seckill;
-
+@property (nonatomic,copy) NSString *oid;
 @property (nonatomic,copy) NSString *item_id;
-
-@property (nonatomic,assign) BOOL kill_title;
 /**
- *  商品ID
+ *  商品标题
  */
-@property (nonatomic,copy) NSString *model_id;
+@property (nonatomic,copy) NSString *title;
+@property (nonatomic,copy) NSString *sku_id;
 /**
  *  商品个数
  */
 @property (nonatomic,copy) NSString *num;
-
-@property (nonatomic,copy) NSString *oid;
-
 @property (nonatomic,copy) NSString *outer_id;
-/**
- *  包裹分包信息
- */
-@property (nonatomic,copy) NSString *package_order_id;
-
+@property (nonatomic,copy) NSString *total_fee;
 @property (nonatomic,copy) NSString *payment;
-/**
- *  商品图片
- */
-@property (nonatomic,copy) NSString *pic_path;
-
-@property (nonatomic,copy) NSString *refund_id;
-/**
- *  退款状态
- */
-@property (nonatomic,copy) NSString *refund_status;
-/**
- *  退款状态描述
- */
-@property (nonatomic,copy) NSString *refund_status_display;
-
-@property (nonatomic,copy) NSString *sku_id;
+@property (nonatomic,copy) NSString *discount_fee;
 /**
  *  商品尺码
  */
 @property (nonatomic,copy) NSString *sku_name;
+/**
+ *  商品图片
+ */
+@property (nonatomic,copy) NSString *pic_path;
 /**
  *  订单状态
  */
@@ -74,12 +45,38 @@
  */
 @property (nonatomic,copy) NSString *status_display;
 /**
- *  商品标题
+ *  退款状态
  */
-@property (nonatomic,copy) NSString *title;
+@property (nonatomic,copy) NSString *refund_status;
+/**
+ *  退款状态描述
+ */
+@property (nonatomic,copy) NSString *refund_status_display;
+@property (nonatomic,copy) NSString *refund_id;
+@property (nonatomic,assign) BOOL kill_title;
+/**
+ *  商品ID
+ */
+@property (nonatomic,copy) NSString *model_id;
+@property (nonatomic,assign) BOOL is_seckill;
+/**
+ *  包裹分包信息
+ */
+@property (nonatomic,copy) NSString *package_order_id;
+@property (nonatomic, assign) BOOL can_refund;
+/**
+ *  是否是保税商品
+ */
+@property (nonatomic, assign) BOOL is_bonded_goods;
+@property (nonatomic, strong) CSOrderGoodsExtras *extras;
 
-@property (nonatomic,copy) NSString *total_fee;
 
+
+@end
+
+@interface CSOrderGoodsExtras : NSObject
+
+@property (nonatomic,copy) NSString *order_profit;
 
 @end
 

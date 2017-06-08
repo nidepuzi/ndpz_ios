@@ -63,7 +63,7 @@
         CGFloat pageViewX = ([UIScreen mainScreen].bounds.size.width - allWidth) / 2 + i * _normalPageView.bounds.size.width + i * self.padding;
         
         UIView * pageView = [self duplicate:_normalPageView];
-        pageView.frame = CGRectMake(pageViewX, 20 - _normalPageView.bounds.size.height / 2 , _normalPageView.bounds.size.width, _normalPageView.bounds.size.height);
+        pageView.frame = CGRectMake(pageViewX, 10 - _normalPageView.bounds.size.height / 2 , _normalPageView.bounds.size.width, _normalPageView.bounds.size.height);
         [self addSubview:pageView];
         if (i == 0) {
             // 设置frame

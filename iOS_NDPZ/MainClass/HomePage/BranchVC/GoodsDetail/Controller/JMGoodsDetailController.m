@@ -25,6 +25,7 @@
 #import "JMPushingDaysController.h"
 #import "CSShareManager.h"
 #import "WebViewController.h"
+#import "CSGoodsDetailModel.h"
 
 
 #define BottomHeitht 60.0
@@ -44,51 +45,29 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
     BOOL isTop;                 // 顶部视图 -- > 判断动画不同
     BOOL isShowTop;             // 顶部视图弹出开团  --> 当isShowTop为假时才显示
     
-    NSMutableArray *_sizeArray;
-    NSMutableArray *_colorArray;
-    NSMutableDictionary *_stockDict;
-    NSMutableArray *_imageArray;
-    
-    NSDictionary *detailContentDic;
-    NSDictionary *coustomInfoDic;
-    
     NSMutableDictionary *_paramer;
-    
-    NSMutableArray *goodsArray; // 商品属性数据
     NSInteger _cartsGoodsNum;   // 购物车数量
-    BOOL _isAddcart;            // 判断商品是否即将开售
     BOOL _isTeamBuyGoods;       // 判断商品是否可以团购
-    BOOL _isDirectBuyGoods;     // 判断商品是否可以直接跳转支付页面 (精品商品)
-    BOOL _isFineGoods;          // 判断商品是否是精品商品
-    BOOL _isFineGoodsHeightShow;// 是否显示精品商品
-    NSString *_buyCouponUrl;    // 购买精品券的链接
     BOOL _isUserClickAddCart;   // 用户点击加入购物车
-    NSInteger _goodsAddressLevel;// 商品的地址信息登记
     
     BOOL _popupViewControllerDismiss;  // 记录弹出视图的状态
     
     CGFloat alphtHeight;
     
 }
-@property (nonatomic, strong) UIView *allContentView;
-
+@property (nonatomic, strong) UIView *allContentView;               // 内容视图
 @property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) IMYWebView *detailWebView;
-
-@property (nonatomic, strong) UILabel *upViewLabel;
-@property (nonatomic, strong) UILabel *downViewLabel;
-
+@property (nonatomic, strong) IMYWebView *detailWebView;            // 网页
+@property (nonatomic, strong) UILabel *upViewLabel;                 // 上拉显示 tableview
+@property (nonatomic, strong) UILabel *downViewLabel;               // 下拉显示 网页
 @property (nonatomic, strong) JMAutoLoopPageView *pageView;
-//@property (nonatomic, strong) JMAutoLoopScrollView *goodsScrollView;
 /**
  *  自定义导航栏视图
  */
 @property (nonatomic, strong) UIView *navigationView;
 @property (nonatomic, strong) UIView *backToRootView;
 @property (nonatomic, strong) UIView *bottomView;
-
 @property (nonatomic, strong) UIView *shareView;
-
 @property (nonatomic, strong) UIButton *backButton;
 @property (nonatomic, strong) UILabel *cartsLabel;
 /**
@@ -111,6 +90,10 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
 
 @property (nonatomic, strong) JMShareModel *shareModel;
 @property (nonatomic, strong) CSSharePopController *sharPopVC;
+
+@property (nonatomic, strong) CSGoodsDetailModel *detailModel;
+@property (nonatomic, strong) CSGoodsDetailContentModel *detailContentModel;
+
 
 @end
 
@@ -221,10 +204,7 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
     _popupViewControllerDismiss = NO;
     popHeight = SCREENHEIGHT * 0.6;
     _paramer = [NSMutableDictionary dictionary];
-    BOOL isXLMM = [JMUserDefaults boolForKey:kISNDPZVIP];
-    BOOL isLogin = [JMUserDefaults boolForKey:kIsLogin];
-    _isFineGoodsHeightShow = isXLMM && isLogin;
-    _goodsAddressLevel = 0;
+    
     
     [self lodaDataSource];          // 商品详情数据源
     [self loadShareData];           // 分享数据
@@ -288,6 +268,7 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
     alphtHeight = self.tableView.contentSize.height - SCREENHEIGHT + RollHeight + BottomHeitht;
     alphtHeight = alphtHeight > HeaderScrolHeight - 80 ? HeaderScrolHeight - 80 : alphtHeight;
     
+    [self.tableView sendSubviewToBack:self.tableView.tableHeaderView];
 }
 
 #pragma mark ---- 网络请求,数据处理
@@ -333,42 +314,24 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
     }];
 }
 - (void)fetchData:(NSDictionary *)goodsDetailDic {
-    detailContentDic = [NSDictionary dictionary];
-    detailContentDic = goodsDetailDic[@"detail_content"];
-    _goodsAddressLevel = [goodsDetailDic[@"source_type"] integerValue];
+    CSGoodsDetailModel *detailModel = [CSGoodsDetailModel mj_objectWithKeyValues:goodsDetailDic];
+    CSGoodsDetailContentModel *detailContentModel = detailModel.detail_content;
+    self.detailModel = detailModel;
+    self.detailContentModel = detailContentModel;
     
-    NSString *waterMark = detailContentDic[@"watermark_op"];
-    NSArray *imageArr = detailContentDic[@"head_imgs"];
-    if ([NSString isStringEmpty:waterMark]) {
-        for (NSString *imageUrl in imageArr) {
-            NSString *imageUrlStr = [imageUrl imageNormalCompression];
-            [self.topImageArray addObject:imageUrlStr];
-        }
-    }else {
-        for (NSString *imageUrl in imageArr) {
-            NSString *imageUrlStr = [NSString stringWithFormat:@"%@|%@",[imageUrl imageNormalCompression],waterMark];
-            [self.topImageArray addObject:imageUrlStr];
-        }
-        
-    }
-
-//    self.topImageArray = detailContentDic[@"head_imgs"];
-    //    [self.goodsScrollView jm_reloadData];
     [self.pageView reloadData];
-    NSDictionary *comparison = goodsDetailDic[@"comparison"];
-    NSArray *attributes = comparison[@"attributes"];
+    
+    NSArray *attributes = self.detailModel.comparison[@"attributes"];
     for (NSDictionary *dic in attributes) {
         JMDescLabelModel *model = [JMDescLabelModel mj_objectWithKeyValues:dic];
         [self.attributeArray addObject:model];
     }
-    coustomInfoDic = [NSDictionary dictionary];
-    coustomInfoDic = goodsDetailDic[@"custom_info"];
-    goodsArray = goodsDetailDic[@"sku_info"];
+    NSArray *goodsArray = self.detailModel.sku_info;
     
     // 在这里拿到数据后先判断是否是团购商品 | 团购商品有teambuy_info字段 非团购无   --> 如果是团购商品,购买按钮为单人购买和团购
-    if ([goodsDetailDic isKindOfClass:[NSDictionary class]] && [goodsDetailDic objectForKey:@"teambuy_info"]) {
+    if ([self.detailModel.teambuy_info isEqualToDictionary:[NSDictionary dictionary]] && self.detailModel.teambuy_info.count != 0) {
         //        NSArray *teamNumBuy = @[@"零",@"一",@"二",@"三",@"四",@"五",@"六",@"七",@"八",@"九",@"十"];
-        NSDictionary *dic = goodsDetailDic[@"teambuy_info"];
+        NSDictionary *dic = self.detailModel.teambuy_info;
         NSInteger code1 = [dic[@"teambuy_person_num"] integerValue];
         if ([dic[@"teambuy"] boolValue]) {
             _isTeamBuyGoods = YES;
@@ -377,7 +340,7 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
             self.addCartButton.hidden = YES;
             self.buyNowButton.hidden = YES;
             CGFloat moneyValueTeam = [dic[@"teambuy_price"] floatValue];
-            CGFloat moneyValuePersonal = [detailContentDic[@"lowest_agent_price"] floatValue];
+            CGFloat moneyValuePersonal = [self.detailContentModel.lowest_agent_price floatValue];
             NSString *teamString = [NSString stringWithFormat:@"%ld人购 ¥%.1f", (long)code1, moneyValueTeam];
             NSString *personalString = [NSString stringWithFormat:@"单人购 ¥%.1f",moneyValuePersonal];
             [self.groupBuyTeam setTitle:teamString forState:UIControlStateNormal];
@@ -392,22 +355,18 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
         self.addCartButton.hidden = NO;
         self.buyNowButton.hidden = NO;
     }
-    // === 显示商品出售状态 === //
-    _isDirectBuyGoods = [detailContentDic[@"is_onsale"] boolValue];
-    _isFineGoods = [detailContentDic[@"is_boutique"] boolValue];
-    NSString *saleStatus = detailContentDic[@"sale_state"];
     
-    if (_isFineGoods) {
-//        [self.addCartButton setTitle:@"立即购买" forState:UIControlStateNormal];
+    NSString *saleStatus = self.detailContentModel.sale_state;
+    
+    if (self.detailContentModel.is_boutique) {
         currentCartsType = @"0";
     }else {
         currentCartsType = @"0";
     }
-    
     if (_isTeamBuyGoods) { // 团购
         currentCartsType = @"3";
         if ([saleStatus isEqual:@"on"]) {
-            if ([detailContentDic[@"is_sale_out"] boolValue]) {
+            if (self.detailContentModel.is_sale_out) {
                 [self getStatusButton:YES];
                 [self.addCartButton setTitle:@"已抢光" forState:UIControlStateNormal];
                 self.addCartButton.enabled = NO;
@@ -426,7 +385,7 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
         }
     }else {
         if ([saleStatus isEqual:@"on"]) {
-            if ([detailContentDic[@"is_sale_out"] boolValue]) {
+            if (self.detailContentModel.is_sale_out) {
                 [self.addCartButton setTitle:@"已抢光" forState:UIControlStateNormal];
                 self.addCartButton.enabled = NO;
             }else {
@@ -442,7 +401,6 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
         }
     }
     
-    
     if (goodsArray.count == 0) {
         return ;
     }else {
@@ -453,23 +411,19 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
             }else {
                 if (arr.count == 1 && goodsArray.count == 1) {
                     popHeight = 220.f;
-//                    self.popView.mj_h = popHeight;
                 }
                 NSDictionary *skuDic = arr[0];
                 _paramer[@"item_id"] = itemDic[@"product_id"];
                 _paramer[@"sku_id"] = skuDic[@"sku_id"];
                 _paramer[@"num"] = @"1";
-                [self.popView initTypeSizeView:goodsArray TitleString:detailContentDic[@"name"]];
+                [self.popView initTypeSizeView:goodsArray TitleString:self.detailContentModel.name];
                 break;
             }
         }
-//        NSDictionary *itemDic = goodsArray[0];
-//        NSDictionary *skuDic = itemDic[@"sku_items"][0];
     }
-    _buyCouponUrl = goodsDetailDic[@"buy_coupon_url"];
     
     if (!_isTeamBuyGoods) {
-        if (_isDirectBuyGoods) {
+        if (self.detailContentModel.is_onsale) {
             self.addCartButton.hidden = YES;
             self.buyNowButton.hidden = NO;
             kWeakSelf
@@ -497,18 +451,8 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
         self.buyNowButton.hidden = YES;
     }
 }
-#pragma mark ==== 导航栏点击事件 ====
-- (void)navigationBarButton:(UIButton *)button {
-    if (button.tag == 100 || button.tag == 102) {
-        [self.navigationController popViewControllerAnimated:YES];
-    }else {
-        [MobClick event:@"GoodsDetail_share"];
-        _popupViewControllerDismiss = YES;
-        [[CSShareManager manager] showSharepopViewController:self.sharPopVC withRootViewController:self WithBlock:^(BOOL dismiss) {
-            _popupViewControllerDismiss = NO;
-        }];
-    }
-}
+
+
 #pragma mark --- UITableView 代理 ----
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 3;
@@ -524,15 +468,7 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
-        if (_isFineGoods && _isFineGoodsHeightShow) {
-            if (_goodsAddressLevel > 1) {
-                CGFloat promptLabelHeight = [orderLevelInfo heightWithWidth:SCREENWIDTH - 10 andFont:12.].height + 20;
-                return 190 + promptLabelHeight;
-            }
-            return 190;
-        }
-        
-        return 150;
+        return 160;
     }else if (indexPath.section == 1) {
         return 160;
     }else if (indexPath.section == 2) {
@@ -545,28 +481,22 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
         JMGoodsExplainCell *cell = [tableView dequeueReusableCellWithIdentifier:JMGoodsExplainCellIdentifier];
-        cell.detailContentDic = detailContentDic;
-        cell.customInfoDic = coustomInfoDic;
-        cell.promptIndex = _goodsAddressLevel;
+        cell.detailModel = self.detailModel;
         cell.block = ^(UIButton *button) {
             if (button.tag == 100) {
                 if ([[JMGlobal global] userVerificationLogin]) {
                     NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/pmt/ninepic/page_list?model_id=%@",Root_URL,self.goodsID];
-                    //    urlString = [NSString stringWithFormat:@"%@?model_id=%@",urlString,model.fineCouponModelID];
                     JMPushingDaysController *pushVC = [[JMPushingDaysController alloc] init];
-                    //                pushVC.isPushingDays = YES;
                     pushVC.pushungDaysURL = urlString;
-                    pushVC.navTitle = @"文案精选";
+                    pushVC.navTitle = @"素材精选";
                     [self.navigationController pushViewController:pushVC animated:YES];
                 }else {
                     [[JMGlobal global] showLoginViewController];
                 }
             }else {
                 // webview跳转
-                [JumpUtils jumpToLocation:_buyCouponUrl viewController:self];
-                
+                [JumpUtils jumpToLocation:self.detailModel.buy_coupon_url viewController:self];
             }
-            
         };
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
@@ -574,9 +504,8 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
         JMGoodsSafeGuardCell *cell = [tableView dequeueReusableCellWithIdentifier:JMGoodsSafeGuardCellIdentifier];
         cell.block = ^(UIButton *button) {
             WebViewController *webVC = [[WebViewController alloc] init];
-            NSString *string = [NSString stringWithFormat:@"%@",detailContentDic[@"refund_tips_url"]];
             NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-            [dict setValue:string forKey:@"web_url"];
+            [dict setValue:self.detailContentModel.refund_tips_url forKey:@"web_url"];
             [dict setValue:@"退换货规则" forKey:@"titleName"];
             webVC.webDiction = dict;
             webVC.isShowNavBar = true;
@@ -621,11 +550,11 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
 #pragma mark ---- UIScrollView 代理 ----
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGFloat offset = scrollView.contentOffset.y;
-    NSLog(@"%.2f",offset);
+//    NSLog(@"%.2f",offset);
     if (scrollView == self.tableView) {
-        self.pageView.mj_origin = CGPointMake(self.pageView.mj_origin.x, 0); // self.pageView.mj_origin.x --> self.goodsScrollView.contentSize
+        self.tableView.tableHeaderView.mj_origin = CGPointMake(self.tableView.tableHeaderView.mj_origin.x, 0); // self.pageView.mj_origin.x --> self.goodsScrollView.contentSize (self.pageView 改为self.tableView.tableHeaderView 可以的)
         if (self.tableView.contentOffset.y >= 0 &&  self.tableView.contentOffset.y <= HeaderScrolHeight) {
-            self.pageView.mj_origin = CGPointMake(self.pageView.mj_origin.x, -offset / 2.0f);
+            self.tableView.tableHeaderView.mj_origin = CGPointMake(self.tableView.tableHeaderView.mj_origin.x, -offset / 2.0f);
 //            CGFloat scrolHeight = alphtHeight > HeaderScrolHeight - 80 ? HeaderScrolHeight - 80 : alphtHeight;
             CGFloat yOffset = offset / alphtHeight;
             yOffset = MAX(0, MIN(1, yOffset));
@@ -634,23 +563,18 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
             self.shareView.alpha = 0.7 - yOffset;
         }else if (self.tableView.contentOffset.y <= 0 && self.tableView.contentOffset.y <= HeaderScrolHeight) {
             self.navigationView.alpha = 0.;
-        }else {
-            NSLog(@"%.2f",offset);
         }
         if (offset <= self.tableView.contentSize.height - SCREENHEIGHT + RollHeight + BottomHeitht) {
-            NSLog(@"%.2f",offset);
             self.upViewLabel.text = @"继续拖动,查看图文详情";
-        }else { }
+        }
     }else {
-        NSLog(@"%.2f",offset);
         self.downViewLabel.text = (offset<= - 60) ? @"释放返回商品详情" : @"下拉返回商品详情";
-        
     }
 }
 -(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (decelerate) {
         CGFloat offset = scrollView.contentOffset.y;
-        NSLog(@"----offset=%f",offset);
+//        NSLog(@"----offset=%f",offset);
         if (scrollView == self.tableView) {
             if (offset < 0) {
                 minY = MIN(minY, offset);
@@ -663,7 +587,7 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
         }
         // 滚到底部视图
         if (maxY >= self.tableView.contentSize.height - SCREENHEIGHT + RollHeight + BottomHeitht) {
-            NSLog(@"----%@",NSStringFromCGRect(self.allContentView.frame));
+//            NSLog(@"----%@",NSStringFromCGRect(self.allContentView.frame));
             isShowGoodsDetail = NO;
             [UIView animateWithDuration:0.4 animations:^{
                 self.allContentView.transform = CGAffineTransformTranslate(self.allContentView.transform, 0,-SCREENHEIGHT);
@@ -684,49 +608,20 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
     }
 }
 
-#pragma mark ---- 自定义弹出视图 (显示/隐藏) ----
-- (void)showPopView {
-    isTop = NO;
-    [[UIApplication sharedApplication].keyWindow addSubview:self.maskView];
-    [[UIApplication sharedApplication].keyWindow addSubview:self.popView];
-    
-    [UIView animateWithDuration:0.2 animations:^{
-        self.view.layer.transform = [JMPopViewAnimationDrop firstStepTransform];
-        self.maskView.alpha = 1.0;
-    } completion:^(BOOL finished) {
-        [UIView animateWithDuration:0.3 animations:^{
-            self.view.layer.transform = [JMPopViewAnimationDrop secondStepTransform];
-            self.popView.transform = CGAffineTransformTranslate(self.popView.transform, 0, -popHeight);
-        }];
-    }];
-}
-- (void)hideMaskView {
-    if (isTop) {
-        isShowTop = NO;
-    }else {
-        [UIView animateWithDuration:0.3 animations:^{
-            self.view.layer.transform = [JMPopViewAnimationDrop firstStepTransform];
-            self.popView.transform = CGAffineTransformIdentity;
-        } completion:^(BOOL finished) {
-            [UIView animateWithDuration:0.2 animations:^{
-                self.view.layer.transform = CATransform3DIdentity;
-                self.maskView.alpha = 0.0;
-            } completion:^(BOOL finished) {
-                [self.maskView removeFromSuperview];
-                [self.popView removeFromSuperview];
-            }];
-        }];
-    }
-}
 #pragma mark -- 加入购物车选择商品属性回调
-- (void)composeGoodsInfoView:(JMGoodsInfoPopView *)popView AttrubuteDic:(NSMutableDictionary *)attrubuteDic {
+- (void)composeGoodsInfoView:(JMGoodsInfoPopView *)popView Button:(UIButton *)button AttrubuteDic:(NSMutableDictionary *)attrubuteDic {
+    if (button.tag == 10) {
+        _isUserClickAddCart = YES;
+    }else {
+        _isUserClickAddCart = NO;
+    }
     NSString *urlString = [NSString stringWithFormat:@"%@/rest/v2/carts?type=%@",Root_URL,currentCartsType];
-    if (_isDirectBuyGoods) {
+    if (self.detailContentModel.is_onsale) {
         [MBProgressHUD showLoading:@""];
     }else {
         [MBProgressHUD showLoading:@"正在加入购物车~"];
     }
-    if (_isFineGoods) {
+    if (self.detailContentModel.is_boutique) {
         attrubuteDic[@"type"] = @"0";
     }else {
         attrubuteDic[@"type"] = @"0";
@@ -768,7 +663,7 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
         self.popView.sureButton.enabled = YES;
         if (!_isTeamBuyGoods) {
             [self hideMaskView];
-            if (_isDirectBuyGoods) {
+            if (self.detailContentModel.is_onsale) {
             }else {
                 [MobClick event:@"addShoppingCartFail"];
             }
@@ -778,31 +673,6 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
     } Progress:^(float progress) {
     }];
 }
-#pragma mark - LPAutoScrollViewDatasource,LPAutoScrollViewDelegate
-#pragma mark 顶部视图滚动协议方法
-- (NSUInteger)numberOfItemWithPageView:(JMAutoLoopPageView *)pageView {
-    return self.topImageArray.count;
-}
-- (void)configCell:(__kindof UICollectionViewCell *)cell Index:(NSUInteger)index PageView:(JMAutoLoopPageView *)pageView {
-    JMGoodsLoopRollCell *testCell = cell;
-    NSString *string = self.topImageArray[index];
-    testCell.imageString = string;
-}
-- (NSString *)cellIndentifierWithIndex:(NSUInteger)index PageView:(JMAutoLoopPageView *)pageView {
-    return @"JMGoodsLoopRollCell";
-}
-- (void)JMAutoLoopPageView:(JMAutoLoopPageView *)pageView DidScrollToIndex:(NSUInteger)index {
-}
-- (void)JMAutoLoopPageView:(JMAutoLoopPageView *)pageView DidSelectedIndex:(NSUInteger)index {
-}
-//- (NSUInteger)jm_numberOfNewViewInScrollView:(JMAutoLoopScrollView *)scrollView {
-//
-//}
-//- (void)jm_scrollView:(JMAutoLoopScrollView *)scrollView newViewIndex:(NSUInteger)index forRollView:(JMGoodsLoopRollView *)rollView {
-//    rollView.imageString = self.topImageArray[index];
-//}
-//- (void)jm_scrollView:(JMAutoLoopScrollView *)scrollView didSelectedIndex:(NSUInteger)index {
-//}
 #pragma mark 自定义导航视图
 - (void)createNavigationView {
     kWeakSelf
@@ -892,6 +762,10 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
     self.bottomView.frame = CGRectMake(0, SCREENHEIGHT - BottomHeitht, SCREENWIDTH, BottomHeitht);
     self.bottomView.backgroundColor = [UIColor whiteColor];
     
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 1)];
+    lineView.backgroundColor = [UIColor buttonDisabledBorderColor];
+    [self.bottomView addSubview:lineView];
+    
     UIButton *shopCartButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.bottomView addSubview:shopCartButton];
     shopCartButton.layer.cornerRadius = 20.;
@@ -899,9 +773,13 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
     [shopCartButton addTarget:self action:@selector(cartButton:) forControlEvents:UIControlEventTouchUpInside];
     self.shopCartButton = shopCartButton;
     
+    UIView *lineView1 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 1)];
+    lineView1.backgroundColor = [UIColor buttonDisabledBorderColor];
+    [shopCartButton addSubview:lineView1];
+    
     UIImageView *shopCartImage = [UIImageView new];
     [shopCartButton addSubview:shopCartImage];
-    shopCartImage.image = [UIImage imageNamed:@"goodsDetailCarts"];
+    shopCartImage.image = [UIImage imageNamed:@"goodsDetailCartsBlack"];
     
     self.cartsLabel = [UILabel new];
     [shopCartImage addSubview:self.cartsLabel];
@@ -915,12 +793,12 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
     
     UIButton *addCartButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.bottomView addSubview:addCartButton];
-    addCartButton.layer.cornerRadius = 20.;
-    addCartButton.layer.borderColor = [UIColor buttonEnabledBackgroundColor].CGColor;
-    addCartButton.layer.borderWidth = 1.0f;
+    //    addCartButton.layer.cornerRadius = 20.;
+    //    addCartButton.layer.borderColor = [UIColor buttonEnabledBackgroundColor].CGColor;
+    //    addCartButton.layer.borderWidth = 1.0f;
     addCartButton.tag = kBottomViewTag + 1;
-    addCartButton.backgroundColor = [UIColor whiteColor];
-    [addCartButton setTitle:@"加入购物车" forState:UIControlStateNormal];
+    //    addCartButton.backgroundColor = [UIColor whiteColor];
+    [addCartButton setTitle:@"买" forState:UIControlStateNormal];
     [addCartButton setTitleColor:[UIColor buttonEnabledBackgroundColor] forState:UIControlStateNormal];
     addCartButton.titleLabel.font = [UIFont systemFontOfSize:16.];
     [addCartButton addTarget:self action:@selector(cartButton:) forControlEvents:UIControlEventTouchUpInside];
@@ -929,42 +807,47 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
     
     UIButton *buyNowButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.bottomView addSubview:buyNowButton];
-    buyNowButton.layer.cornerRadius = 20.;
+    //    buyNowButton.layer.cornerRadius = 20.;
     buyNowButton.tag = kBottomViewTag + 2;
     buyNowButton.backgroundColor = [UIColor buttonEnabledBackgroundColor];
-    [buyNowButton setTitle:@"立即购买" forState:UIControlStateNormal];
+    [buyNowButton setTitle:@"卖" forState:UIControlStateNormal];
     [buyNowButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     buyNowButton.titleLabel.font = [UIFont systemFontOfSize:16.];
     [buyNowButton addTarget:self action:@selector(cartButton:) forControlEvents:UIControlEventTouchUpInside];
     self.buyNowButton = buyNowButton;
     self.buyNowButton.hidden = YES;
-
+    
     kWeakSelf
     [shopCartButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(weakSelf.bottomView).offset(15);
-        make.width.height.mas_equalTo(@40);
-        make.centerY.equalTo(weakSelf.bottomView.mas_centerY);
+        make.left.bottom.equalTo(weakSelf.bottomView);
+        make.width.mas_equalTo(SCREENWIDTH * 0.2);
+        make.height.mas_equalTo(BottomHeitht);
+    }];
+    [lineView1 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(shopCartButton);
+        make.centerY.equalTo(shopCartButton);
+        make.width.mas_equalTo(1);
+        make.height.mas_equalTo(BottomHeitht);
     }];
     [shopCartImage mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(shopCartButton.mas_centerX);
         make.centerY.equalTo(shopCartButton.mas_centerY);
-        make.width.height.mas_equalTo(@40);
+        make.width.height.mas_equalTo(@25);
     }];
     [addCartButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(shopCartButton.mas_right).offset(15);
-        make.centerY.equalTo(weakSelf.bottomView.mas_centerY);
-        make.height.mas_equalTo(@40);
-        make.width.mas_equalTo(@(SCREENWIDTH / 2 - 50));
+        make.left.equalTo(shopCartButton.mas_right);
+        make.bottom.equalTo(weakSelf.bottomView);
+        make.height.mas_equalTo(BottomHeitht);
+        make.width.mas_equalTo(@(SCREENWIDTH * 0.4));
     }];
     [buyNowButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(addCartButton.mas_right).offset(15);
-        make.centerY.equalTo(weakSelf.bottomView.mas_centerY);
-        make.height.mas_equalTo(@40);
-        make.width.mas_equalTo(@(SCREENWIDTH / 2 - 50));
+        make.right.bottom.equalTo(weakSelf.bottomView);
+        make.height.mas_equalTo(BottomHeitht);
+        make.width.mas_equalTo(@(SCREENWIDTH * 0.4));
     }];
     [self.cartsLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(shopCartImage.mas_right).offset(-15);
-        make.bottom.equalTo(shopCartImage.mas_top).offset(15);
+        make.left.equalTo(shopCartImage.mas_right).offset(-10);
+        make.bottom.equalTo(shopCartImage.mas_top).offset(10);
         make.width.height.mas_equalTo(@16);
     }];
     
@@ -998,6 +881,14 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
     self.groupBuyPersonal.hidden = YES;
     self.groupBuyTeam.hidden = YES;
 }
+#pragma mark ==== 导航栏点击事件 ====
+- (void)navigationBarButton:(UIButton *)button {
+    if (button.tag == 100 || button.tag == 102) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }else {
+        [self showShareVC];
+    }
+}
 #pragma mark 加入购物车按钮点击事件
 - (void)cartButton:(UIButton *)button {
     button.enabled = NO;
@@ -1011,20 +902,14 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
         }else {
             [[JMGlobal global] showLoginViewController];
         }
-    }else if (button.tag == kBottomViewTag + 1) {  // 加入购物车
-        _isUserClickAddCart = YES;
+    }else if (button.tag == kBottomViewTag + 1) {  // 买
         if (isLogin) {
             [self showPopView];
         }else {
             [[JMGlobal global] showLoginViewController];
         }
-    }else if (button.tag == kBottomViewTag + 2) {  // 立即购买
-        _isUserClickAddCart = NO;
-        if (isLogin) {
-            [self showPopView];
-        }else {
-            [[JMGlobal global] showLoginViewController];
-        }
+    }else if (button.tag == kBottomViewTag + 2) {  // 卖
+        [self showShareVC];
     }else if (button.tag == kBottomViewTag + 3) {
         if (isLogin) {
             _paramer[@"type"] = @"0";
@@ -1073,6 +958,63 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
     purchaseVC.directBuyGoodsTypeNumber = directBuyGoodsTypeNumber;
     [self.navigationController pushViewController:purchaseVC animated:YES];
 }
+- (void)showShareVC {
+    [MobClick event:@"GoodsDetail_share"];
+    _popupViewControllerDismiss = YES;
+    [[CSShareManager manager] showSharepopViewController:self.sharPopVC withRootViewController:self WithBlock:^(BOOL dismiss) {
+        _popupViewControllerDismiss = NO;
+    }];
+}
+
+#pragma mark 顶部视图滚动协议方法
+- (NSUInteger)numberOfItemWithPageView:(JMAutoLoopPageView *)pageView {
+    return self.detailContentModel.head_imgs.count;
+}
+- (void)configCell:(__kindof UICollectionViewCell *)cell Index:(NSUInteger)index PageView:(JMAutoLoopPageView *)pageView {
+    JMGoodsLoopRollCell *testCell = cell;
+    [testCell refreshScrollViewWithModel:self.detailContentModel Index:index];
+}
+- (NSString *)cellIndentifierWithIndex:(NSUInteger)index PageView:(JMAutoLoopPageView *)pageView {
+    return @"JMGoodsLoopRollCell";
+}
+- (void)JMAutoLoopPageView:(JMAutoLoopPageView *)pageView DidScrollToIndex:(NSUInteger)index {
+}
+- (void)JMAutoLoopPageView:(JMAutoLoopPageView *)pageView DidSelectedIndex:(NSUInteger)index {
+}
+#pragma mark ---- 自定义弹出视图 (显示/隐藏) ----
+- (void)showPopView {
+    isTop = NO;
+    [[UIApplication sharedApplication].keyWindow addSubview:self.maskView];
+    [[UIApplication sharedApplication].keyWindow addSubview:self.popView];
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        self.view.layer.transform = [JMPopViewAnimationDrop firstStepTransform];
+        self.maskView.alpha = 1.0;
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.3 animations:^{
+            self.view.layer.transform = [JMPopViewAnimationDrop secondStepTransform];
+            self.popView.transform = CGAffineTransformTranslate(self.popView.transform, 0, -popHeight);
+        }];
+    }];
+}
+- (void)hideMaskView {
+    if (isTop) {
+        isShowTop = NO;
+    }else {
+        [UIView animateWithDuration:0.3 animations:^{
+            self.view.layer.transform = [JMPopViewAnimationDrop firstStepTransform];
+            self.popView.transform = CGAffineTransformIdentity;
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:0.2 animations:^{
+                self.view.layer.transform = CATransform3DIdentity;
+                self.maskView.alpha = 0.0;
+            } completion:^(BOOL finished) {
+                [self.maskView removeFromSuperview];
+                [self.popView removeFromSuperview];
+            }];
+        }];
+    }
+}
 
 
 
@@ -1087,103 +1029,6 @@ static NSString *currentCartsType = @"0"; // 当前购物车的类型 (普通购
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 收藏
-/*
- BOOL login = [[NSUserDefaults standardUserDefaults] boolForKey:kIsLogin];
- if (login == NO) {
- button.selected = NO;
- JMLogInViewController *enterVC = [[JMLogInViewController alloc] init];
- [self.navigationController pushViewController:enterVC animated:YES];
- return;
- }else {
- if (button.selected == NO) {
- // 收藏
- [MBProgressHUD showLoading:@"添加收藏~"];
- NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/favorites",Root_URL];
- NSMutableDictionary *param = [NSMutableDictionary dictionary];
- param[@"model_id"] = self.goodsID;
- [JMHTTPManager requestWithType:RequestTypePOST WithURLString:urlString WithParaments:param WithSuccess:^(id responseObject) {
- if (!responseObject) return ;
- NSLog(@"%@",responseObject);
- NSInteger code = [responseObject[@"code"] integerValue];
- if (code == 0) {
- button.selected = YES;
- [MBProgressHUD showSuccess:@"收藏成功"];
- [MobClick event:@"addStoreUpSuccess"];
- }else {
- button.selected = NO;
- [MBProgressHUD showWarning:responseObject[@"info"]];
- NSDictionary *addStoreUpFaildict = @{@"code" : [NSString stringWithFormat:@"%ld",code]};
- [MobClick event:@"addStoreUpFail" attributes:addStoreUpFaildict];
- }
- } WithFail:^(NSError *error) {
- button.selected = NO;
- [MobClick event:@"addStoreUpFail"];
- } Progress:^(float progress) {
- 
- }];
- }else {
- // 取消收藏
- [MBProgressHUD showLoading:@"取消收藏~"];
- NSString *urlString = [NSString stringWithFormat:@"%@/rest/v1/favorites",Root_URL];
- NSMutableDictionary *param = [NSMutableDictionary dictionary];
- param[@"model_id"] = self.goodsID;
- [JMHTTPManager requestWithType:RequestTypeDELETE WithURLString:urlString WithParaments:param WithSuccess:^(id responseObject) {
- if (!responseObject) return ;
- NSLog(@"%@",responseObject);
- NSInteger code = [responseObject[@"code"] integerValue];
- if (code == 0) {
- button.selected = NO;
- [MBProgressHUD showSuccess:@"取消成功"];
- [MobClick event:@"cancleStoreUpSuccess"];
- }else {
- button.selected = YES;
- [MBProgressHUD showWarning:responseObject[@"info"]];
- NSDictionary *cancleStoreUpFaildict = @{@"code" : [NSString stringWithFormat:@"%ld",code]};
- [MobClick event:@"cancleStoreUpFail" attributes:cancleStoreUpFaildict];
- }
- } WithFail:^(NSError *error) {
- button.selected = YES;
- [MobClick event:@"cancleStoreUpFail"];
- } Progress:^(float progress) {
- }];
- }
- }
- */
 
 
 
